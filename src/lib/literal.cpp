@@ -3,7 +3,7 @@
 namespace hlsl {
 
 std::string GetLiteralString(const Literal& value) {
-    // Literal = std::variant<std::string, double>;
+  // Literal = std::variant<std::string, double>;
   switch (value.index()) {
     case 0: // int
       return std::to_string(std::get<0>(value));

@@ -1,13 +1,16 @@
-#include <format>
+#include <sstream>
+#include "literal.h"
 #include "token.h"
 
 namespace hlsl {
 
 std::string Token::toString() const {
-    std::string result = std::format("Line: {}, Lexeme: {}, Type: {}",
-        _line, _lexeme, _type);
-    if (_literal.has_value())
-        result += std::format(", Literal: {}", GetLiteralString(_literal.value()));
+  std::stringstream ss;
+  ss << "Line:" << _line << " Lexeme:" << _lexeme << " Type:" << hlsl::tokenTypeToString(_type);
+  if (_literal.has_value()) {
+    ss << " Literal:" << GetLiteralString(_literal.value());
+  }
+  return ss.str();
 }
 
 } // namespace hlsl
