@@ -5,22 +5,13 @@
 #include <string_view>
 
 #include "literal.h"
+#include "template_types.h"
 #include "token_type.h"
 
 namespace {
 
 inline bool isWhitespace(char c) {
   return c == ' ' || c == '\t' || c == '\r';
-}
-
-inline std::string getLexeme(const std::string& source, size_t start,
-                            size_t end) {
-  return source.substr(start, end);
-}
-
-inline hlsl::OptionalLiteral makeOptionalLiteral(hlsl::TokenType t,
-                                                const std::string& lexeme) {
-  return std::nullopt;
 }
 
 }  // namespace
@@ -38,7 +29,7 @@ std::vector<Token> Scanner::scan() {
       break;
     }
   }
-  _tokens.emplace_back(TokenType::EndOfFile, "", std::nullopt, _line);
+  _tokens.emplace_back(TokenType::EndOfFile, "", _line);
   std::vector<Token> tokens;
   std::move(_tokens.begin(), _tokens.end(), std::back_inserter(tokens));
   return tokens;
@@ -51,9 +42,9 @@ Token Scanner::scanNext() {
     return tk;
   }
 
-  _start = _position;
-  _lexemeLength = 0;
   while (!isAtEnd()) {
+    _start = _position;
+    _lexemeLength = 0;
     if (!scanToken()) {
       break;
     }
@@ -64,7 +55,7 @@ Token Scanner::scanNext() {
     }
   }
 
-  return {TokenType::EndOfFile, "", std::nullopt, _line};
+  return Token{TokenType::EndOfFile, "", _line};
 }
 
 bool Scanner::isAtEnd() const { return _position >= _size; }
@@ -99,8 +90,8 @@ char Scanner::peekAhead(int count) const {
 }
 
 void Scanner::addToken(TokenType t) {
-  const std::string lexeme = getLexeme(_source, _start, _position - _start);
-  _tokens.emplace_back(t, lexeme, makeOptionalLiteral(t, lexeme), _line);
+  std::string_view lexeme = _source.substr(_start, _position - _start);
+  _tokens.emplace_back(t, lexeme, _line);
 }
 
 void Scanner::skipPragma() {

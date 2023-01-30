@@ -8,7 +8,7 @@
       "name": "Run Test",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "build/Debug/test.exe",
+      "program": "build/src/test/Debug/test.exe",
       "cwd": "${workspaceFolder}",
       "logging": {
         "moduleLoad": false,

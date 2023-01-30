@@ -6,22 +6,16 @@
 #include <string_view>
 #include <variant>
 
-#include "match_literal.h"
+#include "literal.h"
 #include "token_type.h"
+#include "template_types.h"
 
 namespace hlsl {
 
-static const std::set<TokenType> templateTypes{
-  TokenType::Vector,
-  TokenType::Matrix
-};
-
-bool isTemplateType(TokenType t) {
-  return templateTypes.find(t) != templateTypes.end();
-}
-
 // Used for diagnostics
 static const std::map<TokenType, std::string> _tokenTypeToString{
+  {TokenType::Undefined, "Undefined"},
+  {TokenType::EndOfFile, "EndOfFile"},
   {TokenType::IntLiteral, "IntLiteral"},
   {TokenType::FloatLiteral, "FloatLiteral"},
   {TokenType::Identifier, "Identifier"},
@@ -70,6 +64,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::QuestionQuestion, "QuestionQuestion"},
   {TokenType::PlusPlus, "PlusPlus"},
   {TokenType::MinusMinus, "MinusMinus"},
+  {TokenType::Hash, "Hash"},
   {TokenType::AppendStructuredBuffer, "AppendStructuredBuffer"},
   {TokenType::Asm, "Asm"},
   {TokenType::Asm_fragment, "Asm_fragment"},
@@ -194,6 +189,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::Void, "Void"},
   {TokenType::Volatile, "Volatile"},
   {TokenType::While, "While"},
+  {TokenType::Expression, "Expression"},
   {TokenType::Float1, "Float1"},
   {TokenType::Float1x1, "Float1x1"},
   {TokenType::Float1x2, "Float1x2"},
@@ -422,6 +418,7 @@ static const std::map<std::string_view, TokenType> tokenDefs {
   {"??", TokenType::QuestionQuestion},
   {"++", TokenType::PlusPlus},
   {"--", TokenType::MinusMinus},
+  {"#", TokenType::Hash},
   {"AppendStructuredBuffer", TokenType::AppendStructuredBuffer},
   {"asm", TokenType::Asm},
   {"asm_fragment", TokenType::Asm_fragment},
@@ -546,6 +543,7 @@ static const std::map<std::string_view, TokenType> tokenDefs {
   {"void", TokenType::Void},
   {"volatile", TokenType::Volatile},
   {"while", TokenType::While},
+  {"Expression", TokenType::Expression},
   {"float1", TokenType::Float1},
   {"float1x1", TokenType::Float1x1},
   {"float1x2", TokenType::Float1x2},

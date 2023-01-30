@@ -14,6 +14,10 @@ fp = open('tokens.txt', 'rt')
 tokens = [l.strip().split(' ') for l in fp.readlines()]
 fp.close()
 
+fp = open('types.txt', 'rt')
+types = [l.strip() for l in fp.readlines()]
+fp.close()
+
 fp = open('../src/lib/token_type.h', 'wt')
 
 fp.write('''#pragma once
@@ -56,8 +60,6 @@ const std::string& tokenTypeToString(TokenType t);
 
 TokenType findTokenType(const std::string_view& s);
 
-bool isTemplateType(TokenType t);
-
 } // namespace hlsl
 ''')
 
@@ -72,22 +74,16 @@ fp.write('''// Generated from gen_token_type.py
 #include <string_view>
 #include <variant>
 
-#include "match_literal.h"
+#include "literal.h"
 #include "token_type.h"
+#include "template_types.h"
 
 namespace hlsl {
 
-static const std::set<TokenType> templateTypes{
-  TokenType::Vector,
-  TokenType::Matrix
-};
-
-bool isTemplateType(TokenType t) {
-  return templateTypes.find(t) != templateTypes.end();
-}
-
 // Used for diagnostics
 static const std::map<TokenType, std::string> _tokenTypeToString{
+  {TokenType::Undefined, "Undefined"},
+  {TokenType::EndOfFile, "EndOfFile"},
   {TokenType::IntLiteral, "IntLiteral"},
   {TokenType::FloatLiteral, "FloatLiteral"},
   {TokenType::Identifier, "Identifier"},
@@ -144,6 +140,38 @@ TokenType findTokenType(const std::string_view& lexeme) {
   }
 
   return matchLiteral(lexeme);
+}
+
+} // namespace hlsl
+''')
+fp.close()
+
+
+fp = open('../src/lib/ast/data_types.cpp', 'wt')
+fp.write('''#pragma once
+
+#include <set>
+
+#include "../token_type.h"
+
+namespace hlsl {
+
+static const std::set<TokenType> dataTypes {
+''')
+
+for k in types:
+  fp.write("  TokenType::{0},\n".format(enumName(k)))
+
+for k in vectorMatrixTypes:
+    for i in range(1,5):
+        fp.write('  TokenType::{0}{1},\n'.format(enumName(k), i))
+        for j in range(1,5):
+            fp.write('  TokenType::{0}{1}x{2},\n'.format(enumName(k), i, j))
+
+fp.write('''};
+
+bool isDataType(TokenType t) {
+  return dataTypes.find(t) != dataTypes.end();
 }
 
 } // namespace hlsl

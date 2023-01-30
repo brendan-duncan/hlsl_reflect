@@ -58,6 +58,7 @@ enum class TokenType : uint32_t {
   QuestionQuestion,
   PlusPlus,
   MinusMinus,
+  Hash,
   AppendStructuredBuffer,
   Asm,
   Asm_fragment,
@@ -182,6 +183,7 @@ enum class TokenType : uint32_t {
   Void,
   Volatile,
   While,
+  Expression,
   Float1,
   Float1x1,
   Float1x2,
@@ -372,7 +374,5 @@ inline std::ostream& operator<<(std::ostream& os, const TokenType& obj) {
 const std::string& tokenTypeToString(TokenType t);
 
 TokenType findTokenType(const std::string_view& s);
-
-bool isTemplateType(TokenType t);
 
 } // namespace hlsl

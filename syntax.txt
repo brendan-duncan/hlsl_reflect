@@ -1,0 +1,9 @@
+Variable:
+  [Storage_Class] [Type_Modifier] Type Name[Index] [: Semantic] [: Packoffset] [: Register]; [Annotations] [= Initial_Value]
+
+Struct:
+  struct IDENTIFIER { StructField+ };
+
+StructField:
+  [InterpolationModifier] Type MemberName;
+

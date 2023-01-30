@@ -1,0 +1,22 @@
+#include "../../lib/hlsl/parser.h"
+#include "../test.h"
+
+namespace hlsl {
+
+void testParser(Test& test) {
+  test.test("Parser empty", [](Test& test) {
+    Parser parser("");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
+  });
+
+  test.test("Parser struct", [](Test& test) {
+    Parser parser("struct foo { };");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
+  });
+}
+
+} // namespace hlsl

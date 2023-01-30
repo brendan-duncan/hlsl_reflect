@@ -34,7 +34,7 @@ private:
 
   void skipPragma();
 
-  const std::string _source;
+  const std::string_view _source;
   const size_t _size;
   std::list<Token> _tokens;
   size_t _start = 0;
