@@ -27,9 +27,15 @@ private:
 
   bool check(TokenType type);
 
-  AstStatement* parseTopLevel();
+  AstStatement* parseTopLevelStatement();
 
   AstStruct* parseStruct();
+
+  AstStructField* parseStructField();
+
+  AstAttribute* parseAttributes();
+
+  AstExpression* parseExpression();
 
   Ast* _ast = nullptr;
   Scanner _scanner;

@@ -11,6 +11,7 @@ static const std::set<TokenType> templateTypes{
   TokenType::Buffer,
   TokenType::Matrix,
   TokenType::Vector,
+  TokenType::Texture2D
 };
 
 inline bool isTemplateType(TokenType t) {

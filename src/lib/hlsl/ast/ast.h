@@ -18,7 +18,7 @@ public:
   template<typename T>
   T* createNode() {
     AstNode* n = new (allocateMemory(sizeof(T))) T();
-    n->nodeType = T::type;
+    n->nodeType = T::astType;
     return static_cast<T*>(n);
   }
 

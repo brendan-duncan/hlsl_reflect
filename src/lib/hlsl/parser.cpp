@@ -17,7 +17,7 @@ Ast* Parser::parse() {
   while (!isAtEnd()) {
     AstStatement* statement = nullptr;
     try {
-      statement = parseTopLevel();
+      statement = parseTopLevelStatement();
     } catch (ParseException e) {
       std::cerr << "Error: "  << e.message << std::endl;
       delete _ast;
@@ -83,13 +83,18 @@ bool Parser::check(TokenType type) {
   return tk.type() == type;
 }
 
-AstStatement* Parser::parseTopLevel() {
-  // semicolon
-
+AstStatement* Parser::parseTopLevelStatement() {
+  // Discard any solo semicolons
   while (match(TokenType::Semicolon) && !isAtEnd()) {}
 
+  AstAttribute* attributes = parseAttributes();
+
   if (match(TokenType::Struct)) {
-    return parseStruct();
+    AstStruct* node = parseStruct();
+    if (node != nullptr) {
+      node->attributes = attributes;
+    }
+    return node;
   }
 
   return nullptr;
@@ -98,12 +103,115 @@ AstStatement* Parser::parseTopLevel() {
 AstStruct* Parser::parseStruct() {
   Token name = consume(TokenType::Identifier, "struct name expected.");
   consume(TokenType::LeftBrace, "'{' expected for struct");
+
+  AstStructField* lastField = nullptr;
+  while (!check(TokenType::RightBrace) && !isAtEnd()) {
+    AstStructField* field = parseStructField();
+
+    if (lastField != nullptr) {
+      lastField->next = field;
+    }
+    lastField = field;
+  }
+
   consume(TokenType::RightBrace, "'}' expected for struct");
   consume(TokenType::Semicolon, "';' expected for struct");
 
   AstStruct* s = _ast->createNode<AstStruct>();
   s->name = name.lexeme();
   return s;
+}
+
+AstStructField* Parser::parseStructField() {
+  AstStructField* field = _ast->createNode<AstStructField>();
+
+  Token tk = peekNext();
+  if (isInterpolationModifier(tk.type())) {
+    field->interpolation = tokenTypeToInterpolationModifier(tk.type());
+    advance();
+  }
+
+  field->type = advance().type();
+  field->name = advance().lexeme();
+  consume(TokenType::Semicolon, "';' expected for struct field");
+
+  return field;
+}
+
+AstAttribute* Parser::parseAttributes() {
+  // Parse attributes in the forms:
+  // [A] statement
+  // [A, B] statement
+  // [A][B] statement
+  // Where: A, B are attributes in the form of:
+  // A
+  // A(a[,b]*) where a and b are expressions
+  AstAttribute* firstAttribute = nullptr;
+  AstAttribute* lastAttribute = nullptr;;
+
+  if (!match(TokenType::LeftBracket)) {
+    return firstAttribute;
+  }
+
+  while (isAtEnd()) {
+    AstAttribute* attribute = _ast->createNode<AstAttribute>();
+    if (firstAttribute == nullptr) {
+      firstAttribute = attribute;
+    }
+    if (lastAttribute != nullptr) {
+      lastAttribute->next = attribute;
+    }
+    lastAttribute = attribute;
+
+    Token name = consume(TokenType::Identifier, "attribute name expected");
+    lastAttribute->name = name.lexeme();
+
+    if (match(TokenType::LeftParen)) {
+      AstArgument* firstArg = nullptr;
+      AstArgument* lastArg = nullptr;
+      while (!isAtEnd() && !match(TokenType::RightParen)) {
+        AstArgument* arg = _ast->createNode<AstArgument>();
+        arg->expression = parseExpression();
+        if (firstArg == nullptr) {
+          firstArg = arg;
+        }
+        if (lastArg != nullptr) {
+          lastArg->next = arg;
+        }
+        lastArg = arg;
+        if (arg->expression == nullptr) {
+          throw ParseException(peekNext(), "expression expected for attribute");
+          break;
+        }
+
+        if (!match(TokenType::Comma)) {
+          if (!match(TokenType::RightParen)) {
+            throw ParseException(peekNext(), "')' or ',' expected for attribute");
+          }
+          break;
+        }
+      }
+    }
+
+    if (match(TokenType::Comma)) {
+      continue;
+    }
+
+    if (!match(TokenType::RightBracket)) {
+      throw ParseException(peekNext(), "']' or ',' expected for attribute");
+      break;
+    }
+
+    if (!match(TokenType::LeftBracket)) {
+      break;
+    }
+  }
+
+  return firstAttribute;
+}
+
+AstExpression* Parser::parseExpression() {
+  return nullptr;
 }
 
 } // namespace hlsl

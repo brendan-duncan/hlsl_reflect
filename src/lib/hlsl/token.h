@@ -25,6 +25,14 @@ public:
       , _filename(std::move(other._filename))
       , _line(other._line) { }
 
+  Token& operator=(const Token& other) {
+    _type = other._type;
+    _lexeme = other._lexeme;
+    _filename = other._filename;
+    _line = other._line;
+    return *this;
+  }
+
   std::string toString() const;
 
   TokenType type() const { return _type; }
@@ -36,10 +44,10 @@ public:
   int line() const { return _line; }
 
 private:
-  const TokenType _type;
-  const std::string_view _lexeme;
-  const std::string_view _filename;
-  const int _line = -1;
+  TokenType _type;
+  std::string_view _lexeme;
+  std::string_view _filename;
+  int _line = -1;
 };
 
 } // namespace hlsl

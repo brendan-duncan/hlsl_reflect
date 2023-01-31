@@ -5,7 +5,11 @@ namespace hlsl {
 enum class AstType {
   Undefined,
   Root,
-  Struct
+  Expression,
+  Struct,
+  StructField,
+  Argument,
+  Attribute,
 };
 
 } // namespace hlsl

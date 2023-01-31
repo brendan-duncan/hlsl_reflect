@@ -17,6 +17,16 @@ void testParser(Test& test) {
     test.isNotNull(ast);
     delete ast;
   });
+
+  test.test("Parser struct { fields }", [](Test& test) {
+    Parser parser(R"(struct foo {
+      int a;
+      centroid float b;
+    };)");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
+  });
 }
 
 } // namespace hlsl

@@ -3,7 +3,6 @@
 #include <string_view>
 
 #include "ast_type.h"
-#include "attribute_type.h"
 #include "interpolation_modifier.h"
 #include "../token_type.h"
 
@@ -14,12 +13,19 @@ struct AstNode {
 };
 
 struct AstExpression : AstNode {
-  
+  static const AstType astType = AstType::Expression;
+};
+
+struct AstArgument : AstNode {
+  static const AstType astType = AstType::Argument;
+  AstExpression* expression = nullptr;
+  AstArgument* next = nullptr;
 };
 
 struct AstAttribute : AstNode {
-  AttributeType attributeType = AttributeType::Unknown;
-  AstExpression* expression = nullptr;
+  static const AstType astType = AstType::Attribute;
+  std::string_view name;
+  AstExpression* argument = nullptr;
   AstAttribute* next = nullptr;
 };
 
@@ -29,6 +35,7 @@ struct AstStatement : AstNode {
 };
 
 struct AstStructField : AstNode {
+  static const AstType astType = AstType::StructField;
   InterpolationModifier interpolation = InterpolationModifier::None;
   TokenType type;
   std::string_view name;
@@ -36,13 +43,13 @@ struct AstStructField : AstNode {
 };
 
 struct AstStruct : AstStatement {
-  static const AstType type = AstType::Struct;
+  static const AstType astType = AstType::Struct;
   std::string_view name;
   AstStructField* field = nullptr;
 };
 
 struct AstRoot : AstNode {
-  static const AstType type = AstType::Root;
+  static const AstType astType = AstType::Root;
   AstStatement* statement = nullptr;
 };
 
