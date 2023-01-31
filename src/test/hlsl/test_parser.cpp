@@ -27,6 +27,46 @@ void testParser(Test& test) {
     test.isNotNull(ast);
     delete ast;
   });
+
+  test.test("Parser attributes", [](Test& test) {
+    Parser parser(R"(
+    [Foo]
+    struct foo {
+      int a;
+      centroid float b;
+    };)");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
+  });
+
+  test.test("Parser attributes2", [](Test& test) {
+    Parser parser(R"(
+    [Foo][Bar]
+    struct foo {
+      int a;
+      centroid float b;
+    };)");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
+  });
+
+  test.test("Parser attributes3", [](Test& test) {
+    Parser parser(R"(
+    [Foo,Bar][FooBar()]
+    struct foo {
+      int a;
+      centroid float b;
+    };)");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
+  });
+
+  test.test("cbuffer", [](Test& test) {
+    
+  });
 }
 
 } // namespace hlsl

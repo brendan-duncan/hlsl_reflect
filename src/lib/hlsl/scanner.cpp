@@ -8,15 +8,11 @@
 #include "template_types.h"
 #include "token_type.h"
 
-namespace {
+namespace hlsl {
 
 inline bool isWhitespace(char c) {
   return c == ' ' || c == '\t' || c == '\r';
 }
-
-}  // namespace
-
-namespace hlsl {
 
 Scanner::Scanner(const std::string_view& source)
     : _source(source), _size(source.size()) {}
@@ -103,6 +99,7 @@ void Scanner::skipPragma() {
 
 bool Scanner::scanToken() {
   // Find the longest consecutive set of characters that match a rule.
+  // This string of consecutive characters is the lexeme.
   char c = advance();
 
   // Skip line-feed, adding to the line counter.

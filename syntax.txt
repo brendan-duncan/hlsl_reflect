@@ -1,3 +1,16 @@
+TopLevelStatement:
+  Struct
+  CBuffer
+  TBuffer
+  Declaration
+
+Declaration:
+  Variable
+  Function
+
+Function:
+  Type IDENTIFIER ( )
+
 Variable:
   [Storage_Class] [Type_Modifier] Type Name[Index] [: Semantic] [: Packoffset] [: Register]; [Annotations] [= Initial_Value]
 

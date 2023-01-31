@@ -1,3 +1,4 @@
+undefined
 void
 float
 int
@@ -33,3 +34,4 @@ SamplerState
 SamplerComparisonState
 Struct
 Expression
+UserDefined

@@ -6,6 +6,7 @@
 
 namespace hlsl {
 
+/// A token is a single lexeme with a type.
 class Token {
 public:
   Token(TokenType type, std::string_view lexeme, int line)

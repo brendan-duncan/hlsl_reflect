@@ -11,7 +11,7 @@ void Visitor::visitRoot(AstRoot* node) {
 }
 
 void Visitor::visitTopLevelStatement(AstStatement* node) {
-  if (node->nodeType == AstType::Struct) {
+  if (node->nodeType == AstNodeType::Struct) {
     visitStruct((AstStruct*)node);
   }
 }

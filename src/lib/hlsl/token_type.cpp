@@ -736,6 +736,9 @@ const std::string& tokenTypeToString(TokenType t) {
 }
 
 TokenType findTokenType(const std::string_view& lexeme) {
+  // A possible optimization would be to use something like gperf to generate a
+  // perfect hash function for the tokenDefs map. I looked at other alternatives to std::map
+  // but they all seemed to be slower than std::map for this use case.
   auto ti = tokenDefs.find(lexeme);
   if (ti != tokenDefs.end()) {
     return (*ti).second;

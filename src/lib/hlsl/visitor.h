@@ -1,4 +1,4 @@
-#include "../ast/ast_node.h"
+#include "ast/ast_node.h"
 
 namespace hlsl {
 
