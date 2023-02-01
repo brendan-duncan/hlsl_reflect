@@ -261,7 +261,7 @@ struct AstExpressionStatement : AstStatement {
 
 struct AstRoot : AstNode {
   static const AstNodeType astType = AstNodeType::Root;
-  AstStatement* statement = nullptr;
+  AstStatement* statements = nullptr;
 };
 
 } // namespace hlsl

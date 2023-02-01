@@ -115,7 +115,7 @@ private:
 
   AstParameter* parseParameter();
 
-  AstStatement* parseBlock();
+  AstBlock* parseBlock();
 
   AstStatement* parseStatement();
 

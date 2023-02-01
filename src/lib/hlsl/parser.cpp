@@ -30,8 +30,8 @@ Ast* Parser::parse() {
     if (statement == nullptr) {
       break;
     }
-    if (root->statement == nullptr) {
-      root->statement = statement;
+    if (root->statements == nullptr) {
+      root->statements = statement;
     }
     if (lastStatement != nullptr) {
       lastStatement->next = statement;
@@ -821,21 +821,29 @@ AstVariable* Parser::parseVariable(AstType* type, const std::string_view& name) 
 }
 
 // Parse a block of statements enclosed in braces
-AstStatement* Parser::parseBlock() {
+AstBlock* Parser::parseBlock() {
+  AstBlock* block = _ast->createNode<AstBlock>();
+
   consume(TokenType::LeftBrace, "Expected '{' before block");
-  AstStatement* firstStmt = parseStatement();
-  if (firstStmt == nullptr) {
-    consume(TokenType::RightBrace, "Expected '}' after block");
-    return nullptr;
+
+  if (match(TokenType::RightBrace)) {
+    advance();
+    return block;
   }
-  AstStatement* lastStmt = firstStmt;
+
+  block->statements = parseStatement();
+  if (block->statements == nullptr) {
+    return block;
+  }
+  AstStatement* lastStmt = block->statements;
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
     AstStatement* stmt = parseStatement();
     lastStmt->next = stmt;
     lastStmt = stmt;
   }
+
   consume(TokenType::RightBrace, "Expected '}' after block");
-  return firstStmt;
+  return block;
 }
 
 AstStatement* Parser::parseStatement() {
