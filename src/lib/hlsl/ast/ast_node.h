@@ -13,10 +13,44 @@
 
 namespace hlsl {
 
+struct AstArgument;
+struct AstAssignment;
+struct AstAttribute;
+struct AstBinaryOperator;
+struct AstBlock;
+struct AstBreak;
 struct AstBuffer;
+struct AstCallExpr;
+struct AstContinue;
+struct AstDeclaration;
+struct AstDiscard;
+struct AstDoWhile;
 struct AstExpression;
+struct AstExpressionStatement;
+struct AstFor;
+struct AstFunction;
+struct AstIf;
+struct AstLiteralExpr;
+struct AstCastExpr;
+struct AstNode;
+struct AstParameter;
+struct AstReturn;
+struct AstRoot;
+struct AstSamplerState;
 struct AstStateAssignment;
+struct AstStatement;
+struct AstStringExpr;
+struct AstStruct;
+struct AstStructField;
+struct AstSwitch;
 struct AstSwitchCase;
+struct AstTernaryOperator;
+struct AstType;
+struct AstUnaryOperator;
+struct AstVariable;
+struct AstVariableExpr;
+struct AstWhile;
+struct AstCall;
 
 /// Call the callback for each node in the linked list
 /// @tparam T AstNode with a next pointer, such as AstArgument
@@ -35,6 +69,7 @@ struct AstNode {
   AstNodeType nodeType = AstNodeType::Undefined;
 };
 
+/// Type declaration for a variable or function
 struct AstType : AstNode {
   static const AstNodeType astType = AstNodeType::Type;
   BaseType baseType = BaseType::Undefined;
@@ -75,7 +110,7 @@ struct AstStatement : AstNode {
 struct AstStructField : AstNode {
   static const AstNodeType astType = AstNodeType::StructField;
   InterpolationModifier interpolation = InterpolationModifier::None;
-  TokenType type;
+  AstType* type = nullptr;
   std::string_view name;
   AstStructField* next = nullptr;
 };
@@ -163,6 +198,12 @@ struct AstLiteralExpr : AstExpression {
   std::string_view value;
 };
 
+struct AstCastExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::CastExpr;
+  AstType* type = nullptr;
+  AstExpression* expression = nullptr;
+};
+
 struct AstVariable : AstStatement {
   static const AstNodeType astType = AstNodeType::Variable;
   std::string_view name;
@@ -174,6 +215,7 @@ struct AstParameter : AstStatement {
   static const AstNodeType astType = AstNodeType::Parameter;
   std::string_view name;
   AstType* type = nullptr;
+  AstExpression* initializer = nullptr;
 };
 
 struct AstFunction : AstStatement {
@@ -257,6 +299,12 @@ struct AstAssignment : AstStatement {
 struct AstExpressionStatement : AstStatement {
   static const AstNodeType astType = AstNodeType::ExpressionStatement;
   AstExpression* expression = nullptr;
+};
+
+struct AstCall : AstStatement {
+  static const AstNodeType astType = AstNodeType::Call;
+  std::string_view name;
+  AstExpression* arguments = nullptr;
 };
 
 struct AstRoot : AstNode {

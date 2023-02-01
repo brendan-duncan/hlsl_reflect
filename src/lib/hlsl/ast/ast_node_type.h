@@ -33,6 +33,7 @@ enum class AstNodeType {
   Return,
   Assignment,
   ExpressionStatement,
+  Call,
 
   // Expressions
   UnaryOperator,
@@ -41,7 +42,8 @@ enum class AstNodeType {
   StringExpr,
   CallExpr,
   VariableExpr,
-  LiteralExpr,  
+  LiteralExpr,
+  CastExpr,
 };
 
 } // namespace hlsl

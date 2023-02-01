@@ -78,6 +78,16 @@ float Hash(uint s) {})");
     test.isNotNull(ast);
     delete ast;
   });
+
+  test.test("function.2", [](Test& test) {
+    Parser parser(R"(
+float Hash(uint s) {
+  return float(s) * rcp(4294967296.0);
+})");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
+  });
 }
 
 } // namespace hlsl

@@ -49,6 +49,10 @@ private:
   // @return true if the next token is the given type.
   bool check(TokenType type);
 
+  void pushBack(const Token& token) {
+    _pending.push_front(token);
+  }
+
   AstStatement* parseTopLevelStatement();
 
   AstStruct* parseStruct();

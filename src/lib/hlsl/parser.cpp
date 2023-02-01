@@ -165,7 +165,7 @@ AstStructField* Parser::parseStructField() {
     advance();
   }
 
-  field->type = advance().type();
+  field->type = parseType(false/*allowVoid*/);
   field->name = advance().lexeme();
   consume(TokenType::Semicolon, "';' expected for struct field");
 
@@ -751,6 +751,16 @@ AstExpression* Parser::parsePrimaryExpression() {
     return parseParenthesizedExpression();
   }
 
+  Token tk = peekNext();
+  if (tokenTypeToBaseType(tk.type()) != BaseType::Undefined) {
+    AstCastExpr* expr = _ast->createNode<AstCastExpr>();
+    expr->type = parseType(false/*voidAllowed*/);
+    consume(TokenType::LeftParen, "Expected '(' after type");
+    expr->expression = parseExpression();
+    consume(TokenType::RightParen, "Expected ')' after expression");
+    return expr;
+  }
+
   return nullptr;
 }
 
@@ -922,13 +932,73 @@ AstStatement* Parser::parseStatement() {
   }
 
   AstStatement* stmt = nullptr;
-  try {
+
+  if (check(TokenType::Identifier)) {
+    Token name = advance();
+    if (check(TokenType::LeftParen)) {
+      AstCall* call = _ast->createNode<AstCall>();
+      call->name = name.lexeme();
+      call->arguments = parseArgumentList();
+      call->attributes = attributes;
+      return call;
+    }
+
+    pushBack(name);
+  }
+
+  /*try {
     stmt = parseDeclaration();
   } catch (ParseException& e) {
   }
 
   if (stmt != nullptr) {
     consume(TokenType::Semicolon, "Expected ';' after statement");
+    stmt->attributes = attributes;
+    return stmt;
+  }*/
+
+  if (check(TokenType::Underscore) || check(TokenType::Identifier)) {
+    const bool isUnderscore = match(TokenType::Underscore);
+
+    AstAssignment* stmt = _ast->createNode<AstAssignment>();
+    if (!isUnderscore) {
+      stmt->variable = parseUnaryExpression();
+    }
+
+    if (!isUnderscore && stmt->variable == nullptr) {
+      throw ParseException(peekNext(), "Expected variable name");
+    }
+
+    if (match(TokenType::Equal)) {
+      stmt->op = Operator::Equal;
+    } else if (match(TokenType::PlusEqual)) {
+      stmt->op = Operator::AddEqual;
+    } else if (match(TokenType::MinusEqual)) {
+      stmt->op = Operator::SubtractEqual;
+    } else if (match(TokenType::StarEqual)) {
+      stmt->op = Operator::MultiplyEqual;
+    } else if (match(TokenType::SlashEqual)) {
+      stmt->op = Operator::DivideEqual;
+    } else if (match(TokenType::PercentEqual)) {
+      stmt->op = Operator::ModuloEqual;
+    } else if (match(TokenType::LessLessEqual)) {
+      stmt->op = Operator::LeftShiftEqual;
+    } else if (match(TokenType::GreaterGreaterEqual)) {
+      stmt->op = Operator::RightShiftEqual;
+    } else if (match(TokenType::AmpersandEqual)) {
+      stmt->op = Operator::AndEqual;
+    } else if (match(TokenType::CaretEqual)) {
+      stmt->op = Operator::XorEqual;
+    } else if (match(TokenType::PipeEqual)) {
+      stmt->op = Operator::OrEqual;
+    } else {
+      throw ParseException(peekNext(), "Expected assignment operator");
+    }
+
+    stmt->value = parseShortCircuitOrExpression();
+
+    consume(TokenType::Semicolon, "Expected ';' after assignment");
+    
     stmt->attributes = attributes;
     return stmt;
   }
@@ -946,61 +1016,6 @@ AstStatement* Parser::parseStatement() {
     consume(TokenType::Semicolon, "Expected ';' after expression");
     stmt->attributes = attributes;
     return stmt;
-  }
-
-  if (check(TokenType::Underscore) || check(TokenType::Identifier)) {
-    AstAssignment* stmt = _ast->createNode<AstAssignment>();
-    bool isUnderscore = match(TokenType::Underscore);
-    if (!isUnderscore) {
-      stmt->variable = parseUnaryExpression();
-    }
-
-    if (!isUnderscore && stmt->variable == nullptr) {
-      throw ParseException(peekNext(), "Expected variable name");
-    }
-
-    if (match(TokenType::Equal)) {
-      stmt->op = Operator::Equal;
-      stmt->value = parseShortCircuitOrExpression();
-    } else if (match(TokenType::PlusEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::AddEqual;
-    } else if (match(TokenType::MinusEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::SubtractEqual;
-    } else if (match(TokenType::StarEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::MultiplyEqual;
-    } else if (match(TokenType::SlashEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::DivideEqual;
-    } else if (match(TokenType::PercentEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::ModuloEqual;
-    } else if (match(TokenType::LessLessEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::LeftShiftEqual;
-    } else if (match(TokenType::GreaterGreaterEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::RightShiftEqual;
-    } else if (match(TokenType::AmpersandEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::AndEqual;
-    } else if (match(TokenType::CaretEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::XorEqual;
-    } else if (match(TokenType::PipeEqual)) {
-      stmt->value = parseShortCircuitOrExpression();
-      stmt->op = Operator::OrEqual;
-    } else {
-      throw ParseException(peekNext(), "Expected assignment operator");
-    }
-
-    stmt->value = parseShortCircuitOrExpression();
-
-    consume(TokenType::Semicolon, "Expected ';' after assignment");
-    
-    stmt->attributes = attributes;
   }
 
   return nullptr;
