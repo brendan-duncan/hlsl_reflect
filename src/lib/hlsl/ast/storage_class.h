@@ -1,8 +1,12 @@
 #pragma once
 
+#include "../token_type.h"
+
 namespace hlsl {
 
 enum class StorageClass {
+  Undefined,
+
   Extern,
   NoInterpolation,
   Precise,
@@ -12,5 +16,7 @@ enum class StorageClass {
   Uniform,
   Volatile
 };
+
+StorageClass tokenTypeToStorageClass(TokenType type);
 
 } // namespace hlsl

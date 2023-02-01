@@ -4,8 +4,8 @@
 #include <map>
 #include <string_view>
 
+#include "scanner/template_types.h"
 #include "literal.h"
-#include "template_types.h"
 #include "token_type.h"
 
 namespace hlsl {

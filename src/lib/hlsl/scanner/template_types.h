@@ -2,7 +2,7 @@
 
 #include <set>
 
-#include "token_type.h"
+#include "../token_type.h"
 
 namespace hlsl {
 

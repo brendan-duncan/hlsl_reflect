@@ -8,7 +8,6 @@
 
 #include "literal.h"
 #include "token_type.h"
-#include "template_types.h"
 
 namespace hlsl {
 

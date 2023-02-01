@@ -109,16 +109,26 @@ AstStatement* Parser::parseTopLevelStatement() {
   }
 
   // Global Declaration
-  Token nextToken = peekNext();
-  BaseType type = tokenTypeToBaseType(nextToken.type());
-  if (type != BaseType::Undefined) {
-    // Either a uniform or function declaration.
+  AstType* type = parseType(true/*allowVoid*/);
+  if (type != nullptr) {
+    // Either a variable or function declaration.
     Token identifier = consume(TokenType::Identifier, "identifier expected");
 
     // function declaration
     if (check(TokenType::LeftParen)) {
-
+      AstFunction* func = parseFunction(type, identifier.lexeme());
+      if (func != nullptr) {
+        func->attributes = attributes;
+      }
+      return func;
     }
+
+    // variable declaration
+    AstVariable* var = parseVariable(type, identifier.lexeme());
+    if (var != nullptr) {
+      var->attributes = attributes;
+    }
+    return var;
   }
 
   return nullptr;
@@ -235,7 +245,7 @@ AstAttribute* Parser::parseAttributes() {
 }
 
 AstExpression* Parser::parseExpression() {
-  return nullptr;
+  return parseShortCircuitOrExpression();
 }
 
 AstExpression* Parser::parseExpressionList() {
@@ -742,6 +752,34 @@ AstExpression* Parser::parseArgumentList() {
   }
   consume(TokenType::RightParen, "Expected ')' after argument list");
   return firstExpr;
+}
+
+AstFunction* Parser::parseFunction(AstType* returnType, const std::string_view& name) {
+  AstFunction* func = _ast->createNode<AstFunction>();
+  func->returnType = returnType;
+  func->name = name;
+  func->parameters = parseParameterList();
+  consume(TokenType::LeftBrace, "Expected '{' before function body");
+  func->body = parseBlock();
+  return func;
+}
+
+AstParameter* Parser::parseParameterList() {
+  return nullptr;
+}
+
+AstVariable* Parser::parseVariable(AstType* type, const std::string_view& name) {
+  AstVariable* var = _ast->createNode<AstVariable>();
+  var->type = type;
+  var->name = name;
+  if (match(TokenType::Equal)) {
+    var->initializer = parseShortCircuitOrExpression();
+  }
+  return var;
+}
+
+AstStatement* Parser::parseBlock() {
+  return nullptr;
 }
 
 } // namespace hlsl

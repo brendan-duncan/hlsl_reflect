@@ -149,6 +149,27 @@ struct AstVariableExpr : AstExpression {
   std::string_view name;
 };
 
+struct AstVariable : AstStatement {
+  static const AstNodeType astType = AstNodeType::Variable;
+  std::string_view name;
+  AstType* type = nullptr;
+  AstExpression* initializer = nullptr;
+};
+
+struct AstParameter : AstStatement {
+  static const AstNodeType astType = AstNodeType::Parameter;
+  std::string_view name;
+  AstType* type = nullptr;
+};
+
+struct AstFunction : AstStatement {
+  static const AstNodeType astType = AstNodeType::Function;
+  std::string_view name;
+  AstType* returnType = nullptr;
+  AstParameter* parameters = nullptr;
+  AstStatement* body = nullptr;
+};
+
 struct AstRoot : AstNode {
   static const AstNodeType astType = AstNodeType::Root;
   AstStatement* statement = nullptr;

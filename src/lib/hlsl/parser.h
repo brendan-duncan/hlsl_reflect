@@ -105,6 +105,14 @@ private:
 
   AstExpression* parseArgumentList();
 
+  AstFunction* parseFunction(AstType* returnType, const std::string_view& name);
+
+  AstVariable* parseVariable(AstType* type, const std::string_view& name);
+
+  AstParameter* parseParameterList();
+
+  AstStatement* parseBlock();
+
   Ast* _ast = nullptr;
   Scanner _scanner;
   std::list<Token> _pending;
