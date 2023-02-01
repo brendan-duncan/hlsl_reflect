@@ -6,6 +6,18 @@ namespace hlsl {
   
 enum class Operator {
   Undefined,
+
+  Equal,
+  SubtractEqual,
+  MultiplyEqual,
+  DivideEqual,
+  ModuloEqual,
+  LeftShiftEqual,
+  RightShiftEqual,
+  AndEqual,
+  OrEqual,
+  XorEqual,
+
   OrOr,
   AndAnd,
   Or,
@@ -26,10 +38,6 @@ enum class Operator {
   Modulo,
   Not,
   AddEqual,
-  SubtractEqual,
-  MultiplyEqual,
-  DivideEqual,
-  ModuloEqual,
   BitNot,
   Dereference,
   AddressOf

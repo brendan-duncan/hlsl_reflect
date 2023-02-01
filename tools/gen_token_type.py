@@ -74,9 +74,9 @@ fp.write('''// Generated from gen_token_type.py
 #include <string_view>
 #include <variant>
 
-#include "literal.h"
+#include "scanner/literal.h"
+#include "scanner/template_types.h"
 #include "token_type.h"
-#include "template_types.h"
 
 namespace hlsl {
 

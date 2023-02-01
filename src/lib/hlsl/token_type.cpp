@@ -7,6 +7,7 @@
 #include <variant>
 
 #include "scanner/literal.h"
+#include "scanner/template_types.h"
 #include "token_type.h"
 
 namespace hlsl {
@@ -24,6 +25,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::RightBracket, "RightBracket"},
   {TokenType::LeftBrace, "LeftBrace"},
   {TokenType::RightBrace, "RightBrace"},
+  {TokenType::Underscore, "Underscore"},
   {TokenType::Dot, "Dot"},
   {TokenType::Comma, "Comma"},
   {TokenType::Colon, "Colon"},
@@ -189,6 +191,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::Volatile, "Volatile"},
   {TokenType::While, "While"},
   {TokenType::Expression, "Expression"},
+  {TokenType::UserDefined, "UserDefined"},
   {TokenType::Float1, "Float1"},
   {TokenType::Float1x1, "Float1x1"},
   {TokenType::Float1x2, "Float1x2"},
@@ -378,6 +381,7 @@ static const std::map<std::string_view, TokenType> tokenDefs {
   {"]", TokenType::RightBracket},
   {"{", TokenType::LeftBrace},
   {"}", TokenType::RightBrace},
+  {"_", TokenType::Underscore},
   {".", TokenType::Dot},
   {",", TokenType::Comma},
   {":", TokenType::Colon},
@@ -543,6 +547,7 @@ static const std::map<std::string_view, TokenType> tokenDefs {
   {"volatile", TokenType::Volatile},
   {"while", TokenType::While},
   {"Expression", TokenType::Expression},
+  {"UserDefined", TokenType::UserDefined},
   {"float1", TokenType::Float1},
   {"float1x1", TokenType::Float1x1},
   {"float1x2", TokenType::Float1x2},
@@ -735,9 +740,6 @@ const std::string& tokenTypeToString(TokenType t) {
 }
 
 TokenType findTokenType(const std::string_view& lexeme) {
-  // A possible optimization would be to use something like gperf to generate a
-  // perfect hash function for the tokenDefs map. I looked at other alternatives to std::map
-  // but they all seemed to be slower than std::map for this use case.
   auto ti = tokenDefs.find(lexeme);
   if (ti != tokenDefs.end()) {
     return (*ti).second;

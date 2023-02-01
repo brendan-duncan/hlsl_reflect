@@ -70,6 +70,22 @@ void testParser(Test& test) {
     test.isNotNull(ast);
     delete ast;
   });
+
+  test.test("function", [](Test& test) {
+    Parser parser(R"(
+float Hash(uint s) {
+  s = s ^ 2747636419u;
+  s = s * 2654435769u;
+  s = s ^ (s >> 16);
+  s = s * 2654435769u ;
+  s = s ^ (s >> 16);
+  s = s * 2654435769u;
+  return float(s) * rcp(4294967296.0);
+})");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
+  });
 }
 
 } // namespace hlsl

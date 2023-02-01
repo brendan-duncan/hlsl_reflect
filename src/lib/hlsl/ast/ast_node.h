@@ -135,6 +135,13 @@ struct AstBinaryOperator : AstExpression {
   AstExpression* right = nullptr;
 };
 
+struct AstTernaryOperator : AstExpression {
+  static const AstNodeType astType = AstNodeType::TernaryOperator;
+  AstExpression* condition = nullptr;
+  AstExpression* left = nullptr;
+  AstExpression* right = nullptr;
+};
+
 struct AstStringExpr : AstExpression {
   static const AstNodeType astType = AstNodeType::StringExpr;
   std::string_view value;
@@ -233,6 +240,18 @@ struct AstBreak : AstStatement {
 
 struct AstContinue : AstStatement {
   static const AstNodeType astType = AstNodeType::Continue;
+};
+
+struct AstBlock : AstStatement {
+  static const AstNodeType astType = AstNodeType::Block;
+  AstStatement* statements = nullptr;
+};
+
+struct AstAssignment : AstStatement {
+  static const AstNodeType astType = AstNodeType::Assignment;
+  Operator op = Operator::Undefined;
+  AstExpression* variable = nullptr;
+  AstExpression* value = nullptr;
 };
 
 struct AstExpressionStatement : AstStatement {

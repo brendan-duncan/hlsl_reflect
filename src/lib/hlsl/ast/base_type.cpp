@@ -44,6 +44,7 @@ static const std::map<TokenType, BaseType> _tokenTypeToBaseType{
   {TokenType::SamplerComparisonState, BaseType::SamplerComparisonState},
   {TokenType::Struct, BaseType::Struct},
   {TokenType::Expression, BaseType::Expression},
+  {TokenType::UserDefined, BaseType::UserDefined},
   {TokenType::Float1, BaseType::Float1},
   {TokenType::Float1x1, BaseType::Float1x1},
   {TokenType::Float1x2, BaseType::Float1x2},

@@ -17,6 +17,7 @@ enum class AstNodeType {
   SamplerState,
   StateAssignment,
   SwitchCase,
+  Block,
 
   // Statements
   Variable,
@@ -30,15 +31,17 @@ enum class AstNodeType {
   Break,
   Continue,
   Return,
+  Assignment,
   ExpressionStatement,
 
   // Expressions
   UnaryOperator,
   BinaryOperator,
+  TernaryOperator,
   StringExpr,
   CallExpr,
   VariableExpr,
-  LiteralExpr,
+  LiteralExpr,  
 };
 
 } // namespace hlsl

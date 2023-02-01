@@ -4,6 +4,7 @@ LeftBracket [
 RightBracket ]
 LeftBrace {
 RightBrace }
+Underscore _
 Dot .
 Comma ,
 Colon :

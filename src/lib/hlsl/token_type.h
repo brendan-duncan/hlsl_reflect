@@ -19,6 +19,7 @@ enum class TokenType : uint32_t {
   RightBracket,
   LeftBrace,
   RightBrace,
+  Underscore,
   Dot,
   Comma,
   Colon,
@@ -184,6 +185,7 @@ enum class TokenType : uint32_t {
   Volatile,
   While,
   Expression,
+  UserDefined,
   Float1,
   Float1x1,
   Float1x2,
@@ -373,9 +375,6 @@ inline std::ostream& operator<<(std::ostream& os, const TokenType& obj) {
 
 const std::string& tokenTypeToString(TokenType t);
 
-/// Find the token type for the given string.
-/// @param s The string to find the token type for.
-/// @return The token type, or TokenType::Unknown if not found.
 TokenType findTokenType(const std::string_view& s);
 
 } // namespace hlsl
