@@ -821,6 +821,7 @@ AstVariable* Parser::parseVariable(AstType* type, const std::string_view& name) 
   return var;
 }
 
+// Parse a block of statements enclosed in braces
 AstStatement* Parser::parseBlock() {
   consume(TokenType::LeftBrace, "Expected '{' before block");
   AstStatement* firstStmt = parseStatement();
@@ -835,7 +836,201 @@ AstStatement* Parser::parseBlock() {
 }
 
 AstStatement* Parser::parseStatement() {
+  while (match(TokenType::Semicolon)) {
+    // Ignore empty statements
+  }
+
+  AstAttribute* attributes = parseAttributes();
+
+  if (match(TokenType::If)) {
+    AstIf* stmt = parseIf();
+    stmt->attributes = attributes;
+    return stmt;
+  }
+
+  if (match(TokenType::Switch)) {
+    AstSwitch* stmt = parseSwitch();
+    stmt->attributes = attributes;
+    return stmt;
+  }
+
+  if (match(TokenType::For)) {
+    AstFor* stmt = parseFor();
+    stmt->attributes = attributes;
+    return stmt;
+  }
+
+  if (match(TokenType::Do)) {
+    AstDoWhile* stmt = parseDoWhile();
+    stmt->attributes = attributes;
+    consume(TokenType::Semicolon, "Expected ';' after return value");
+    return stmt;
+  }
+
+  if (match(TokenType::While)) {
+    AstWhile* stmt = parseWhile();
+    stmt->attributes = attributes;
+    return stmt;
+  }
+
+  if (check(TokenType::LeftBrace)) {
+    AstStatement* stmt = parseBlock();
+    stmt->attributes = attributes;
+    return stmt;
+  }
+
+  if (match(TokenType::Return)) {
+    AstReturn* stmt = _ast->createNode<AstReturn>();
+    stmt->attributes = attributes;
+    if (!check(TokenType::Semicolon)) {
+      stmt->value = parseExpression();
+      consume(TokenType::Semicolon, "Expected ';' after return value");
+    }
+    return stmt;
+  }
+
+  if (match(TokenType::Break)) {
+    AstBreak* stmt = _ast->createNode<AstBreak>();
+    stmt->attributes = attributes;
+    consume(TokenType::Semicolon, "Expected ';' after 'break'");
+    return stmt;
+  }
+
+  if (match(TokenType::Continue)) {
+    AstContinue* stmt = _ast->createNode<AstContinue>();
+    stmt->attributes = attributes;
+    consume(TokenType::Semicolon, "Expected ';' after 'continue'");
+    return stmt;
+  }
+
+  if (match(TokenType::Discard)) {
+    AstDiscard* stmt = _ast->createNode<AstDiscard>();
+    stmt->attributes = attributes;
+    consume(TokenType::Semicolon, "Expected ';' after 'discard'");
+    return stmt;
+  }
+
+  AstStatement* stmt = nullptr;
+  try {
+    stmt = parseDeclaration();
+  } catch (ParseException& e) {
+  }
+
+  if (stmt != nullptr) {
+    consume(TokenType::Semicolon, "Expected ';' after statement");
+    stmt->attributes = attributes;
+    return stmt;
+  }
+
+  try {
+    AstExpression* expr = parseExpression();
+    if (expr != nullptr) {
+      AstExpressionStatement* stmt = _ast->createNode<AstExpressionStatement>();
+      stmt->expression = expr;
+    }
+  } catch (ParseException& e) {
+  }
+
+  if (stmt != nullptr) {
+    consume(TokenType::Semicolon, "Expected ';' after expression");
+    stmt->attributes = attributes;
+    return stmt;
+  }
+
   return nullptr;
+}
+
+AstIf* Parser::parseIf() {
+  AstIf* stmt = _ast->createNode<AstIf>();
+
+  consume(TokenType::LeftParen, "Expected '(' after 'if'");
+
+  stmt->condition = parseExpression();
+
+  consume(TokenType::RightParen, "Expected ')' after 'if' condition");
+
+  stmt->body = parseStatement();
+
+  if (check(TokenType::Else)) {
+    stmt->elseBody = parseStatement();
+  }
+
+  return stmt;
+}
+
+AstSwitch* Parser::parseSwitch() {
+  AstSwitch* stmt = _ast->createNode<AstSwitch>();
+  consume(TokenType::LeftParen, "Expected '(' after 'switch'");
+  stmt->condition = parseExpression();
+  consume(TokenType::RightParen, "Expected ')' after 'switch' condition");
+  consume(TokenType::LeftBrace, "Expected '{' after 'switch' condition");
+  AstSwitchCase* lastCase = nullptr;
+  while (!check(TokenType::RightBrace) && !isAtEnd()) {
+    AstSwitchCase* caseStmt = _ast->createNode<AstSwitchCase>();
+    if (match(TokenType::Case)) {      
+      caseStmt->isDefault = false;
+      caseStmt->condition = parseExpression();
+    } else if (match(TokenType::Default)) {
+      caseStmt->isDefault = true;
+    } else {
+      throw ParseException(peekNext(), "Expected 'case' or 'default' in switch statement");
+    }
+
+    consume(TokenType::Colon, "Expected ':' after 'case' or 'default'");
+    caseStmt->body = parseStatement();
+
+    if (stmt->cases == nullptr) {
+      lastCase = caseStmt;
+      stmt->cases = caseStmt;
+    } else {
+      lastCase->next = caseStmt;
+    }
+  }
+  return stmt;
+}
+
+AstFor* Parser::parseFor() {
+  AstFor* stmt = _ast->createNode<AstFor>();
+
+  consume(TokenType::LeftParen, "Expected '(' after 'for'");
+  if (!check(TokenType::Semicolon)) {
+    stmt->initializer = parseStatement();
+  }
+  consume(TokenType::Semicolon, "Expected ';' after 'for' initializer");
+  if (!check(TokenType::Semicolon)) {
+    stmt->condition = parseExpression();
+  }
+  consume(TokenType::Semicolon, "Expected ';' after 'for' condition");
+  if (!check(TokenType::RightParen)) {
+    stmt->increment = parseExpression();
+  }
+  consume(TokenType::RightParen, "Expected ')' after 'for' increment");
+
+  stmt->body = parseStatement();
+
+  return stmt;
+}
+
+AstDoWhile* Parser::parseDoWhile() {
+  AstDoWhile* stmt = _ast->createNode<AstDoWhile>();
+
+  stmt->body = parseBlock();
+
+  consume(TokenType::While, "Expected 'while' after 'do' block");
+  consume(TokenType::LeftParen, "Expected '(' after 'while'");
+  stmt->condition = parseExpression();
+  consume(TokenType::RightParen, "Expected ')' after 'while' condition");
+
+  return stmt;
+}
+
+AstWhile* Parser::parseWhile() {
+  AstWhile* stmt = _ast->createNode<AstWhile>();
+  consume(TokenType::LeftParen, "Expected '(' after 'while'");
+  stmt->condition = parseExpression();
+  consume(TokenType::RightParen, "Expected ')' after 'while' condition");
+  stmt->body = parseStatement();
+  return stmt;
 }
 
 } // namespace hlsl

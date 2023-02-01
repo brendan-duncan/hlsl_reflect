@@ -119,6 +119,16 @@ private:
 
   AstStatement* parseStatement();
 
+  AstIf* parseIf();
+
+  AstSwitch* parseSwitch();
+
+  AstFor* parseFor();
+
+  AstDoWhile* parseDoWhile();
+
+  AstWhile* parseWhile();
+
   Ast* _ast = nullptr;
   Scanner _scanner;
   std::list<Token> _pending;

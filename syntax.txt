@@ -8,15 +8,29 @@ Declaration:
   Variable
   Function
 
-Function:
-  Type IDENTIFIER ( )
+Struct:
+  struct IDENTIFIER { Field;+ };
+
+Field:
+  Type MemberName;
+
+CBuffer:
+  cbuffer IDENTIFIER { Field+ }
+
+TBuffer:
+  tbuffer IDENTIFIER { Field+ }
+
+Type:
+  [Storage_Class] [Type_Modifier] TYPE
 
 Variable:
-  [Storage_Class] [Type_Modifier] Type Name[Index] [: Semantic] [: Packoffset] [: Register]; [Annotations] [= Initial_Value]
+  Type Name[Index] [: Semantic] [: Packoffset] [: Register]; [Annotations] [= Initial_Value]
 
-Struct:
-  struct IDENTIFIER { StructField+ };
+Function:
+  Type IDENTIFIER ( Parameters ) BlockStatement
 
-StructField:
-  [InterpolationModifier] Type MemberName;
+BlockStatement:
+  { Statement;* }
+
+
 

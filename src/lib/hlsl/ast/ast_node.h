@@ -16,6 +16,7 @@ namespace hlsl {
 struct AstBuffer;
 struct AstExpression;
 struct AstStateAssignment;
+struct AstSwitchCase;
 
 /// Call the callback for each node in the linked list
 /// @tparam T AstNode with a next pointer, such as AstArgument
@@ -174,6 +175,69 @@ struct AstFunction : AstStatement {
   AstType* returnType = nullptr;
   AstParameter* parameters = nullptr;
   AstStatement* body = nullptr;
+};
+
+struct AstIf : AstStatement {
+  static const AstNodeType astType = AstNodeType::If;
+  AstExpression* condition = nullptr;
+  AstStatement* body = nullptr;
+  AstStatement* elseBody = nullptr;
+};
+
+struct AstSwitch : AstStatement {
+  static const AstNodeType astType = AstNodeType::Switch;
+  AstExpression* condition = nullptr;
+  AstSwitchCase* cases = nullptr;
+};
+
+struct AstSwitchCase : AstStatement {
+  static const AstNodeType astType = AstNodeType::SwitchCase;
+  bool isDefault = false;
+  AstExpression* condition = nullptr;
+  AstStatement* body = nullptr;
+  AstSwitchCase* next = nullptr;
+};
+
+struct AstFor : AstStatement {
+  static const AstNodeType astType = AstNodeType::For;
+  AstStatement* initializer = nullptr;
+  AstExpression* condition = nullptr;
+  AstExpression* increment = nullptr;
+  AstStatement* body = nullptr;
+};
+
+struct AstDoWhile : AstStatement {
+  static const AstNodeType astType = AstNodeType::DoWhile;
+  AstStatement* body = nullptr;
+  AstExpression* condition = nullptr;
+};
+
+struct AstWhile : AstStatement {
+  static const AstNodeType astType = AstNodeType::While;
+  AstExpression* condition = nullptr;
+  AstStatement* body = nullptr;
+};
+
+struct AstDiscard : AstStatement {
+  static const AstNodeType astType = AstNodeType::Discard;
+};
+
+struct AstReturn : AstStatement {
+  static const AstNodeType astType = AstNodeType::Return;
+  AstExpression* value = nullptr;
+};
+
+struct AstBreak : AstStatement {
+  static const AstNodeType astType = AstNodeType::Break;
+};
+
+struct AstContinue : AstStatement {
+  static const AstNodeType astType = AstNodeType::Continue;
+};
+
+struct AstExpressionStatement : AstStatement {
+  static const AstNodeType astType = AstNodeType::ExpressionStatement;
+  AstExpression* expression = nullptr;
 };
 
 struct AstRoot : AstNode {

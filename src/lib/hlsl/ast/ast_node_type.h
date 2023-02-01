@@ -16,9 +16,23 @@ enum class AstNodeType {
   Declaration,
   SamplerState,
   StateAssignment,
+  SwitchCase,
+
+  // Statements
   Variable,
   Function,
+  If,
+  Switch,
+  For,
+  DoWhile,
+  While,
+  Discard,
+  Break,
+  Continue,
+  Return,
+  ExpressionStatement,
 
+  // Expressions
   UnaryOperator,
   BinaryOperator,
   StringExpr,
