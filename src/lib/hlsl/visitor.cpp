@@ -26,8 +26,6 @@ void Visitor::visitRoot(AstRoot* node) {
 void Visitor::visitTopLevelStatement(AstStatement* node) {
   if (node->nodeType == AstNodeType::Struct) {
     visitStruct((AstStruct*)node);
-  } else if (node->nodeType == AstNodeType::Declaration) {
-    visitDeclaration((AstDeclaration*)node);
   } else if (node->nodeType == AstNodeType::Buffer) {
     visitBuffer((AstBuffer*)node);
   } else if (node->nodeType == AstNodeType::Function) {
@@ -73,13 +71,13 @@ void Visitor::visitStatement(AstStatement* node) {
   }
 }
 
-void Visitor::visitDeclaration(AstDeclaration* node) {
+void Visitor::visitBufferField(AstBufferField* node) {
   visitType(node->type);
   if (node->assignment != nullptr) {
     visitExpression(node->assignment);
   }
   if (node->next != nullptr) {
-    visitDeclaration(node->next);
+    visitBufferField(node->next);
   }
 }
 
@@ -96,9 +94,9 @@ void Visitor::visitStructField(AstStructField* node) {
 }
 
 void Visitor::visitBuffer(AstBuffer* node) {
-  AstDeclaration* field = node->field;
+  AstBufferField* field = node->field;
   while (field != nullptr) {
-    visitDeclaration(field);
+    visitBufferField(field);
     field = field->next;
   }
 }
@@ -217,6 +215,54 @@ void Visitor::visitTernaryOperator(AstTernaryOperator *node) {
 void Visitor::visitCastExpr(AstCastExpr* node) {
   visitType(node->type);
   visitExpression(node->expression);
+}
+
+void Visitor::visitArgument(AstArgument* node) {
+
+}
+
+void Visitor::visitAssignment(AstAssignment* node) {
+
+}
+
+void Visitor::visitAttribute(AstAttribute* node) {
+
+}
+
+void Visitor::visitCallExpr(AstCallExpr* node) {
+
+}
+
+void Visitor::visitLiteralExpr(AstLiteralExpr* node) {
+
+}
+
+void Visitor::visitNode(AstNode* node) {
+
+}
+
+void Visitor::visitSamplerState(AstSamplerState* node) {
+
+}
+
+void Visitor::visitStateAssignment(AstStateAssignment* node) {
+
+}
+
+void Visitor::visitStringExpr(AstStringExpr* node) {
+
+}
+
+void Visitor::visitVariable(AstVariable* node) {
+
+}
+
+void Visitor::visitVariableExpr(AstVariableExpr* node) {
+
+}
+
+void Visitor::visitCall(AstCall* node) {
+
 }
 
 } // namespace hlsl

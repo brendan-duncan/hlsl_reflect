@@ -22,7 +22,6 @@ struct AstBreak;
 struct AstBuffer;
 struct AstCallExpr;
 struct AstContinue;
-struct AstDeclaration;
 struct AstDiscard;
 struct AstDoWhile;
 struct AstExpression;
@@ -88,12 +87,14 @@ struct AstExpression : AstNode {
   AstExpression* next = nullptr;
 };
 
+/// An Argument is a value passed to a function call.
 struct AstArgument : AstNode {
   static const AstNodeType astType = AstNodeType::Argument;
   AstExpression* expression = nullptr;
   AstArgument* next = nullptr;
 };
 
+/// Attributes augment a statement or expression with additional information.
 struct AstAttribute : AstNode {
   static const AstNodeType astType = AstNodeType::Attribute;
   std::string_view name;
@@ -107,6 +108,7 @@ struct AstStatement : AstNode {
   AstStatement* next = nullptr;
 };
 
+/// A member of a struct.
 struct AstStructField : AstNode {
   static const AstNodeType astType = AstNodeType::StructField;
   InterpolationModifier interpolation = InterpolationModifier::None;
@@ -121,22 +123,24 @@ struct AstStruct : AstStatement {
   AstStructField* field = nullptr;
 };
 
-struct AstDeclaration : AstStatement {
-  static const AstNodeType astType = AstNodeType::Declaration;
-  std::string_view name;
+/// A field in a buffer.
+struct AstBufferField : AstStatement {
+  static const AstNodeType astType = AstNodeType::BufferField;
   AstType* type = nullptr;
+  std::string_view name;
   std::string_view registerName;
   std::string_view semantic;
   AstExpression* assignment = nullptr;
-  AstBuffer* buffer = nullptr;  // The buffer that owns this declaration
-  AstDeclaration* next = nullptr;
+  AstBuffer* buffer = nullptr;
+  AstBufferField* next = nullptr;
 };
 
+/// A cbuffer or tbuffer declaration.
 struct AstBuffer : AstStatement {
   static const AstNodeType astType = AstNodeType::Buffer;
   std::string_view name;
   std::string_view registerName;
-  AstDeclaration* field = nullptr;
+  AstBufferField* field = nullptr;
 };
 
 struct AstSamplerState : AstExpression {

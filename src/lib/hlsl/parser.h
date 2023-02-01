@@ -65,7 +65,7 @@ private:
 
   AstExpression* parseExpressionList();
 
-  AstDeclaration* parseDeclaration();
+  AstBufferField* parseBufferField();
 
   AstSamplerState* parseSamplerState();
 

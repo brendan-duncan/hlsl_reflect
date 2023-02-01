@@ -13,7 +13,7 @@ enum class AstNodeType {
   Parameter,
   Attribute,
   Buffer,
-  Declaration,
+  BufferField,
   SamplerState,
   StateAssignment,
   SwitchCase,

@@ -13,7 +13,7 @@ namespace hlsl {
 /// of tokens.
 class Scanner {
 public:
-  Scanner(const std::string_view& source);
+  Scanner(const std::string_view& source, const std::string filename = "");
 
   /// Scan the source code and return a list of all tokens.
   std::vector<Token> scan();
@@ -46,6 +46,7 @@ private:
   size_t _start = 0;
   size_t _position = 0;
   size_t _lexemeLength = 0;
+  std::string _filename;
   int _line = 1;
 };
 

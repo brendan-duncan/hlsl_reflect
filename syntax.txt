@@ -8,6 +8,15 @@ Declaration:
   Variable
   Function
 
+VariableDeclaration:
+  Type IDENTIFIER Assignment?
+  Type IDENTIFIER [ Expression ] Assignment?
+
+Assignment:
+  = Expression
+  = SamplerState
+  = { ExpressionList }
+
 Struct:
   struct IDENTIFIER { Field;+ };
 

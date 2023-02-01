@@ -268,14 +268,14 @@ AstExpression* Parser::parseExpressionList() {
   return firstExpression;
 }
 
-AstDeclaration* Parser::parseDeclaration() {
+AstBufferField* Parser::parseBufferField() {
   AstType* type = parseType(false);
 
-  AstDeclaration* lastDecl = nullptr;
-  AstDeclaration* firstDecl = nullptr;
+  AstBufferField* lastDecl = nullptr;
+  AstBufferField* firstDecl = nullptr;
 
   do {
-    AstDeclaration* decl = _ast->createNode<AstDeclaration>();
+    AstBufferField* decl = _ast->createNode<AstBufferField>();
     if (firstDecl == nullptr) {
       firstDecl = decl;
     }
@@ -430,11 +430,11 @@ AstBuffer* Parser::parseBuffer() {
   }
   consume(TokenType::LeftBrace, "'{' expected for buffer");
   
-  AstDeclaration* lastField = nullptr;
+  AstBufferField* lastField = nullptr;
   while (!match(TokenType::RightBrace) && !isAtEnd()) {
-    AstDeclaration* field = parseDeclaration();
+    AstBufferField* field = parseBufferField();
     if (field == nullptr) {
-      throw ParseException(peekNext(), "declaration expected for buffer");
+      throw ParseException(peekNext(), "field expected for buffer");
     }
 
     field->buffer = buffer;

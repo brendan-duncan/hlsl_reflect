@@ -14,8 +14,14 @@ inline bool isWhitespace(char c) {
   return c == ' ' || c == '\t' || c == '\r';
 }
 
-Scanner::Scanner(const std::string_view& source)
-    : _source(source), _size(source.size()) {}
+inline bool isNumeric(char c) {
+  return c >= '0' && c <= '9';
+}
+
+Scanner::Scanner(const std::string_view& source, const std::string filename)
+    : _source(source)
+    , _size(source.size())
+    , _filename(filename) {}
 
 std::vector<Token> Scanner::scan() {
   while (!isAtEnd()) {
@@ -91,7 +97,48 @@ void Scanner::addToken(TokenType t) {
 }
 
 void Scanner::skipPragma() {
+  while (!isAtEnd() && isWhitespace(current())) {
+    advance();
+  }
+  // Parse line pragma if present, e.g. #line 1 "file.hlsl"
+  // Otherwise, just skip the rest of the line.
+  const char *linePragma = "line";
+  int ci = 0;
+  bool isLine = true;
   while (!isAtEnd() && current() != '\n') {
+    if (ci < 4) {
+      isLine &= current() == linePragma[ci++];
+    }
+    if (ci == 4 && isLine) {
+      ci++;
+      advance();
+      while (!isAtEnd() && isWhitespace(current())) {
+        advance();
+      }
+      if (isNumeric(current())) {
+        _line = 0;
+        while (!isAtEnd() && isNumeric(current())) {
+          _line = _line * 10 + (current() - '0');
+          advance();
+        }
+      }
+      while (!isAtEnd() && isWhitespace(current())) {
+        advance();
+      }
+      if (current() == '"') {
+        advance();
+        int start = _position;
+        int end = _position;
+        while (!isAtEnd() && current() != '\n' && current() != '"') {
+          end++;
+          advance();
+        }
+        if (current() == '"') {
+          advance();
+        }
+        _filename = _source.substr(start, end - start);
+      }
+    }
     advance();
   }
   _line++;
