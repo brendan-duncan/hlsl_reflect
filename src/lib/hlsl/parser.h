@@ -10,6 +10,9 @@
 namespace hlsl {
 
 /// The parser is responsible for taking the tokens from the scanner and building an Ast.
+/// This is a recursive descent parser, which means that each method is responsible for parsing
+/// a single grammar rule. HLSL does not have a formal specification defining its grammar,
+/// so the grammar rules are based on the HLSL documentation.
 class Parser {
 public:
   /// Construct a new Parser object for the given source.
