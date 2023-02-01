@@ -4,7 +4,7 @@
 #include <string>
 #include <variant>
 
-#include "token_type.h"
+#include "../token_type.h"
 
 namespace hlsl {
 

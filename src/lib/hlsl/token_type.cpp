@@ -6,7 +6,7 @@
 #include <string_view>
 #include <variant>
 
-#include "literal.h"
+#include "scanner/literal.h"
 #include "token_type.h"
 
 namespace hlsl {

@@ -738,7 +738,27 @@ AstExpression* Parser::parsePrimaryExpression() {
     expr->name = name.lexeme();
     return expr;
   }
+
+  if (check(TokenType::IntLiteral) || check(TokenType::FloatLiteral)) {
+    Token tk = advance();
+    AstLiteralExpr* expr = _ast->createNode<AstLiteralExpr>();
+    expr->type = tokenTypeToBaseType(tk.type());
+    expr->value = tk.lexeme();
+    return expr;
+  }
+
+  if (check(TokenType::LeftParen)) {
+    return parseParenthesizedExpression();
+  }
+
   return nullptr;
+}
+
+AstExpression* Parser::parseParenthesizedExpression() {
+  consume(TokenType::LeftParen, "Expected '(' after expression");
+  AstExpression* expr = parseShortCircuitOrExpression();
+  consume(TokenType::RightParen, "Expected ')' after expression");
+  return expr;
 }
 
 AstExpression* Parser::parseArgumentList() {
@@ -765,7 +785,29 @@ AstFunction* Parser::parseFunction(AstType* returnType, const std::string_view& 
 }
 
 AstParameter* Parser::parseParameterList() {
-  return nullptr;
+  consume(TokenType::LeftParen, "Expected '(' after function name");
+  if (check(TokenType::RightParen)) {
+    advance();
+    return nullptr;
+  }
+
+  AstParameter* firstParam = parseParameter();
+  AstParameter* lastParam = firstParam;
+  while (match(TokenType::Comma)) {
+    AstParameter* param = parseParameter();
+    lastParam->next = param;
+    lastParam = param;
+  }
+
+  consume(TokenType::RightParen, "Expected ')' after parameter list");
+  return firstParam;
+}
+
+AstParameter* Parser::parseParameter() {
+  AstParameter* param = _ast->createNode<AstParameter>();  
+  param->type = parseType(false/*allowVoid*/);
+  param->name = consume(TokenType::Identifier, "Expected parameter name").lexeme();
+  return param;
 }
 
 AstVariable* Parser::parseVariable(AstType* type, const std::string_view& name) {
@@ -775,10 +817,24 @@ AstVariable* Parser::parseVariable(AstType* type, const std::string_view& name) 
   if (match(TokenType::Equal)) {
     var->initializer = parseShortCircuitOrExpression();
   }
+  consume(TokenType::Semicolon, "Expected ';' after variable declaration");
   return var;
 }
 
 AstStatement* Parser::parseBlock() {
+  consume(TokenType::LeftBrace, "Expected '{' before block");
+  AstStatement* firstStmt = parseStatement();
+  AstStatement* lastStmt = firstStmt;
+  while (!check(TokenType::RightBrace) && !isAtEnd()) {
+    AstStatement* stmt = parseStatement();
+    lastStmt->next = stmt;
+    lastStmt = stmt;
+  }
+  consume(TokenType::RightBrace, "Expected '}' after block");
+  return firstStmt;
+}
+
+AstStatement* Parser::parseStatement() {
   return nullptr;
 }
 

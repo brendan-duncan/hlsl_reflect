@@ -64,8 +64,11 @@ void testParser(Test& test) {
     delete ast;
   });
 
-  test.test("cbuffer", [](Test& test) {
-    
+  test.test("const", [](Test& test) {
+    Parser parser(R"(static const int _USE_RGBM = 0;)");
+    Ast* ast = parser.parse();
+    test.isNotNull(ast);
+    delete ast;
   });
 }
 

@@ -149,6 +149,12 @@ struct AstVariableExpr : AstExpression {
   std::string_view name;
 };
 
+struct AstLiteralExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::LiteralExpr;
+  BaseType type = BaseType::Undefined;
+  std::string_view value;
+};
+
 struct AstVariable : AstStatement {
   static const AstNodeType astType = AstNodeType::Variable;
   std::string_view name;

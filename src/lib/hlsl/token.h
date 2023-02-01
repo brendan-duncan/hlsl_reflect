@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string_view>
-#include "literal.h"
 #include "token_type.h"
 
 namespace hlsl {

@@ -1,5 +1,4 @@
 #include <sstream>
-#include "literal.h"
 #include "token.h"
 
 namespace hlsl {

@@ -103,6 +103,8 @@ private:
 
   AstExpression* parsePrimaryExpression();
 
+  AstExpression* parseParenthesizedExpression();
+
   AstExpression* parseArgumentList();
 
   AstFunction* parseFunction(AstType* returnType, const std::string_view& name);
@@ -111,7 +113,11 @@ private:
 
   AstParameter* parseParameterList();
 
+  AstParameter* parseParameter();
+
   AstStatement* parseBlock();
+
+  AstStatement* parseStatement();
 
   Ast* _ast = nullptr;
   Scanner _scanner;

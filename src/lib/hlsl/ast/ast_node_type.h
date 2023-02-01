@@ -23,7 +23,8 @@ enum class AstNodeType {
   BinaryOperator,
   StringExpr,
   CallExpr,
-  VariableExpr
+  VariableExpr,
+  LiteralExpr,
 };
 
 } // namespace hlsl
