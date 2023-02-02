@@ -36,6 +36,8 @@ public:
     return *this;
   }
 
+  operator std::string() const { return toString(); }
+
   std::string toString() const;
 
   TokenType type() const { return _type; }

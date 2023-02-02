@@ -5,6 +5,8 @@
 namespace hlsl {
 
 /// A visitor that prints the AST to stdout.
+/// This will print it out in a format that is similar to Swift, to demonstrate translating
+/// to a different syntax style.
 class PrintVisitor : public Visitor {
 public:
   void visitBlock(AstBlock* node) override {

@@ -1,15 +1,9 @@
 #include "test.h"
-
-namespace hlsl {
-  void testParser(Test& test);
-  void testScanner(Test& test);
-  void testTokenType(Test& test);
-}
+#include "hlsl/test_scanner.h"
+#include "hlsl/test_token_type.h"
+#include "hlsl/test_parser.h"
 
 int main() {
-  Test test;
-  hlsl::testTokenType(test);
-  hlsl::testScanner(test);
-  hlsl::testParser(test);
-  return 0;
+  Test::runPendingTests();
+  return Test::getResults();
 }

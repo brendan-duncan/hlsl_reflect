@@ -1,7 +1,4 @@
 add_executable(test  ${LIB_SOURCE}
-  hlsl/test_token_type.cpp
-  hlsl/test_parser.cpp
-  hlsl/test_scanner.cpp
   test.cpp
   main.cpp)
 
