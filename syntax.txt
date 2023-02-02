@@ -1,21 +1,35 @@
+HLSL:
+  TopLevelStatement+
+
 TopLevelStatement:
-  Struct
-  CBuffer
-  TBuffer
-  Declaration
+  (Attributes)? Struct;
+  (Attributes)? CBuffer;
+  (Attributes)? TBuffer;
+  (Attributes)? Variable;
+  (Attributes)? Function;
+  (Attributes)? Typedef;
 
-Declaration:
-  VariableDecl
-  Function
+Attributes:
+  [ Attribute (, Attribute)? ] (Attributes)?
 
-VariableDecl:
-  Type IDENTIFIER [ArrayDecl] [= Expression]
+IdentifierList:
+  IDENTIFIER (, IdentifierList)?
 
-ArrayDecl:
-  [ ExpressionList ]
+Attribute:
+  IDENTIFIER
+  IDENTIFIER ( Expression (, Expression)* )
+
+Type:
+  (StorageClass)? (TypeModifier)? TYPE
+
+Variable:
+  Type IDENTIFIER ([ ExpressionList ])? (= Expression)?
+
+Variable:
+  Type Name ([ ExpressionList ])? (: Semantic)? (: Packoffset)? (: Register)? (Annotations)? (= Expression)?
 
 ExpressionList:
-  Expression [, ExpressionList]
+  Expression (, ExpressionList)?
 
 Struct:
   struct IDENTIFIER { Field;+ };
@@ -29,17 +43,8 @@ CBuffer:
 TBuffer:
   tbuffer IDENTIFIER { Field;+ }
 
-Type:
-  [Storage_Class] [Type_Modifier] TYPE
-
-Variable:
-  Type Name[Index] [: Semantic] [: Packoffset] [: Register]; [Annotations] [= Expression]
-
 Function:
   Type IDENTIFIER ( Parameters ) BlockStatement
 
 BlockStatement:
   { Statement;* }
-
-
-
