@@ -27,7 +27,7 @@ public:
     std::cout << ";" << std::endl;
   }
 
-  void visitFunction(AstFunction* node) override {
+  void visitFunction(AstFunctionStmt* node) override {
     std::cout << "fn " << node->name << "(";
     visitParameters(node->parameters);
     std::cout << ") -> ";
@@ -59,19 +59,19 @@ public:
     std::cout << baseTypeToString(node->baseType);
   }
 
-  void visitAssignment(AstAssignment* node) override {
+  void visitAssignment(AstAssignmentStmt* node) override {
     visitExpression(node->variable);
     std::cout << " = ";
     visitExpression(node->value);
   }
 
-  void visitBinaryOperator(AstBinaryOperator *node) {
+  void visitBinaryOperator(AstBinaryExpr *node) {
     visitExpression(node->left);
     std::cout << " " << operatorToString(node->op) << " ";
     visitExpression(node->right);
   }
 
-  void visitVariable(AstVariable* node) override {
+  void visitVariable(AstVariableStmt* node) override {
     std::cout << node->name;
   }
 

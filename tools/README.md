@@ -1,9 +1,9 @@
 # Generate HLSL Token Types
 
-There are a lot of HLSL keywords. To assist in authoring the _token_types.h_ and
-_token_types.cpp_ source files, the HLSL keywords are listed in _keywords.txt_, _tokens.txt_,
-and _vector_matrix_types.txt_.
+There are a lot of HLSL keywords. To assist in authoring the _token_types.h_,
+_token_types.cpp_, _base_type.h_, and _base_type.cpp_ source files, the HLSL keywords
+are listed in the txt files in this folder.
 
-Run **gen_token_type.py** in this folder to generate _tokens_types.h_ and _token_types.cpp_.
+Run **gen_token_type.py** in this folder to generate the source files.
 
 This only needs to be done if the list of keywords changes.

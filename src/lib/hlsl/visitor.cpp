@@ -3,16 +3,16 @@
 namespace hlsl {
 
 inline bool isStatement(AstNode* node) {
-  return node->nodeType == AstNodeType::ExpressionStatement ||
-         node->nodeType == AstNodeType::Return ||
-         node->nodeType == AstNodeType::If ||
-         node->nodeType == AstNodeType::For ||
-         node->nodeType == AstNodeType::DoWhile ||
-         node->nodeType == AstNodeType::While ||
-         node->nodeType == AstNodeType::Switch ||
-         node->nodeType == AstNodeType::Break ||
-         node->nodeType == AstNodeType::Continue ||
-         node->nodeType == AstNodeType::Discard;
+  return node->nodeType == AstNodeType::ExpressionStmt ||
+         node->nodeType == AstNodeType::ReturnStmt ||
+         node->nodeType == AstNodeType::IfStmt ||
+         node->nodeType == AstNodeType::ForStmt ||
+         node->nodeType == AstNodeType::DoWhileStmt ||
+         node->nodeType == AstNodeType::WhileStmt ||
+         node->nodeType == AstNodeType::SwitchStmt ||
+         node->nodeType == AstNodeType::BreakStmt ||
+         node->nodeType == AstNodeType::ContinueStmt ||
+         node->nodeType == AstNodeType::DiscardStmt;
 }
 
 void Visitor::visitRoot(AstRoot* node) {
@@ -24,12 +24,12 @@ void Visitor::visitRoot(AstRoot* node) {
 }
 
 void Visitor::visitTopLevelStatement(AstStatement* node) {
-  if (node->nodeType == AstNodeType::Struct) {
-    visitStruct((AstStruct*)node);
-  } else if (node->nodeType == AstNodeType::Buffer) {
-    visitBuffer((AstBuffer*)node);
-  } else if (node->nodeType == AstNodeType::Function) {
-    visitFunction((AstFunction*)node);
+  if (node->nodeType == AstNodeType::StructStmt) {
+    visitStruct((AstStructStmt*)node);
+  } else if (node->nodeType == AstNodeType::BufferStmt) {
+    visitBuffer((AstBufferStmt*)node);
+  } else if (node->nodeType == AstNodeType::FunctionStmt) {
+    visitFunction((AstFunctionStmt*)node);
   } else if (isStatement(node)) {
     visitStatement((AstStatement*)node);
   }
@@ -46,30 +46,30 @@ void Visitor::visitStatements(AstStatement* node) {
 }
 
 void Visitor::visitStatement(AstStatement* node) {
-  if (node->nodeType == AstNodeType::ExpressionStatement) {
-    visitExpressionStatement((AstExpressionStatement*)node);
-  } else if (node->nodeType == AstNodeType::Return) {
-    visitReturn((AstReturn*)node);
-  } else if (node->nodeType == AstNodeType::If) {
-    visitIf((AstIf*)node);
-  } else if (node->nodeType == AstNodeType::For) {
-    visitFor((AstFor*)node);
-  } else if (node->nodeType == AstNodeType::DoWhile) {
-    visitDoWhile((AstDoWhile*)node);
-  } else if (node->nodeType == AstNodeType::While) {
-    visitWhile((AstWhile*)node);
-  } else if (node->nodeType == AstNodeType::Switch) {
-    visitSwitch((AstSwitch*)node);
-  } else if (node->nodeType == AstNodeType::Break) {
-    visitBreak((AstBreak*)node);
-  } else if (node->nodeType == AstNodeType::Continue) {
-    visitContinue((AstContinue*)node);
-  } else if (node->nodeType == AstNodeType::Discard) {
-    visitDiscard((AstDiscard*)node);
+  if (node->nodeType == AstNodeType::ExpressionStmt) {
+    visitExpressionStatement((AstExpressionStmt*)node);
+  } else if (node->nodeType == AstNodeType::ReturnStmt) {
+    visitReturn((AstReturnStmt*)node);
+  } else if (node->nodeType == AstNodeType::IfStmt) {
+    visitIf((AstIfStmt*)node);
+  } else if (node->nodeType == AstNodeType::ForStmt) {
+    visitFor((AstForStmt*)node);
+  } else if (node->nodeType == AstNodeType::DoWhileStmt) {
+    visitDoWhile((AstDoWhileStmt*)node);
+  } else if (node->nodeType == AstNodeType::WhileStmt) {
+    visitWhile((AstWhileStmt*)node);
+  } else if (node->nodeType == AstNodeType::SwitchStmt) {
+    visitSwitch((AstSwitchStmt*)node);
+  } else if (node->nodeType == AstNodeType::BreakStmt) {
+    visitBreak((AstBreakStmt*)node);
+  } else if (node->nodeType == AstNodeType::ContinueStmt) {
+    visitContinue((AstContinueStmt*)node);
+  } else if (node->nodeType == AstNodeType::DiscardStmt) {
+    visitDiscard((AstDiscardStmt*)node);
   } else if (node->nodeType == AstNodeType::Block) {
     visitBlock((AstBlock*)node);
-  } else if (node->nodeType == AstNodeType::Assignment) {
-    visitAssignment((AstAssignment*)node);
+  } else if (node->nodeType == AstNodeType::AssignmentStmt) {
+    visitAssignment((AstAssignmentStmt*)node);
   }
 }
 
@@ -83,7 +83,7 @@ void Visitor::visitBufferField(AstBufferField* node) {
   }
 }
 
-void Visitor::visitStruct(AstStruct* node) {
+void Visitor::visitStruct(AstStructStmt* node) {
   AstStructField* field = node->field;
   while (field != nullptr) {
     visitStructField(field);
@@ -95,7 +95,7 @@ void Visitor::visitStructField(AstStructField* node) {
   visitType(node->type);
 }
 
-void Visitor::visitBuffer(AstBuffer* node) {
+void Visitor::visitBuffer(AstBufferStmt* node) {
   AstBufferField* field = node->field;
   while (field != nullptr) {
     visitBufferField(field);
@@ -103,7 +103,7 @@ void Visitor::visitBuffer(AstBuffer* node) {
   }
 }
 
-void Visitor::visitFunction(AstFunction* node) {
+void Visitor::visitFunction(AstFunctionStmt* node) {
   visitType(node->returnType);
   visitParameters(node->parameters);
   visitBlock(node->body);
@@ -123,15 +123,15 @@ void Visitor::visitParameters(AstParameter* node) {
   }
 }
 
-void Visitor::visitExpressionStatement(AstExpressionStatement* node) {
+void Visitor::visitExpressionStatement(AstExpressionStmt* node) {
   visitExpression(node->expression);
 }
 
-void Visitor::visitReturn(AstReturn* node) {
+void Visitor::visitReturn(AstReturnStmt* node) {
   visitExpression(node->value);
 }
 
-void Visitor::visitIf(AstIf* node) {
+void Visitor::visitIf(AstIfStmt* node) {
   visitExpression(node->condition);
   visitStatements(node->body);
   if (node->elseBody != nullptr) {
@@ -139,7 +139,7 @@ void Visitor::visitIf(AstIf* node) {
   }
 }
 
-void Visitor::visitFor(AstFor* node) {
+void Visitor::visitFor(AstForStmt* node) {
   if (node->initializer != nullptr) {
     visitStatement(node->initializer);
   }
@@ -152,17 +152,17 @@ void Visitor::visitFor(AstFor* node) {
   visitStatements(node->body);
 }
 
-void Visitor::visitDoWhile(AstDoWhile* node) {
+void Visitor::visitDoWhile(AstDoWhileStmt* node) {
   visitStatements(node->body);
   visitExpression(node->condition);
 }
 
-void Visitor::visitWhile(AstWhile* node) {
+void Visitor::visitWhile(AstWhileStmt* node) {
   visitExpression(node->condition);
   visitStatements(node->body);
 }
 
-void Visitor::visitSwitch(AstSwitch* node) {
+void Visitor::visitSwitch(AstSwitchStmt* node) {
   visitExpression(node->condition);
   AstSwitchCase* switchCase = node->cases;
   while (switchCase != nullptr) {
@@ -180,13 +180,13 @@ void Visitor::visitSwitchCase(AstSwitchCase* node) {
   }
 }
 
-void Visitor::visitDiscard(AstDiscard* node) {
+void Visitor::visitDiscard(AstDiscardStmt* node) {
 }
 
-void Visitor::visitBreak(AstBreak *node) {
+void Visitor::visitBreak(AstBreakStmt *node) {
 }
 
-void Visitor::visitContinue(AstContinue *node) {
+void Visitor::visitContinue(AstContinueStmt *node) {
 }
 
 void Visitor::visitBlock(AstBlock* node) {
@@ -194,12 +194,12 @@ void Visitor::visitBlock(AstBlock* node) {
 }
 
 void Visitor::visitExpression(AstExpression* node) {
-  if (node->nodeType == AstNodeType::BinaryOperator) {
-    visitBinaryOperator((AstBinaryOperator*)node);
-  } else if (node->nodeType == AstNodeType::UnaryOperator) {
-    visitUnaryOperator((AstUnaryOperator*)node);
-  } else if (node->nodeType == AstNodeType::TernaryOperator) {
-    visitTernaryOperator((AstTernaryOperator*)node);
+  if (node->nodeType == AstNodeType::BinaryExpr) {
+    visitBinaryOperator((AstBinaryExpr*)node);
+  } else if (node->nodeType == AstNodeType::UnaryExpr) {
+    visitUnaryOperator((AstUnaryExpr*)node);
+  } else if (node->nodeType == AstNodeType::TernaryExpr) {
+    visitTernaryOperator((AstTernaryExpr*)node);
   } else if (node->nodeType == AstNodeType::CastExpr) {
     visitCastExpr((AstCastExpr*)node);
   } else if (node->nodeType == AstNodeType::SamplerState) {
@@ -217,7 +217,7 @@ void Visitor::visitExpression(AstExpression* node) {
   }
 }
 
-void Visitor::visitBinaryOperator(AstBinaryOperator *node) {
+void Visitor::visitBinaryOperator(AstBinaryExpr *node) {
   if (node->left != nullptr) {
     visitExpression(node->left);
   }
@@ -226,13 +226,13 @@ void Visitor::visitBinaryOperator(AstBinaryOperator *node) {
   }
 }
 
-void Visitor::visitUnaryOperator(AstUnaryOperator *node) {
+void Visitor::visitUnaryOperator(AstUnaryExpr *node) {
   if (node->expression != nullptr) {
     visitExpression(node->expression);
   }
 }
 
-void Visitor::visitTernaryOperator(AstTernaryOperator *node) {
+void Visitor::visitTernaryOperator(AstTernaryExpr *node) {
   if (node->condition != nullptr) {
     visitExpression(node->condition);
   }
@@ -260,7 +260,7 @@ void Visitor::visitArguments(AstExpression* node) {
   }
 }
 
-void Visitor::visitAssignment(AstAssignment* node) {
+void Visitor::visitAssignment(AstAssignmentStmt* node) {
   visitExpression(node->variable);
   visitExpression(node->value);
 }
@@ -299,7 +299,7 @@ void Visitor::visitStringExpr(AstStringExpr* node) {
 
 }
 
-void Visitor::visitVariable(AstVariable* node) {
+void Visitor::visitVariable(AstVariableStmt* node) {
   visitType(node->type);
   if (node->initializer != nullptr) {
     visitExpression(node->initializer);
@@ -310,7 +310,7 @@ void Visitor::visitVariableExpr(AstVariableExpr* node) {
   
 }
 
-void Visitor::visitCall(AstCall* node) {
+void Visitor::visitCall(AstCallStmt* node) {
   visitArguments(node->arguments);
 }
 

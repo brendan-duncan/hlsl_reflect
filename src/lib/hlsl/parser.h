@@ -58,7 +58,7 @@ private:
 
   AstStatement* parseTopLevelStatement();
 
-  AstStruct* parseStruct();
+  AstStructStmt* parseStruct();
 
   AstStructField* parseStructField();
 
@@ -74,7 +74,7 @@ private:
 
   AstStateAssignment* parseStateAssignment(bool isSamplerState, bool isPipelineState);
 
-  AstBuffer* parseBuffer();
+  AstBufferStmt* parseBuffer();
 
   AstType* parseType(bool allowVoid);
 
@@ -114,9 +114,9 @@ private:
 
   AstExpression* parseArgumentList();
 
-  AstFunction* parseFunction(AstType* returnType, const std::string_view& name);
+  AstFunctionStmt* parseFunction(AstType* returnType, const std::string_view& name);
 
-  AstVariable* parseVariable(AstType* type, const std::string_view& name);
+  AstVariableStmt* parseVariable(AstType* type, const std::string_view& name);
 
   AstParameter* parseParameterList();
 
@@ -126,15 +126,15 @@ private:
 
   AstStatement* parseStatement();
 
-  AstIf* parseIf();
+  AstIfStmt* parseIf();
 
-  AstSwitch* parseSwitch();
+  AstSwitchStmt* parseSwitch();
 
-  AstFor* parseFor();
+  AstForStmt* parseFor();
 
-  AstDoWhile* parseDoWhile();
+  AstDoWhileStmt* parseDoWhile();
 
-  AstWhile* parseWhile();
+  AstWhileStmt* parseWhile();
 
   Ast* _ast = nullptr;
   Scanner _scanner;
