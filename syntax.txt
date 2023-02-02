@@ -5,17 +5,17 @@ TopLevelStatement:
   Declaration
 
 Declaration:
-  Variable
+  VariableDecl
   Function
 
-VariableDeclaration:
-  Type IDENTIFIER Assignment?
-  Type IDENTIFIER [ Expression ] Assignment?
+VariableDecl:
+  Type IDENTIFIER [ArrayDecl] [= Expression]
 
-Assignment:
-  = Expression
-  = SamplerState
-  = { ExpressionList }
+ArrayDecl:
+  [ ExpressionList ]
+
+ExpressionList:
+  Expression [, ExpressionList]
 
 Struct:
   struct IDENTIFIER { Field;+ };
@@ -24,16 +24,16 @@ Field:
   Type MemberName;
 
 CBuffer:
-  cbuffer IDENTIFIER { Field+ }
+  cbuffer IDENTIFIER { Field;+ }
 
 TBuffer:
-  tbuffer IDENTIFIER { Field+ }
+  tbuffer IDENTIFIER { Field;+ }
 
 Type:
   [Storage_Class] [Type_Modifier] TYPE
 
 Variable:
-  Type Name[Index] [: Semantic] [: Packoffset] [: Register]; [Annotations] [= Initial_Value]
+  Type Name[Index] [: Semantic] [: Packoffset] [: Register]; [Annotations] [= Expression]
 
 Function:
   Type IDENTIFIER ( Parameters ) BlockStatement

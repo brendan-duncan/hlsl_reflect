@@ -6,16 +6,32 @@
 
 namespace hlsl {
 
-// The following types take a template argument (ie. Vector<int 3>)
-static const std::set<TokenType> templateTypes{
-  TokenType::Buffer,
-  TokenType::Matrix,
-  TokenType::Vector,
-  TokenType::Texture2D
-};
-
 inline bool isTemplateType(TokenType t) {
-  return templateTypes.find(t) != templateTypes.end();
+  switch (t) {
+    case TokenType::Buffer:
+    case TokenType::Matrix:
+    case TokenType::Vector:
+    case TokenType::Texture2D:
+    case TokenType::StructuredBuffer:
+    case TokenType::RWStructuredBuffer:
+    case TokenType::RWTexture2D:
+    case TokenType::RWBuffer:
+    case TokenType::RWByteAddressBuffer:
+    case TokenType::ByteAddressBuffer:
+    case TokenType::AppendStructuredBuffer:
+    case TokenType::ConsumeStructuredBuffer:
+    case TokenType::Texture2DArray:
+    case TokenType::Texture3D:
+    case TokenType::TextureCube:
+    case TokenType::TextureCubeArray:
+    case TokenType::Texture2DMS:
+    case TokenType::Texture2DMSArray:
+    case TokenType::RWTexture2DArray:
+    case TokenType::RWTexture3D:
+      return true;
+    default:
+      return false;  
+  }
 }
 
 } // namespace hlsl
