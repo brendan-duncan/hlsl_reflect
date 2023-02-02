@@ -13,7 +13,6 @@
 
 namespace hlsl {
 
-struct AstArgument;
 struct AstAssignment;
 struct AstAttribute;
 struct AstBinaryOperator;
@@ -52,7 +51,7 @@ struct AstWhile;
 struct AstCall;
 
 /// Call the callback for each node in the linked list
-/// @tparam T AstNode with a next pointer, such as AstArgument
+/// @tparam T AstNode with a next pointer, such as AstExpression
 /// @param node The start of the linked list
 /// @param callback The callback to call for each node
 template<typename T>
@@ -85,13 +84,6 @@ struct AstExpression : AstNode {
   static const AstNodeType astType = AstNodeType::Expression;
   AstExpression* postfix = nullptr;
   AstExpression* next = nullptr;
-};
-
-/// An Argument is a value passed to a function call.
-struct AstArgument : AstNode {
-  static const AstNodeType astType = AstNodeType::Argument;
-  AstExpression* expression = nullptr;
-  AstArgument* next = nullptr;
 };
 
 /// Attributes augment a statement or expression with additional information.
@@ -177,8 +169,8 @@ struct AstBinaryOperator : AstExpression {
 struct AstTernaryOperator : AstExpression {
   static const AstNodeType astType = AstNodeType::TernaryOperator;
   AstExpression* condition = nullptr;
-  AstExpression* left = nullptr;
-  AstExpression* right = nullptr;
+  AstExpression* trueExpression = nullptr;
+  AstExpression* falseExpression = nullptr;
 };
 
 struct AstStringExpr : AstExpression {
@@ -227,7 +219,7 @@ struct AstFunction : AstStatement {
   std::string_view name;
   AstType* returnType = nullptr;
   AstParameter* parameters = nullptr;
-  AstStatement* body = nullptr;
+  AstBlock* body = nullptr;
 };
 
 struct AstIf : AstStatement {

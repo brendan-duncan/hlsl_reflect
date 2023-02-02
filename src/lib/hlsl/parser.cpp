@@ -201,11 +201,10 @@ AstAttribute* Parser::parseAttributes() {
     lastAttribute->name = name.lexeme();
 
     if (match(TokenType::LeftParen)) {
-      AstArgument* firstArg = nullptr;
-      AstArgument* lastArg = nullptr;
+      AstExpression* firstArg = nullptr;
+      AstExpression* lastArg = nullptr;
       while (!isAtEnd() && !match(TokenType::RightParen)) {
-        AstArgument* arg = _ast->createNode<AstArgument>();
-        arg->expression = parseExpression();
+        AstExpression* arg = parseExpression();
         if (firstArg == nullptr) {
           firstArg = arg;
         }
@@ -213,10 +212,6 @@ AstAttribute* Parser::parseAttributes() {
           lastArg->next = arg;
         }
         lastArg = arg;
-        if (arg->expression == nullptr) {
-          throw ParseException(peekNext(), "expression expected for attribute");
-          break;
-        }
 
         if (!match(TokenType::Comma)) {
           if (!match(TokenType::RightParen)) {

@@ -4,11 +4,15 @@ namespace hlsl {
 
 class Visitor {
 public:
+  virtual void visitRoot(AstRoot* node);
+
   virtual void visitTopLevelStatement(AstStatement* node);
   virtual void visitStatements(AstStatement* node);
-  virtual void visitArgument(AstArgument* node);
+  virtual void visitArgument(AstExpression* node);
+  virtual void visitArguments(AstExpression* node);
   virtual void visitAssignment(AstAssignment* node);
   virtual void visitAttribute(AstAttribute* node);
+  virtual void visitAttributes(AstAttribute* node);
   virtual void visitBinaryOperator(AstBinaryOperator* node);
   virtual void visitBlock(AstBlock* node);
   virtual void visitBreak(AstBreak* node);
@@ -25,10 +29,9 @@ public:
   virtual void visitIf(AstIf* node);
   virtual void visitLiteralExpr(AstLiteralExpr* node);
   virtual void visitCastExpr(AstCastExpr* node);
-  virtual void visitNode(AstNode* node);
   virtual void visitParameter(AstParameter* node);
+  virtual void visitParameters(AstParameter* node);
   virtual void visitReturn(AstReturn* node);
-  virtual void visitRoot(AstRoot* node);
   virtual void visitSamplerState(AstSamplerState* node);
   virtual void visitStateAssignment(AstStateAssignment* node);
   virtual void visitStatement(AstStatement* node);

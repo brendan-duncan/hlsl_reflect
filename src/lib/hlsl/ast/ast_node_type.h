@@ -9,7 +9,6 @@ enum class AstNodeType {
   Expression,
   Struct,
   StructField,
-  Argument,
   Parameter,
   Attribute,
   Buffer,
