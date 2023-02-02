@@ -43,4 +43,6 @@ enum class Operator {
   AddressOf
 };
 
+const std::string_view& operatorToString(Operator op);
+
 } // namespace hlsl

@@ -68,6 +68,8 @@ void Visitor::visitStatement(AstStatement* node) {
     visitDiscard((AstDiscard*)node);
   } else if (node->nodeType == AstNodeType::Block) {
     visitBlock((AstBlock*)node);
+  } else if (node->nodeType == AstNodeType::Assignment) {
+    visitAssignment((AstAssignment*)node);
   }
 }
 
@@ -192,25 +194,25 @@ void Visitor::visitBlock(AstBlock* node) {
 }
 
 void Visitor::visitExpression(AstExpression* node) {
-  if (node->astType == AstNodeType::BinaryOperator) {
+  if (node->nodeType == AstNodeType::BinaryOperator) {
     visitBinaryOperator((AstBinaryOperator*)node);
-  } else if (node->astType == AstNodeType::UnaryOperator) {
+  } else if (node->nodeType == AstNodeType::UnaryOperator) {
     visitUnaryOperator((AstUnaryOperator*)node);
-  } else if (node->astType == AstNodeType::TernaryOperator) {
+  } else if (node->nodeType == AstNodeType::TernaryOperator) {
     visitTernaryOperator((AstTernaryOperator*)node);
-  } else if (node->astType == AstNodeType::CastExpr) {
+  } else if (node->nodeType == AstNodeType::CastExpr) {
     visitCastExpr((AstCastExpr*)node);
-  } else if (node->astType == AstNodeType::SamplerState) {
+  } else if (node->nodeType == AstNodeType::SamplerState) {
     visitSamplerState((AstSamplerState*)node);
-  } else if (node->astType == AstNodeType::StringExpr) {
+  } else if (node->nodeType == AstNodeType::StringExpr) {
     visitStringExpr((AstStringExpr*)node);
-  } else if (node->astType == AstNodeType::CallExpr) {
+  } else if (node->nodeType == AstNodeType::CallExpr) {
     visitCallExpr((AstCallExpr*)node);
-  } else if (node->astType == AstNodeType::VariableExpr) {
+  } else if (node->nodeType == AstNodeType::VariableExpr) {
     visitVariableExpr((AstVariableExpr*)node);
-  } else if (node->astType == AstNodeType::LiteralExpr) {
+  } else if (node->nodeType == AstNodeType::LiteralExpr) {
     visitLiteralExpr((AstLiteralExpr*)node);
-  } else if (node->astType == AstNodeType::StringExpr) {
+  } else if (node->nodeType == AstNodeType::StringExpr) {
     visitStringExpr((AstStringExpr*)node);
   }
 }

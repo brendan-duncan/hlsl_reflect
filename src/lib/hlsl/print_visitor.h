@@ -52,6 +52,33 @@ public:
     std::cout << node->name << ": " << baseTypeToString(node->baseType);
   }
 
+  void visitAssignment(AstAssignment* node) override {
+    indent();
+    visitExpression(node->variable);
+    std::cout << " = ";
+    visitExpression(node->value);
+    std::cout << ";" << std::endl;
+  }
+
+  void visitBinaryOperator(AstBinaryOperator *node) {
+    visitExpression(node->left);
+    std::cout << " " << operatorToString(node->op) << " ";
+    //std::cout << " <op> ";
+    visitExpression(node->right);
+  }
+
+  void visitVariable(AstVariable* node) override {
+    std::cout << node->name;
+  }
+
+  void visitVariableExpr(AstVariableExpr* node) override {
+    std::cout << node->name;
+  }
+
+  void visitLiteralExpr(AstLiteralExpr* node) override {
+    std::cout << node->value;
+  }
+
 private:
   int _indent = 0;
 
