@@ -19,8 +19,13 @@ public:
     std::cout << "}" << std::endl;
   }
 
-  void visitFunction(AstFunction* node) override {
+  void visitStatement(AstStatement* node) override {
     indent();
+    Visitor::visitStatement(node);
+    std::cout << ";" << std::endl;
+  }
+
+  void visitFunction(AstFunction* node) override {
     std::cout << "fn " << node->name << "(";
     visitParameters(node->parameters);
     std::cout << ") -> ";
@@ -49,21 +54,18 @@ public:
   }
 
   void visitType(AstType* node) override {
-    std::cout << node->name << ": " << baseTypeToString(node->baseType);
+    std::cout << baseTypeToString(node->baseType);
   }
 
   void visitAssignment(AstAssignment* node) override {
-    indent();
     visitExpression(node->variable);
     std::cout << " = ";
     visitExpression(node->value);
-    std::cout << ";" << std::endl;
   }
 
   void visitBinaryOperator(AstBinaryOperator *node) {
     visitExpression(node->left);
     std::cout << " " << operatorToString(node->op) << " ";
-    //std::cout << " <op> ";
     visitExpression(node->right);
   }
 
@@ -77,6 +79,19 @@ public:
 
   void visitLiteralExpr(AstLiteralExpr* node) override {
     std::cout << node->value;
+  }
+
+  void visitCallExpr(AstCallExpr* node) {
+    std::cout << node->name << "(";
+    visitArguments(node->arguments);
+    std::cout << ")";
+  }
+
+  void visitCastExpr(AstCastExpr* node) {
+    visitType(node->type);
+    std::cout << "(";
+    visitExpression(node->expression);
+    std::cout << ")";
   }
 
 private:
