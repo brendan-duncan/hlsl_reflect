@@ -179,6 +179,7 @@ struct AstStringExpr : AstExpression {
 };
 
 struct AstCallExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::CallExpr;
   std::string_view name;
   AstExpression* arguments = nullptr;
 };
