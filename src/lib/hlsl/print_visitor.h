@@ -83,6 +83,11 @@ public:
     std::cout << node->value;
   }
 
+  void visitReturn(AstReturnStmt* node) override {
+    std::cout << "return ";
+    visitExpression(node->value);
+  }
+
   void visitCallExpr(AstCallExpr* node) {
     std::cout << node->name << "(";
     visitArguments(node->arguments);

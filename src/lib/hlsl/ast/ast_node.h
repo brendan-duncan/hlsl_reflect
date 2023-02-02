@@ -44,6 +44,7 @@ struct AstSwitchStmt;
 struct AstSwitchCase;
 struct AstTernaryExpr;
 struct AstType;
+struct AstTypedefStmt;
 struct AstUnaryExpr;
 struct AstVariableStmt;
 struct AstVariableExpr;
@@ -302,6 +303,12 @@ struct AstCallStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::CallStmt;
   std::string_view name;
   AstExpression* arguments = nullptr;
+};
+
+struct AstTypedefStmt : AstStatement {
+  static const AstNodeType astType = AstNodeType::TypedefStmt;
+  std::string_view name;
+  AstType* type = nullptr;
 };
 
 struct AstRoot : AstNode {

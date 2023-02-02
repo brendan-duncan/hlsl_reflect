@@ -23,6 +23,8 @@ Ast* Parser::parse() {
       statement = parseTopLevelStatement();
     } catch (ParseException e) {
       std::cerr << "Error: "  << e.message << std::endl;
+      std::cerr << "  Filename: " << _scanner.filename() << std::endl;
+      std::cerr << "  Line: " << _scanner.line() << std::endl;
       delete _ast;
       _ast = nullptr;
       return nullptr;
@@ -108,6 +110,15 @@ AstStatement* Parser::parseTopLevelStatement() {
     return node;
   }
 
+  if (match(TokenType::Typedef)) {
+    AstTypedefStmt* node = parseTypedef();
+    if (node != nullptr) {
+      node->attributes = attributes;
+    }
+    consume(TokenType::Semicolon, "Expected ';' after typedef");
+    return node;
+  }
+
   // Global Declaration
   AstType* type = parseType(true/*allowVoid*/);
   if (type != nullptr) {
@@ -132,6 +143,13 @@ AstStatement* Parser::parseTopLevelStatement() {
   }
 
   return nullptr;
+}
+
+AstTypedefStmt* Parser::parseTypedef() {
+  AstTypedefStmt* node = _ast->createNode<AstTypedefStmt>();
+  node->type = parseType(true/*allowVoid*/);
+  node->name = advance().lexeme();
+  return node;
 }
 
 AstStructStmt* Parser::parseStruct() {

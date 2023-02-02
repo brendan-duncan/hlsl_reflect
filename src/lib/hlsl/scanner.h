@@ -25,6 +25,14 @@ public:
   /// Return true if the scanner has reached the end of the source code.
   bool isAtEnd() const;
 
+  const std::string& filename() const {
+    return _filename;
+  }
+
+  int line() const {
+    return _line;
+  }
+
 private:
   bool scanToken();
 

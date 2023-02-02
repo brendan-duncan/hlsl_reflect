@@ -32,6 +32,7 @@ enum class AstNodeType {
   AssignmentStmt,
   ExpressionStmt,
   CallStmt,
+  TypedefStmt,
 
   // Expression Nodes
   UnaryExpr,

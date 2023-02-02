@@ -1,13 +1,17 @@
-HLSL:
-  TopLevelStatement+
+// (x)? means zero or one x
+// (x)* means zero or more x
+// (x)+ means one or more x
+
+Hlsl:
+  (TopLevelStatement)+
 
 TopLevelStatement:
-  (Attributes)? Struct;
-  (Attributes)? CBuffer;
-  (Attributes)? TBuffer;
-  (Attributes)? Variable;
-  (Attributes)? Function;
-  (Attributes)? Typedef;
+  (Attributes)? Struct ;
+  (Attributes)? CBuffer ;
+  (Attributes)? TBuffer ;
+  (Attributes)? Variable ;
+  (Attributes)? Function ;
+  (Attributes)? Typedef ;
 
 Attributes:
   [ Attribute (, Attribute)? ] (Attributes)?
@@ -19,8 +23,20 @@ Attribute:
   IDENTIFIER
   IDENTIFIER ( Expression (, Expression)* )
 
+BaseType:
+  IDENTIFIER
+
+StorageClass:
+  IDENTIFIER
+
+TypeModifier:
+  IDENTIFIER
+
 Type:
-  (StorageClass)? (TypeModifier)? TYPE
+  (StorageClass)? (TypeModifier)? BaseType (< TYPE, IntLiteral(, IntLiteral)?) >)?
+
+Typedef:
+  Type IDENTIFIER
 
 Variable:
   Type IDENTIFIER ([ ExpressionList ])? (= Expression)?
@@ -32,19 +48,59 @@ ExpressionList:
   Expression (, ExpressionList)?
 
 Struct:
-  struct IDENTIFIER { Field;+ };
+  STRUCT IDENTIFIER { (Field;)+ };
 
 Field:
   Type MemberName;
 
 CBuffer:
-  cbuffer IDENTIFIER { Field;+ }
+  CBUFFER IDENTIFIER { (Field;)+ }
 
 TBuffer:
-  tbuffer IDENTIFIER { Field;+ }
+  TBUFFER IDENTIFIER { (Field;)+ }
 
 Function:
   Type IDENTIFIER ( Parameters ) BlockStatement
 
 BlockStatement:
-  { Statement;* }
+  { (Statement;)* }
+
+Statement:
+  If ;
+  Switch ;
+  For ;
+  DoWhile ;
+  While ;
+  BlockStatment ;
+  Return ;
+  BREAK ;
+  CONTINUE ;
+  DISCARD ;
+  Variable ;
+  Assignment ;
+  Expression ;
+
+If:
+  IF ( Expression ) Statement
+
+Switch:
+  SWITCH ( Expression ) { (SwitchCase)+ }
+
+SwitchCase:
+  CASE Condition : (Statement)?
+  DEFAULT : (Statement)?
+
+For:
+  FOR ( ExpressionList ; Expression ; ExpressionList ) Statement
+
+DoWhile:
+  DO { (Statement)* } WHILE ( Expression )
+
+While:
+  WHILE ( Expression ) Statement
+
+Return:
+  RETURN Expression
+
+Assignment:
+  IDENTIFIER ([ ExpressionList ])? = Expression

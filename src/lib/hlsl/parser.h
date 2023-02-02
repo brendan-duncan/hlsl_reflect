@@ -64,13 +64,11 @@ private:
 
   AstAttribute* parseAttributes();
 
-  AstExpression* parseExpression();
-
-  AstExpression* parseExpressionList();
-
   AstBufferField* parseBufferField();
 
   AstSamplerState* parseSamplerState();
+  
+  AstTypedefStmt* parseTypedef();
 
   AstStateAssignment* parseStateAssignment(bool isSamplerState, bool isPipelineState);
 
@@ -81,6 +79,10 @@ private:
   bool parseTypeModifier(TypeFlags& flags);
 
   bool parseInterpolationModifier(TypeFlags& flags);
+
+  AstExpression* parseExpression();
+
+  AstExpression* parseExpressionList();
 
   AstExpression* parseShortCircuitOrExpression();
 

@@ -93,8 +93,63 @@ return float(s) * rcp(4294967296.0);
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
 
-  PrintVisitor visitor;
-  visitor.visitRoot(ast->root());
+  if (ast != nullptr) {
+    PrintVisitor visitor;
+    visitor.visitRoot(ast->root());
+  }
 
   delete ast;
 });
+
+static Test test_function_3("function_3", []() {
+  Parser parser(R"(
+float Hash(uint s) {
+s = s ^ 2747636419u;
+s = s * 2654435769u;
+s = s ^ (s >> 16);
+s = s * 2654435769u;
+s = s ^ (s >> 16);
+s = s * 2654435769u;
+return float(s) * rcp(4294967296.0);
+}
+uint JenkinsHash(uint x) {
+x += (x << 10u);
+x ^= (x >> 6u);
+x += (x << 3u);
+x ^= (x >> 11u);
+x += (x << 15u);
+return x ;
+})");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+
+  if (ast != nullptr) {
+    PrintVisitor visitor;
+    visitor.visitRoot(ast->root());
+  }
+
+  delete ast;
+});
+
+/*static Test test_Parse_Shader("Parse_Shader", []() {
+  FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
+  fseek(fp, 0, SEEK_END);
+  size_t size = ftell(fp);
+  fseek(fp, 0, SEEK_SET);
+  char* hlsl = (char*)calloc(1, size + 1);
+  fread(hlsl, size, 1, fp);
+  hlsl[size] = '\0';
+  fclose(fp);
+
+  Parser parser(hlsl);
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+
+  if (ast != nullptr) {
+    PrintVisitor visitor;
+    visitor.visitRoot(ast->root());
+  }
+
+  delete ast;
+  free(hlsl);
+});*/
