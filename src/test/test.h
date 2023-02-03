@@ -87,7 +87,7 @@ public:
   }
 
   static void fail(const char* file, int line, const std::string& message="") {
-    std::cout << "TEST FAILED:" << file << ":" << line <<":" << message << std::endl;
+    std::cout << "TEST FAILED: " << file << ":" << line <<":" << message << std::endl;
     _results = 1;
     _groupResults = 1;
   }

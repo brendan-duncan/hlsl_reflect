@@ -18,6 +18,9 @@ enum class Operator {
   OrEqual,
   XorEqual,
 
+  PlusPlus,
+  MinusMinus,
+
   OrOr,
   AndAnd,
   Or,
@@ -39,8 +42,6 @@ enum class Operator {
   Not,
   AddEqual,
   BitNot,
-  Dereference,
-  AddressOf
 };
 
 const std::string_view& operatorToString(Operator op);

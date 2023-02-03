@@ -8,11 +8,9 @@ using namespace hlsl;
 
 inline void printAst(const std::string_view& source, Ast* ast) {
   if (ast != nullptr) {
-    //std::cout << source << std::endl;
-    //std::cout << "---->" << std::endl;
     PrintVisitor visitor;
     visitor.visitRoot(ast->root());
-    std::cout << std::endl;
+    std::cout << std::flush;
   }
 }
 
@@ -23,7 +21,7 @@ TEST(Parser_empty, []() {
   delete ast;
 });
 
-TEST(const, []() {
+static Test test_const("const", []() {
   Parser parser(R"(static const int _USE_RGBM = 0;)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
@@ -32,7 +30,31 @@ TEST(const, []() {
 });
 
 TEST(const_2, []() {
-  Parser parser(R"(const float3 magic = float3(0.0f, 0.0, 0.0);)");
+  Parser parser(R"(const float3 magic = float3(0.0f, 0.0, 0);)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_postfix_increment("postfix_increment", []() {
+  Parser parser(R"(float y = x++;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_prefix_increment("prefix_increment", []() {
+  Parser parser(R"(float y = ++x;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_ternary_expr("ternary_expr", []() {
+  Parser parser(R"(float y = x < 0.0 ? 1 + x : x;)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
@@ -109,12 +131,12 @@ float Hash(uint s) {})");
 static Test test_function_2("function_2", []() {
   Parser parser(R"(
 float Hash(uint s) {
-s = s ^ 2747636419u ;
-s = s * 2654435769u ;
-s = s ^ ( s >> 16 ) ;
-s = s * 2654435769u ;
-s = s ^ ( s >> 16 ) ;
-s = s * 2654435769u ;
+s = s ^ 2747636419u;
+s = s * 2654435769u;
+s = s ^ (s >> 16);
+s = s * 2654435769u;
+s = s ^ (s >> 16);
+s = s * 2654435769u;
 return float(s) * rcp(4294967296.0);
 })");
   Ast* ast = parser.parse();
@@ -169,6 +191,13 @@ return f - 1;
   delete ast;
 });
 
+static Test test_function_5("function_5", []() {
+  Parser parser(R"(uint XorShift(inout uint rngState) { })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
 
 static Test test_Parse_Shader("Parse_Shader", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");

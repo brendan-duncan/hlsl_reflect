@@ -82,7 +82,6 @@ struct AstType : AstNode {
 
 /// Base class for all expressions
 struct AstExpression : AstNode {
-  AstExpression* postfix = nullptr;
   AstExpression* next = nullptr;
 };
 
@@ -109,6 +108,7 @@ struct AstStructField : AstNode {
   AstStructField* next = nullptr;
 };
 
+/// A struct declaration.
 struct AstStructStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::StructStmt;
   std::string_view name;
@@ -153,10 +153,28 @@ struct AstStateAssignment : AstNode {
   AstStateAssignment* next = nullptr;
 };
 
-struct AstUnaryExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::UnaryExpr;
+struct AstPrefixExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::PrefixExpr;
   Operator op = Operator::Undefined;
   AstExpression* expression = nullptr;
+};
+
+struct AstIncrementExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::IncrementExpr;
+  Operator op = Operator::Undefined;
+  AstExpression* variable = nullptr;
+};
+
+struct AstArrayExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::ArrayExpr;
+  AstExpression* array = nullptr;
+  AstExpression* index = nullptr;
+};
+
+struct AstMemberExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::MemberExpr;
+  AstExpression* object = nullptr;
+  AstExpression* member = nullptr;
 };
 
 struct AstBinaryExpr : AstExpression {

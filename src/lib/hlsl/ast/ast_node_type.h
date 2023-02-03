@@ -35,7 +35,10 @@ enum class AstNodeType {
   TypedefStmt,
 
   // Expression Nodes
-  UnaryExpr,
+  PrefixExpr,
+  IncrementExpr,
+  ArrayExpr,
+  MemberExpr,
   BinaryExpr,
   TernaryExpr,
   StringExpr,

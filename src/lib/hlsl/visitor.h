@@ -42,11 +42,15 @@ public:
   virtual void visitSwitchCase(AstSwitchCase* node);
   virtual void visitTernaryOperator(AstTernaryExpr* node);
   virtual void visitType(AstType* type);
-  virtual void visitUnaryOperator(AstUnaryExpr* node);
+  virtual void visitPrefixOperator(AstPrefixExpr* node);
   virtual void visitVariable(AstVariableStmt* node);
+  virtual void visitTypedef(AstTypedefStmt* node);
   virtual void visitVariableExpr(AstVariableExpr* node);
   virtual void visitWhile(AstWhileStmt* node);
   virtual void visitCall(AstCallStmt* node);
+  virtual void visitIncrementExpr(AstIncrementExpr* node);
+  virtual void visitArrayExpr(AstArrayExpr* node);
+  virtual void visitMemberExpr(AstMemberExpr* node);
 };
 
 } // namespace hlsl

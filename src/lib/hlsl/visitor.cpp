@@ -12,7 +12,8 @@ inline bool isStatement(AstNode* node) {
          node->nodeType == AstNodeType::SwitchStmt ||
          node->nodeType == AstNodeType::BreakStmt ||
          node->nodeType == AstNodeType::ContinueStmt ||
-         node->nodeType == AstNodeType::DiscardStmt;
+         node->nodeType == AstNodeType::DiscardStmt ||
+         node->nodeType == AstNodeType::VariableStmt;
 }
 
 void Visitor::visitRoot(AstRoot* node) {
@@ -33,9 +34,15 @@ void Visitor::visitTopLevelStatement(AstStatement* node) {
     visitBuffer((AstBufferStmt*)node);
   } else if (node->nodeType == AstNodeType::FunctionStmt) {
     visitFunction((AstFunctionStmt*)node);
+  } else if (node->nodeType == AstNodeType::TypedefStmt) {
+    visitTypedef((AstTypedefStmt*)node);
   } else if (isStatement(node)) {
     visitStatement((AstStatement*)node);
   }
+}
+
+void Visitor::visitTypedef(AstTypedefStmt* node) {
+  visitType(node->type);
 }
 
 void Visitor::visitType(AstType* type) {
@@ -201,8 +208,8 @@ void Visitor::visitBlock(AstBlock* node) {
 void Visitor::visitExpression(AstExpression* node) {
   if (node->nodeType == AstNodeType::BinaryExpr) {
     visitBinaryOperator((AstBinaryExpr*)node);
-  } else if (node->nodeType == AstNodeType::UnaryExpr) {
-    visitUnaryOperator((AstUnaryExpr*)node);
+  } else if (node->nodeType == AstNodeType::PrefixExpr) {
+    visitPrefixOperator((AstPrefixExpr*)node);
   } else if (node->nodeType == AstNodeType::TernaryExpr) {
     visitTernaryOperator((AstTernaryExpr*)node);
   } else if (node->nodeType == AstNodeType::CastExpr) {
@@ -219,6 +226,12 @@ void Visitor::visitExpression(AstExpression* node) {
     visitLiteralExpr((AstLiteralExpr*)node);
   } else if (node->nodeType == AstNodeType::StringExpr) {
     visitStringExpr((AstStringExpr*)node);
+  } else if (node->nodeType == AstNodeType::IncrementExpr) {
+    visitIncrementExpr((AstIncrementExpr*)node);
+  } else if (node->nodeType == AstNodeType::ArrayExpr) {
+    visitArrayExpr((AstArrayExpr*)node);
+  } else if (node->nodeType == AstNodeType::MemberExpr) {
+    visitMemberExpr((AstMemberExpr*)node);
   }
 }
 
@@ -231,7 +244,7 @@ void Visitor::visitBinaryOperator(AstBinaryExpr *node) {
   }
 }
 
-void Visitor::visitUnaryOperator(AstUnaryExpr *node) {
+void Visitor::visitPrefixOperator(AstPrefixExpr *node) {
   if (node->expression != nullptr) {
     visitExpression(node->expression);
   }
@@ -317,6 +330,20 @@ void Visitor::visitVariableExpr(AstVariableExpr* node) {
 
 void Visitor::visitCall(AstCallStmt* node) {
   visitArguments(node->arguments);
+}
+
+void Visitor::visitIncrementExpr(AstIncrementExpr* node) {
+  visitExpression(node->variable);
+}
+
+void Visitor::visitArrayExpr(AstArrayExpr* node) {
+  visitExpression(node->array);
+  visitExpression(node->index);
+}
+
+void Visitor::visitMemberExpr(AstMemberExpr* node) {
+  visitExpression(node->object);
+  visitExpression(node->member);
 }
 
 } // namespace hlsl

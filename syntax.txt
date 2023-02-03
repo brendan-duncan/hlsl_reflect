@@ -9,6 +9,9 @@
 Hlsl:
   (TopLevelStatement)+
 
+Identifier:
+  (a-zA-Z_)(a-zA-Z0-9_)*
+
 TopLevelStatement:
   (Attributes)? Struct ;
   (Attributes)? CBuffer ;
@@ -21,29 +24,29 @@ Attributes:
   [ Attribute (, Attribute)? ] (Attributes)?
 
 IdentifierList:
-  IDENTIFIER (, IdentifierList)?
+  Identifier (, IdentifierList)?
 
 Attribute:
-  IDENTIFIER
-  IDENTIFIER ( Expression (, Expression)* )
+  Identifier
+  Identifier ( Expression (, Expression)* )
 
 BaseType:
-  IDENTIFIER
+  Identifier
 
 StorageClass:
-  IDENTIFIER
+  Identifier
 
 TypeModifier:
-  IDENTIFIER
+  Identifier
 
 Type:
   (StorageClass)? (TypeModifier)? BaseType (< TYPE, INT_LITERAL (, INT_LITERAL)?) >)?
 
 Typedef:
-  Type IDENTIFIER
+  Type Identifier
 
 Variable:
-  Type IDENTIFIER ([ ExpressionList ])? (= Expression)?
+  Type Identifier ([ ExpressionList ])? (= Expression)?
 
 Variable:
   Type Name ([ ExpressionList ])? (: Semantic)? (: Packoffset)? (: Register)? (Annotations)? (= Expression)?
@@ -52,19 +55,19 @@ ExpressionList:
   Expression (, ExpressionList)?
 
 Struct:
-  STRUCT IDENTIFIER { (Field;)+ };
+  STRUCT Identifier { (Field;)+ };
 
 Field:
   Type MemberName;
 
 CBuffer:
-  CBUFFER IDENTIFIER { (Field;)+ }
+  CBUFFER Identifier { (Field;)+ }
 
 TBuffer:
-  TBUFFER IDENTIFIER { (Field;)+ }
+  TBUFFER Identifier { (Field;)+ }
 
 Function:
-  Type IDENTIFIER ( Parameters ) BlockStatement
+  Type Identifier ( Parameters ) BlockStatement
 
 BlockStatement:
   { (Statement;)* }
@@ -107,15 +110,18 @@ Return:
   RETURN Expression
 
 Assignment:
-  IDENTIFIER ([ ExpressionList ])? = Expression
+  Identifier ([ ExpressionList ])? = Expression
 
 Expression:
-  ShortCircuitOrExpression
+  LogicalOrExpression
 
-ShortCircuitOrExpression:
-  ShortCircuitAndExpression (|| ShortCircuitAndExpression)*
+TernaryExpr:
+  Expression ? Expression : Expression
 
-ShortCircuitAndExpression:
+LogicalOrExpression:
+  LogicalAndExpression (|| LogicalAndExpression)*
+
+LogicalAndExpression:
   InclusiveOrExpression (&& InclusiveOrExpression)*
 
 InclusiveOrExpression:
@@ -140,23 +146,26 @@ AdditiveExpression:
   MultiplicativeExpression ((+, -)| MultiplicativeExpression)*
 
 MultiplicativeExpression:
-  UnaryExpression ((*, /, %) UnaryExpression)*
+  PrefixExpression ((*, /, %) PrefixExpression)*
 
-UnaryExpression:
-  (-, !, ~, *, &)| UnaryExpression
+PrefixExpression:
+  (-, !, ~,++,--)| PrefixExpression
   SingularExpression
 
 SingularExpression:
   PrimaryExpression (PostfixExpression)?
 
 PostfixExpression:
-  [ ShortCircuitOrExpression ] (parsePostfixExpression)?
-  . parsePostfixExpression
+  ++
+  --
+  [ LogicalOrExpression ] (PostfixExpression)?
+  . PostfixExpression
 
 PrimaryExpression:
-  IDENTIFIER ( ArgumentList )
-  INT_LITERAL
-  FLOAT_LITERAL
+  Identifier ( ArgumentList )
+  IntLiteral
+  FloatLiteral
+  BoolLiteral
   ( Expression )
   BaseType ( Expression )
 

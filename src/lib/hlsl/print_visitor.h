@@ -119,8 +119,36 @@ public:
   void visitCastExpr(AstCastExpr* node) {
     visitType(node->type);
     std::cout << "(";
-    visitExpression(node->expression);
+    visitArguments(node->expression);
     std::cout << ")";
+  }
+
+  void visitArguments(AstExpression* args) {
+    while (args != nullptr) {
+      visitExpression(args);
+      if (args->next != nullptr) {
+        std::cout << ", ";
+      }
+      args = args->next;
+    }
+  }
+
+  void visitIncrementExpr(AstIncrementExpr* node) {
+    visitExpression(node->variable);
+    std::cout << operatorToString(node->op);
+  }
+
+  void visitPrefixOperator(AstPrefixExpr* node) {
+    std::cout << operatorToString(node->op);
+    visitExpression(node->expression);
+  }
+
+  void visitTernaryOperator(AstTernaryExpr* node) {
+    visitExpression(node->condition);
+    std::cout << " ? ";
+    visitExpression(node->trueExpression);
+    std::cout << " : ";
+    visitExpression(node->falseExpression);
   }
 
 private:

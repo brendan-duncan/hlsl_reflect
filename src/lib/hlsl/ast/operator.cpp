@@ -15,6 +15,8 @@ const std::string_view& operatorToString(Operator op) {
     "&=",
     "|=",
     "^=",
+    "++",
+    "--",
     "||",
     "&&",
     "|",

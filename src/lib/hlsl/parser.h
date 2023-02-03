@@ -87,9 +87,9 @@ private:
 
   AstExpression* parseExpressionList();
 
-  AstExpression* parseShortCircuitOrExpression();
+  AstExpression* parseLogicalOrExpression();
 
-  AstExpression* parseShortCircuitAndExpression();
+  AstExpression* parseLogicalAndExpression();
 
   AstExpression* parseInclusiveOrExpression();
 
@@ -107,11 +107,11 @@ private:
 
   AstExpression* parseMultiplicativeExpression();
 
-  AstExpression* parseUnaryExpression();
+  AstExpression* parsePrefixExpression();
 
   AstExpression* parseSingularExpression();
 
-  AstExpression* parsePostfixExpression();
+  AstExpression* parsePostfixExpression(AstExpression* expr);
 
   AstExpression* parsePrimaryExpression();
 

@@ -273,7 +273,7 @@ AstAttribute* Parser::parseAttributes() {
 }
 
 AstExpression* Parser::parseExpression() {
-  return parseShortCircuitOrExpression();
+  return parseLogicalOrExpression();
 }
 
 AstExpression* Parser::parseExpressionList() {
@@ -575,6 +575,22 @@ bool Parser::parseTypeModifier(TypeFlags& flags) {
     return true;
   }
 
+  if (match(TokenType::In)) {
+    flags = flags | TypeFlags::Input;
+    return true;
+  }
+
+  if (match(TokenType::Out)) {
+    flags = flags | TypeFlags::Output;
+    return true;
+  }
+
+  if (match(TokenType::Inout)) {
+    flags = flags | TypeFlags::Input;
+    flags = flags | TypeFlags::Output;
+    return true;
+  }
+
   return false;
 }
 
@@ -607,19 +623,19 @@ bool Parser::parseInterpolationModifier(TypeFlags& flags) {
   return false;
 }
 
-AstExpression* Parser::parseShortCircuitOrExpression() {
-  AstExpression* expr = parseShortCircuitAndExpression();
+AstExpression* Parser::parseLogicalOrExpression() {
+  AstExpression* expr = parseLogicalAndExpression();
   while (match(TokenType::PipePipe)) {
     AstBinaryExpr* op = _ast->createNode<AstBinaryExpr>();
     op->op = Operator::OrOr;
     op->left = expr;
-    op->right = parseShortCircuitAndExpression();
+    op->right = parseLogicalAndExpression();
     expr = op;
   }
   return expr;
 }
 
-AstExpression* Parser::parseShortCircuitAndExpression() {
+AstExpression* Parser::parseLogicalAndExpression() {
   AstExpression* expr = parseInclusiveOrExpression();
   while (match(TokenType::AmpersandAmpersand)) {
     AstBinaryExpr* op = _ast->createNode<AstBinaryExpr>();
@@ -725,30 +741,31 @@ AstExpression* Parser::parseAdditiveExpression() {
 }
 
 AstExpression* Parser::parseMultiplicativeExpression() {
-  AstExpression* expr = parseUnaryExpression();
-  while (check(TokenType::Star) || check(TokenType::Slash) || check(TokenType::Percent)) {
+  AstExpression* expr = parsePrefixExpression();
+  while (check(TokenType::Star) || check(TokenType::Slash) || check(TokenType::Percent),
+      check(TokenType::PlusPlus) || check(TokenType::MinusMinus)) {
     Token tk = advance();
     AstBinaryExpr* op = _ast->createNode<AstBinaryExpr>();
     op->op = tk.type() == TokenType::Star ? Operator::Multiply :
              tk.type() == TokenType::Slash ? Operator::Divide : Operator::Modulo;
     op->left = expr;
-    op->right = parseUnaryExpression();
+    op->right = parsePrefixExpression();
     expr = op;
   }
   return expr;
 }
 
-AstExpression* Parser::parseUnaryExpression() {
+AstExpression* Parser::parsePrefixExpression() {
   if (check(TokenType::Minus) || check(TokenType::Bang) || check(TokenType::Tilde) ||
-      check(TokenType::Star) || check(TokenType::Ampersand)) {
+      check(TokenType::PlusPlus) || check(TokenType::MinusMinus)) {
     Token tk = advance();
-    AstUnaryExpr* op = _ast->createNode<AstUnaryExpr>();
+    AstPrefixExpr* op = _ast->createNode<AstPrefixExpr>();
     op->op = tk.type() == TokenType::Minus ? Operator::Subtract :
              tk.type() == TokenType::Bang ? Operator::Not :
              tk.type() == TokenType::Tilde ? Operator::BitNot :
-             tk.type() == TokenType::Star ? Operator::Dereference :
-             Operator::AddressOf;
-    op->expression = parseUnaryExpression();
+             tk.type() == TokenType::PlusPlus ? Operator::PlusPlus :
+             Operator::MinusMinus;
+    op->expression = parsePrefixExpression();
     return op;
   }
   return parseSingularExpression();
@@ -756,35 +773,37 @@ AstExpression* Parser::parseUnaryExpression() {
 
 AstExpression* Parser::parseSingularExpression() {
   AstExpression* expr = parsePrimaryExpression();
-  AstExpression* p = parsePostfixExpression();
-  if (p != nullptr) {
-    expr->postfix = p;
-  }
-  return expr;
+  return parsePostfixExpression(expr);
 }
 
-AstExpression* Parser::parsePostfixExpression() {
+AstExpression* Parser::parsePostfixExpression(AstExpression* expr) {
+  // ++, --, [], .
+  if (check(TokenType::PlusPlus) || check(TokenType::MinusMinus)) {
+    Token tk = advance();
+    AstIncrementExpr* op = _ast->createNode<AstIncrementExpr>();
+    op->op = tk.type() == TokenType::PlusPlus ? Operator::PlusPlus : Operator::MinusMinus;
+    op->variable = expr;
+    return op;
+  }
+
   if (match(TokenType::LeftBracket)) {
-    AstExpression* expr = parseShortCircuitOrExpression();
+    AstExpression* index = parseExpression();
     consume(TokenType::RightBracket, "Expected ']' after expression");
-    AstExpression* p = parsePostfixExpression();
-    if (p != nullptr) {
-      expr->postfix = p;
-    }
+    AstArrayExpr* array = _ast->createNode<AstArrayExpr>();
+    array->array = expr;
+    array->index = index;
     return expr;
   }
 
   if (match(TokenType::Dot)) {
     Token name = consume(TokenType::Identifier, "Expected identifier after '.'");
-    AstExpression* p = parsePostfixExpression();
-    AstStringExpr* expr = _ast->createNode<AstStringExpr>();
-    if (p != nullptr) {
-      expr->postfix = p;
-    }
+    AstMemberExpr* member = _ast->createNode<AstMemberExpr>();
+    member->object = expr;
+    member->member = parseSingularExpression();   
     return expr;
   }
 
-  return nullptr;
+  return expr;
 }
 
 AstExpression* Parser::parsePrimaryExpression() {
@@ -830,17 +849,17 @@ AstExpression* Parser::parsePrimaryExpression() {
 
 AstExpression* Parser::parseParenthesizedExpression() {
   consume(TokenType::LeftParen, "Expected '(' after expression");
-  AstExpression* expr = parseShortCircuitOrExpression();
+  AstExpression* expr = parseLogicalOrExpression();
   consume(TokenType::RightParen, "Expected ')' after expression");
   return expr;
 }
 
 AstExpression* Parser::parseArgumentList() {
   consume(TokenType::LeftParen, "Expected '(' after function name");
-  AstExpression* firstExpr = parseShortCircuitOrExpression();
+  AstExpression* firstExpr = parseLogicalOrExpression();
   AstExpression* lastExpr = firstExpr;
   while (match(TokenType::Comma)) {
-    AstExpression* expr = parseShortCircuitOrExpression();
+    AstExpression* expr = parseLogicalOrExpression();
     lastExpr->next = expr;
     lastExpr = expr;
   }
@@ -888,7 +907,16 @@ AstVariableStmt* Parser::parseVariable(AstType* type, const std::string_view& na
   var->type = type;
   var->name = name;
   if (match(TokenType::Equal)) {
-    var->initializer = parseShortCircuitOrExpression();
+    var->initializer = parseLogicalOrExpression();
+    
+    if (match(TokenType::Question)) {
+      AstTernaryExpr* ternary = _ast->createNode<AstTernaryExpr>();
+      ternary->condition = var->initializer;
+      ternary->trueExpression = parseExpression();
+      consume(TokenType::Colon, "Expected ':' after ternary expression");
+      ternary->falseExpression = parseExpression();
+      var->initializer = ternary;
+    }
   }
   consume(TokenType::Semicolon, "Expected ';' after variable declaration");
   return var;
@@ -1023,7 +1051,7 @@ AstStatement* Parser::parseStatement() {
 
     AstAssignmentStmt* stmt = _ast->createNode<AstAssignmentStmt>();
     if (!isUnderscore) {
-      stmt->variable = parseUnaryExpression();
+      stmt->variable = parsePrefixExpression();
     }
 
     if (!isUnderscore && stmt->variable == nullptr) {
@@ -1056,7 +1084,16 @@ AstStatement* Parser::parseStatement() {
       throw ParseException(peekNext(), "Expected assignment operator");
     }
 
-    stmt->value = parseShortCircuitOrExpression();
+    stmt->value = parseLogicalOrExpression();
+
+    if (match(TokenType::Question)) {
+      AstTernaryExpr* ternary = _ast->createNode<AstTernaryExpr>();
+      ternary->condition = stmt->value;
+      ternary->trueExpression = parseExpression();
+      consume(TokenType::Colon, "Expected ':' after ternary expression");
+      ternary->falseExpression = parseExpression();
+      stmt->value = ternary;
+    }
 
     consume(TokenType::Semicolon, "Expected ';' after assignment");
     
