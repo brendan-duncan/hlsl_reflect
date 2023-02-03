@@ -143,7 +143,7 @@ TEST(Parser_attributes3, []() {
   delete ast;
 });
 
-TEST(function, []() {
+static Test test_function("function", []() {
   Parser parser(R"(
 float Hash(uint s) {})");
   Ast* ast = parser.parse();
@@ -215,7 +215,7 @@ return f - 1;
   delete ast;
 });
 
-static Test test_function_5("function_5", []() {
+static Test test_function_5("inout", []() {
   Parser parser(R"(uint XorShift(inout uint rngState) { })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);

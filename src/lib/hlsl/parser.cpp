@@ -25,6 +25,7 @@ Ast* Parser::parse() {
       std::cerr << "Error: "  << e.message << std::endl;
       std::cerr << "  Filename: " << _scanner.filename() << std::endl;
       std::cerr << "  Line: " << _scanner.line() << std::endl;
+      std::cerr << "  Absolute Line: " << _scanner.absoluteLine() << std::endl;
       delete _ast;
       _ast = nullptr;
       return nullptr;
@@ -482,7 +483,7 @@ AstBufferStmt* Parser::parseBuffer() {
 AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   startRestorePoint();
 
-  TypeFlags flags = TypeFlags::None;
+  uint32_t flags = TypeFlags::None;
   while (parseTypeModifier(flags) || parseInterpolationModifier(flags)) {}
 
   Token token = advance();
@@ -556,14 +557,14 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   return type;
 }
 
-bool Parser::parseTypeModifier(TypeFlags& flags) {
+bool Parser::parseTypeModifier(uint32_t& flags) {
   if (match(TokenType::Const)) {
-    flags = flags | TypeFlags::Const;
+    flags |= TypeFlags::Const;
     return true;
   }
   
   if (match(TokenType::Static)) {
-    flags = flags | TypeFlags::Static;
+    flags |= TypeFlags::Static;
     return true;
   }
 
@@ -576,37 +577,37 @@ bool Parser::parseTypeModifier(TypeFlags& flags) {
   }
 
   if (match(TokenType::In)) {
-    flags = flags | TypeFlags::Input;
+    flags |= TypeFlags::Input;
     return true;
   }
 
   if (match(TokenType::Out)) {
-    flags = flags | TypeFlags::Output;
+    flags |= TypeFlags::Output;
     return true;
   }
 
   if (match(TokenType::Inout)) {
-    flags = flags | TypeFlags::Input;
-    flags = flags | TypeFlags::Output;
+    flags |= TypeFlags::Input;
+    flags |= TypeFlags::Output;
     return true;
   }
 
   return false;
 }
 
-bool Parser::parseInterpolationModifier(TypeFlags& flags) {
+bool Parser::parseInterpolationModifier(uint32_t& flags) {
   if (match(TokenType::Linear)) {
-    flags = flags | TypeFlags::Linear;
+    flags |= TypeFlags::Linear;
     return true;
   }
 
   if (match(TokenType::Centroid)) {
-    flags = flags | TypeFlags::Centroid;
+    flags |= TypeFlags::Centroid;
     return true;
   }
 
   if (match(TokenType::Nointerpolation)) {
-    flags = flags | TypeFlags::Nointerpolation;
+    flags |= TypeFlags::Nointerpolation;
     return true;
   }
 

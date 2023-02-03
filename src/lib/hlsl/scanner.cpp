@@ -96,13 +96,13 @@ void Scanner::addToken(TokenType t) {
   _tokens.emplace_back(t, lexeme, _line);
 }
 
-void Scanner::skipPragma() {
+void Scanner::scanPragma() {
   while (!isAtEnd() && isWhitespace(current())) {
     advance();
   }
   // Parse line pragma if present, e.g. #line 1 "file.hlsl"
   // Otherwise, just skip the rest of the line.
-  const char *linePragma = "line";
+  static const char *linePragma = "line";
   int ci = 0;
   bool isLine = true;
   while (!isAtEnd() && current() != '\n') {
@@ -138,16 +138,11 @@ void Scanner::skipPragma() {
         }
         _filename = _source.substr(start, end - start);
       }
-
-      if (current() == '\n') {
-        advance();
-        _line++;
-        return;
-      }
     }
     advance();
   }
   _line++;
+  _absolteLine++;
 }
 
 bool Scanner::scanToken() {
@@ -158,6 +153,7 @@ bool Scanner::scanToken() {
   // Skip line-feed, adding to the line counter.
   if (c == '\n') {
     _line++;
+    _absolteLine++;
     return true;
   }
 
@@ -167,7 +163,7 @@ bool Scanner::scanToken() {
   }
 
   if (c == '#') {
-    skipPragma();
+    scanPragma();
     return true;
   }
 
@@ -183,6 +179,7 @@ bool Scanner::scanToken() {
       }
       // skip the linefeed
       _line++;
+      _absolteLine++;
       return true;
     } else if (peekAhead() == '*') {
       // If it's a / * block comment, skip everything until the matching * /,
@@ -197,6 +194,7 @@ bool Scanner::scanToken() {
         advance();
         if (c == '\n') {
           _line++;
+          _absolteLine++;
         } else if (c == '*') {
           if (peekAhead() == '/') {
             advance();

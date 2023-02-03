@@ -35,6 +35,10 @@ public:
     return _line;
   }
 
+  int absoluteLine() const {
+    return _absolteLine;
+  }
+
 private:
   bool scanToken();
 
@@ -48,7 +52,7 @@ private:
 
   void addToken(TokenType t);
 
-  void skipPragma();
+  void scanPragma();
 
   const std::string_view _source;
   const size_t _size;
@@ -58,6 +62,7 @@ private:
   size_t _lexemeLength = 0;
   std::string _filename;
   int _line = 1;
+  int _absolteLine = 1;
 };
 
 } // namespace hlsl

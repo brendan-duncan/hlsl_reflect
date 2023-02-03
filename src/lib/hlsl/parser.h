@@ -79,9 +79,9 @@ private:
 
   AstType* parseType(bool allowVoid, const char* exceptionMessage = nullptr);
 
-  bool parseTypeModifier(TypeFlags& flags);
+  bool parseTypeModifier(uint32_t& flags);
 
-  bool parseInterpolationModifier(TypeFlags& flags);
+  bool parseInterpolationModifier(uint32_t& flags);
 
   AstExpression* parseExpression();
 

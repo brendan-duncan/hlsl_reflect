@@ -54,8 +54,13 @@ public:
   }
 
   void visitVariable(AstVariableStmt* node) override {
-    std::cout << "var " << node->name << ": ";
+    if (node->type->flags & TypeFlags::Const) {
+      std::cout << "const ";
+    } else {
+      std::cout << "var ";
+    }
     visitType(node->type);
+    std::cout << " " << node->name;
     if (node->initializer != nullptr) {
       std::cout << " = ";
       visitExpression(node->initializer);

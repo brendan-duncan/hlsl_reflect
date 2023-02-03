@@ -4,30 +4,22 @@
 
 namespace hlsl {
 
-enum class TypeFlags : uint32_t {
-  None = 0,
+namespace TypeFlags {
+  static const uint32_t None = 0;
 
-  Const = 0x01,
-  Static = 0x02,
+  static const uint32_t Const = 0x01;
+  static const uint32_t Static = 0x02;
   
-  Input = 0x100,
-  Output = 0x200,
+  static const uint32_t Input = 0x100;
+  static const uint32_t Output = 0x200;
   
-  Linear = 0x1000,
-  Centroid = 0x2000,
-  Nointerpolation = 0x4000,
-  Noperspective = 0x8000,
-  Sample = 0x10000,
+  static const uint32_t Linear = 0x1000;
+  static const uint32_t Centroid = 0x2000;
+  static const uint32_t Nointerpolation = 0x4000;
+  static const uint32_t Noperspective = 0x8000;
+  static const uint32_t Sample = 0x10000;
 
-  NoPromote = 0x20000
-};
-
-inline TypeFlags operator|(TypeFlags lhs, TypeFlags rhs) {
-  return static_cast<TypeFlags>(static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs));
-}
-
-inline TypeFlags operator&(TypeFlags lhs, TypeFlags rhs) {
-  return static_cast<TypeFlags>(static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs));
+  static const uint32_t NoPromote = 0x20000;
 }
 
 } // namespace hlsl

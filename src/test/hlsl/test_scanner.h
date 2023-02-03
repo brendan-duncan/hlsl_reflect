@@ -40,7 +40,7 @@ TEST(Scanner_struct_scanNext, []() {
   TEST_EQUALS(count, 5ull);
 });
 
-TEST(Shader, []() {
+static Test test_Shader("Shader", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);
   size_t size = ftell(fp);
