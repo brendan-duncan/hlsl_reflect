@@ -59,8 +59,18 @@ Token Parser::advance() {
   if (!_pending.empty()) {
     Token t = _pending.front();
     _pending.pop_front();
+    if (_restorePoint > 0) {
+      _restore.push_back(t);
+    }
     return t;
   }
+
+  if (_restorePoint > 0) {
+    Token t = _scanner.scanNext();
+    _restore.push_back(t);
+    return t;
+  }
+  
   return _scanner.scanNext();
 }
 
@@ -147,8 +157,9 @@ AstStatement* Parser::parseTopLevelStatement() {
 
 AstTypedefStmt* Parser::parseTypedef() {
   AstTypedefStmt* node = _ast->createNode<AstTypedefStmt>();
-  node->type = parseType(true);
+  node->type = parseType(true, "typedef type expected");
   node->name = advance().lexeme();
+  _typedefs[node->name] = node;
   return node;
 }
 
@@ -156,10 +167,13 @@ AstStructStmt* Parser::parseStruct() {
   Token name = consume(TokenType::Identifier, "struct name expected.");
   consume(TokenType::LeftBrace, "'{' expected for struct");
 
+  AstStructField* firstField = nullptr;
   AstStructField* lastField = nullptr;
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
     AstStructField* field = parseStructField();
-
+    if (firstField == nullptr) {
+      firstField = field;
+    }
     if (lastField != nullptr) {
       lastField->next = field;
     }
@@ -171,6 +185,7 @@ AstStructStmt* Parser::parseStruct() {
 
   AstStructStmt* s = _ast->createNode<AstStructStmt>();
   s->name = name.lexeme();
+  s->fields = firstField;
   return s;
 }
 
@@ -183,7 +198,7 @@ AstStructField* Parser::parseStructField() {
     advance();
   }
 
-  field->type = parseType(false/*allowVoid*/);
+  field->type = parseType(false, "struct field type expected");
   field->name = advance().lexeme();
   consume(TokenType::Semicolon, "';' expected for struct field");
 
@@ -282,7 +297,7 @@ AstExpression* Parser::parseExpressionList() {
 }
 
 AstBufferField* Parser::parseBufferField() {
-  AstType* type = parseType(false);
+  AstType* type = parseType(false, "buffer field type expected");
 
   AstBufferField* lastDecl = nullptr;
   AstBufferField* firstDecl = nullptr;
@@ -464,43 +479,79 @@ AstBufferStmt* Parser::parseBuffer() {
   return buffer;
 }
 
-AstType* Parser::parseType(bool allowVoid) {
-  AstType* type = _ast->createNode<AstType>();
+AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
+  startRestorePoint();
 
-  while (parseTypeModifier(type->flags) || parseInterpolationModifier(type->flags)) {}
+  TypeFlags flags = TypeFlags::None;
+  while (parseTypeModifier(flags) || parseInterpolationModifier(flags)) {}
 
   Token token = advance();
 
   if (token.type() == TokenType::Identifier) {
-    type->baseType = BaseType::UserDefined;
-    type->name = token.lexeme();
-    return type;
+    if (_typedefs.find(token.lexeme()) != _typedefs.end()) {
+      discardRestorePoint();
+      AstType* type = _ast->createNode<AstType>();
+      type->flags = flags;
+      type->baseType = BaseType::UserDefined;
+      type->name = token.lexeme();
+      return type;
+    }
+
+    restore();
+    if (exceptionMessage != nullptr) {
+      throw ParseException(token, exceptionMessage);
+    }
+    return nullptr;
   }
 
-  type->baseType = tokenTypeToBaseType(token.type());
+  BaseType baseType = tokenTypeToBaseType(token.type());
 
-  if (type->baseType == BaseType::Undefined) {
-    throw ParseException(peekNext(), "unknown type");
+  if (baseType == BaseType::Undefined) {
+    restore();
+    if (exceptionMessage != nullptr) {
+      throw ParseException(token, exceptionMessage);
+    }
+    return nullptr;
   }
 
-  if (type->baseType == BaseType::Void) {
+  if (baseType == BaseType::Void) {
     if (allowVoid) {
+      discardRestorePoint();
+      AstType* type = _ast->createNode<AstType>();
+      type->flags = flags;
+      type->baseType = baseType;
       return type;
     } else {
-      throw ParseException(peekNext(), "void type not allowed");
+      restore();
+      if (exceptionMessage != nullptr) {
+      throw ParseException(token, exceptionMessage);
+    }
+      return nullptr;
     }
   }
  
-  if (isSamplerBaseType(type->baseType)) {
+  SamplerType sType = SamplerType::Undefined;
+  if (isSamplerBaseType(baseType)) {
     if (match(TokenType::Less)) {
       Token samplerType = advance();
-      type->samplerType = tokenTypeToSamplerType(samplerType.type());
-      if (type->samplerType == SamplerType::Undefined) {
-        throw ParseException(samplerType, "unknown sampler type");
+      sType = tokenTypeToSamplerType(samplerType.type());
+      if (sType == SamplerType::Undefined) {
+        restore();
+        if (exceptionMessage != nullptr) {
+          throw ParseException(token, exceptionMessage);
+        }
+        return nullptr;
       }
       consume(TokenType::Greater, "'>' expected for sampler type");
     }
   }
+
+  discardRestorePoint();
+
+  AstType* type = _ast->createNode<AstType>();
+  type->flags = flags;
+  type->baseType = baseType;
+  type->samplerType = sType;
 
   return type;
 }
@@ -765,11 +816,11 @@ AstExpression* Parser::parsePrimaryExpression() {
   }
 
   Token tk = peekNext();
-  if (tokenTypeToBaseType(tk.type()) != BaseType::Undefined) {
+  if (isType(tk)) {
     AstCastExpr* expr = _ast->createNode<AstCastExpr>();
-    expr->type = parseType(false/*voidAllowed*/);
+    expr->type = parseType(false, "Invalid type");
     consume(TokenType::LeftParen, "Expected '(' after type");
-    expr->expression = parseExpression();
+    expr->expression = parseExpressionList();
     consume(TokenType::RightParen, "Expected ')' after expression");
     return expr;
   }
@@ -827,7 +878,7 @@ AstParameter* Parser::parseParameterList() {
 
 AstParameter* Parser::parseParameter() {
   AstParameter* param = _ast->createNode<AstParameter>();  
-  param->type = parseType(false/*allowVoid*/);
+  param->type = parseType(false, "Expected parameter type");
   param->name = consume(TokenType::Identifier, "Expected parameter name").lexeme();
   return param;
 }
@@ -959,16 +1010,13 @@ AstStatement* Parser::parseStatement() {
     pushBack(name);
   }
 
-  /*try {
-    stmt = parseDeclaration();
-  } catch (ParseException& e) {
-  }
-
-  if (stmt != nullptr) {
-    consume(TokenType::Semicolon, "Expected ';' after statement");
+  AstType* type = parseType(false);
+  if (type != nullptr) {
+    const std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
+    stmt = parseVariable(type, name);
     stmt->attributes = attributes;
     return stmt;
-  }*/
+  }
 
   if (check(TokenType::Underscore) || check(TokenType::Identifier)) {
     const bool isUnderscore = match(TokenType::Underscore);

@@ -17,6 +17,13 @@ TEST(Scanner, []() {
   TEST_EQUALS(tokens[5].type(), TokenType::EndOfFile);
 });
 
+static Test test_Scanner_2("Scanner_2", []() {
+  auto tokens = Scanner("0x0;").scan();
+  TEST_EQUALS(tokens.size(), 3ull);
+  TEST_EQUALS(tokens[0].type(), TokenType::IntLiteral);
+  TEST_EQUALS(tokens[1].type(), TokenType::Semicolon);
+  TEST_EQUALS(tokens[2].type(), TokenType::EndOfFile);
+});
 
 TEST(Scanner_struct_scan, []() {
   auto tokens = Scanner("struct foo { };").scan();
@@ -49,7 +56,7 @@ TEST(Shader, []() {
     auto tk = scanner.scanNext();
     count++;
   }
-  TEST_EQUALS(count, 20797ull);
+  TEST_EQUALS(count, 25925ull);
 
   free(hlsl);
 });

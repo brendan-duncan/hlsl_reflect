@@ -25,6 +25,8 @@ public:
   /// Return true if the scanner has reached the end of the source code.
   bool isAtEnd() const;
 
+  const std::string_view& source() const { return _source; }
+
   const std::string& filename() const {
     return _filename;
   }

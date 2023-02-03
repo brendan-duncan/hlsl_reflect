@@ -1,8 +1,20 @@
+#pragma once
+
 #include "../../lib/hlsl/parser.h"
 #include "../../lib/hlsl/print_visitor.h"
 #include "../test.h"
 
 using namespace hlsl;
+
+inline void printAst(const std::string_view& source, Ast* ast) {
+  if (ast != nullptr) {
+    //std::cout << source << std::endl;
+    //std::cout << "---->" << std::endl;
+    PrintVisitor visitor;
+    visitor.visitRoot(ast->root());
+    std::cout << std::endl;
+  }
+}
 
 TEST(Parser_empty, []() {
   Parser parser("");
@@ -11,10 +23,27 @@ TEST(Parser_empty, []() {
   delete ast;
 });
 
+TEST(const, []() {
+  Parser parser(R"(static const int _USE_RGBM = 0;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+TEST(const_2, []() {
+  Parser parser(R"(const float3 magic = float3(0.0f, 0.0, 0.0);)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 TEST(Parser_struct, []() {
   Parser parser("struct foo { };");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
   delete ast;
 });
 
@@ -25,6 +54,7 @@ TEST(Parser_struct2, []() {
   };)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
   delete ast;
 });
 
@@ -37,6 +67,7 @@ TEST(Parser_attributes, []() {
   };)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
   delete ast;
 });
 
@@ -49,6 +80,7 @@ TEST(Parser_attributes2, []() {
   };)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
   delete ast;
 });
 
@@ -61,13 +93,7 @@ TEST(Parser_attributes3, []() {
   };)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
-  delete ast;
-});
-
-TEST(const, []() {
-  Parser parser(R"(static const int _USE_RGBM = 0;)");
-  Ast* ast = parser.parse();
-  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
   delete ast;
 });
 
@@ -76,6 +102,7 @@ TEST(function, []() {
 float Hash(uint s) {})");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
   delete ast;
 });
 
@@ -92,12 +119,7 @@ return float(s) * rcp(4294967296.0);
 })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
-
-  if (ast != nullptr) {
-    PrintVisitor visitor;
-    visitor.visitRoot(ast->root());
-  }
-
+  printAst(parser.source(), ast);
   delete ast;
 });
 
@@ -125,12 +147,7 @@ return x ;
 })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
-
-  if (ast != nullptr) {
-    PrintVisitor visitor;
-    visitor.visitRoot(ast->root());
-  }
-
+  printAst(parser.source(), ast);
   delete ast;
 });
 
@@ -148,14 +165,10 @@ return f - 1;
 })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
-
-  if (ast != nullptr) {
-    PrintVisitor visitor;
-    visitor.visitRoot(ast->root());
-  }
-
+  printAst(parser.source(), ast);
   delete ast;
 });
+
 
 static Test test_Parse_Shader("Parse_Shader", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
@@ -170,12 +183,7 @@ static Test test_Parse_Shader("Parse_Shader", []() {
   Parser parser(hlsl);
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
-
-  if (ast != nullptr) {
-    PrintVisitor visitor;
-    visitor.visitRoot(ast->root());
-  }
-
+  printAst(parser.source(), ast);
   delete ast;
   free(hlsl);
 });

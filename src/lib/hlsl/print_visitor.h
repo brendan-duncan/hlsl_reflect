@@ -21,6 +21,23 @@ public:
     std::cout << "}" << std::endl;
   }
 
+  void visitStruct(AstStructStmt* node) override {
+    indent();
+    std::cout << "struct " << node->name << " {" << std::endl;
+    _indent++;
+    Visitor::visitStruct(node);
+    _indent--;
+    indent();
+    std::cout << "}" << std::endl;
+  }
+
+  void visitStructField(AstStructField* node) {
+    indent();
+    std::cout << " " << node->name << ": ";
+    visitType(node->type);
+    std::cout << ";" << std::endl;
+  }
+
   void visitStatement(AstStatement* node) override {
     indent();
     Visitor::visitStatement(node);
@@ -34,6 +51,15 @@ public:
     visitType(node->returnType);
     visitBlock(node->body);
     std::cout << std::endl;
+  }
+
+  void visitVariable(AstVariableStmt* node) override {
+    std::cout << "var " << node->name << ": ";
+    visitType(node->type);
+    if (node->initializer != nullptr) {
+      std::cout << " = ";
+      visitExpression(node->initializer);
+    }
   }
 
   void visitParameter(AstParameter* node) override {
@@ -61,18 +87,14 @@ public:
 
   void visitAssignment(AstAssignmentStmt* node) override {
     visitExpression(node->variable);
-    std::cout << " = ";
+    std::cout << " " << operatorToString(node->op) << " ";
     visitExpression(node->value);
   }
 
-  void visitBinaryOperator(AstBinaryExpr *node) {
+  void visitBinaryOperator(AstBinaryExpr *node) override {
     visitExpression(node->left);
     std::cout << " " << operatorToString(node->op) << " ";
     visitExpression(node->right);
-  }
-
-  void visitVariable(AstVariableStmt* node) override {
-    std::cout << node->name;
   }
 
   void visitVariableExpr(AstVariableExpr* node) override {

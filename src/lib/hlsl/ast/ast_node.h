@@ -112,7 +112,7 @@ struct AstStructField : AstNode {
 struct AstStructStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::StructStmt;
   std::string_view name;
-  AstStructField* field = nullptr;
+  AstStructField* fields = nullptr;
 };
 
 /// A field in a buffer.

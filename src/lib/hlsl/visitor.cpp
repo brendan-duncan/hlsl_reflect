@@ -16,6 +16,9 @@ inline bool isStatement(AstNode* node) {
 }
 
 void Visitor::visitRoot(AstRoot* node) {
+  if (node == nullptr) {
+    return;
+  }
   AstStatement* statement = node->statements;
   while (statement != nullptr) {
     visitTopLevelStatement(statement);
@@ -70,6 +73,8 @@ void Visitor::visitStatement(AstStatement* node) {
     visitBlock((AstBlock*)node);
   } else if (node->nodeType == AstNodeType::AssignmentStmt) {
     visitAssignment((AstAssignmentStmt*)node);
+  } else if (node->nodeType == AstNodeType::VariableStmt) {
+    visitVariable((AstVariableStmt*)node);
   }
 }
 
@@ -84,7 +89,7 @@ void Visitor::visitBufferField(AstBufferField* node) {
 }
 
 void Visitor::visitStruct(AstStructStmt* node) {
-  AstStructField* field = node->field;
+  AstStructField* field = node->fields;
   while (field != nullptr) {
     visitStructField(field);
     field = field->next;

@@ -1,6 +1,10 @@
+// Syntax rules for HLSL.
+// HLSL does not have a formal specification so this is being derived from the documentation.
+// I'm using the following notation
 // (x)? means zero or one x
 // (x)* means zero or more x
 // (x)+ means one or more x
+// (x,y,...)| means x, or y
 
 Hlsl:
   (TopLevelStatement)+
@@ -33,7 +37,7 @@ TypeModifier:
   IDENTIFIER
 
 Type:
-  (StorageClass)? (TypeModifier)? BaseType (< TYPE, IntLiteral(, IntLiteral)?) >)?
+  (StorageClass)? (TypeModifier)? BaseType (< TYPE, INT_LITERAL (, INT_LITERAL)?) >)?
 
 Typedef:
   Type IDENTIFIER
@@ -104,3 +108,57 @@ Return:
 
 Assignment:
   IDENTIFIER ([ ExpressionList ])? = Expression
+
+Expression:
+  ShortCircuitOrExpression
+
+ShortCircuitOrExpression:
+  ShortCircuitAndExpression (|| ShortCircuitAndExpression)*
+
+ShortCircuitAndExpression:
+  InclusiveOrExpression (&& InclusiveOrExpression)*
+
+InclusiveOrExpression:
+  ExclusiveOrExpression (| ExclusiveOrExpression)*
+
+ExclusiveOrExpression:
+  AndExpression (^ AndExpression)*
+
+AndExpression:
+  EqualityExpression (& EqualityExpression)*
+
+EqualityExpression:
+  RelationalExpression ((==, !=)| RelationalExpression)*
+
+RelationalExpression:
+  ShiftExpression ((>, <, >=, <=)| ShiftExpression)*
+
+ShiftExpression:
+  AdditiveExpression ((>>, <<)| AdditiveExpression)*
+
+AdditiveExpression:
+  MultiplicativeExpression ((+, -)| MultiplicativeExpression)*
+
+MultiplicativeExpression:
+  UnaryExpression ((*, /, %) UnaryExpression)*
+
+UnaryExpression:
+  (-, !, ~, *, &)| UnaryExpression
+  SingularExpression
+
+SingularExpression:
+  PrimaryExpression (PostfixExpression)?
+
+PostfixExpression:
+  [ ShortCircuitOrExpression ] (parsePostfixExpression)?
+  . parsePostfixExpression
+
+PrimaryExpression:
+  IDENTIFIER ( ArgumentList )
+  INT_LITERAL
+  FLOAT_LITERAL
+  ( Expression )
+  BaseType ( Expression )
+
+ArgumentList:
+  Expression (, Expression)*

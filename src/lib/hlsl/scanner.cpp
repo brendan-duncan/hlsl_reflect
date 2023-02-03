@@ -291,6 +291,7 @@ bool Scanner::scanToken() {
 
       lexeme = lookAheadLexeme;
       _position += lookAhead + 1;
+      _lexemeLength += lookAhead + 1;
     }
 
     matchType = matchedType;

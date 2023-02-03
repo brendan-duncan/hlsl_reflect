@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <map>
 #include <string_view>
 
 #include "ast.h"
@@ -24,6 +25,8 @@ public:
   /// Parse the source string and return the resulting Ast object.
   /// @return Ast* The resulting Ast object.
   Ast* parse();
+
+  const std::string_view& source() { return _scanner.source(); }
 
 private:
   // Returns true if the current token is at the end of the source.
@@ -74,7 +77,7 @@ private:
 
   AstBufferStmt* parseBuffer();
 
-  AstType* parseType(bool allowVoid);
+  AstType* parseType(bool allowVoid, const char* exceptionMessage = nullptr);
 
   bool parseTypeModifier(TypeFlags& flags);
 
@@ -138,9 +141,39 @@ private:
 
   AstWhileStmt* parseWhile();
 
+  bool isType(const Token& tk) {
+    return tokenTypeToBaseType(tk.type()) != BaseType::Undefined ||
+            _typedefs.find(tk.lexeme()) != _typedefs.end();
+  }
+
+  void startRestorePoint() {
+    _restorePoint++;
+  }
+
+  void restore() {
+    _restorePoint--;
+    if (_restorePoint == 0) {
+      _pending.splice(_pending.begin(), _restore);
+      _restore.clear();
+    }
+  }
+
+  void discardRestorePoint() {
+    _restorePoint--;
+    if (_restorePoint == 0) {
+      _restore.clear();
+    }
+  }
+
   Ast* _ast = nullptr;
   Scanner _scanner;
   std::list<Token> _pending;
+
+  int _restorePoint = 0;
+  std::list<Token> _restore;
+
+  // Track typedefs to verify type names.
+  std::map<std::string_view, AstTypedefStmt*> _typedefs;
 };
 
 } // namespace hlsl
