@@ -31,13 +31,24 @@ TEST(Scanner_struct_scan, []() {
 });
 
 TEST(Scanner_struct_scanNext, []() {
-  auto scanner = Scanner("struct foo { };");
+  auto scanner = Scanner(R"(struct foo { };)");
   size_t count = 0;
   while (!scanner.isAtEnd()) {
     auto tk = scanner.scanNext();
     count++;
   }
   TEST_EQUALS(count, 5ull);
+});
+
+static Test test_pragma("pragma", []() {
+  auto scanner = Scanner(R"(#line 1
+  foo
+  #line 2 "foo"
+  bar)");
+  auto tokens = scanner.scan();
+  TEST_EQUALS(tokens.size(), 3ull);
+  TEST_EQUALS(tokens[0].lexeme(), "foo");
+  TEST_EQUALS(tokens[1].lexeme(), "bar");
 });
 
 static Test test_Shader("Shader", []() {

@@ -59,8 +59,8 @@ public:
     } else {
       std::cout << "var ";
     }
+    std::cout << node->name << ": ";
     visitType(node->type);
-    std::cout << " " << node->name;
     if (node->initializer != nullptr) {
       std::cout << " = ";
       visitExpression(node->initializer);

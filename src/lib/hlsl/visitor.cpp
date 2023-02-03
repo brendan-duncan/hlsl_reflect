@@ -36,8 +36,9 @@ void Visitor::visitTopLevelStatement(AstStatement* node) {
     visitFunction((AstFunctionStmt*)node);
   } else if (node->nodeType == AstNodeType::TypedefStmt) {
     visitTypedef((AstTypedefStmt*)node);
-  } else if (isStatement(node)) {
-    visitStatement((AstStatement*)node);
+  } else if (node->nodeType == AstNodeType::VariableStmt) {
+    visitVariable((AstVariableStmt*)node);
+    std::cout << ";" << std::endl;
   }
 }
 

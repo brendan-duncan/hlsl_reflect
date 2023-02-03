@@ -138,9 +138,11 @@ void Scanner::scanPragma() {
         }
         _filename = _source.substr(start, end - start);
       }
+      continue;
     }
     advance();
   }
+  advance();
   _line++;
   _absolteLine++;
 }
@@ -150,18 +152,18 @@ bool Scanner::scanToken() {
   // This string of consecutive characters is the lexeme.
   char c = advance();
 
+  // Skip whitespace
+  if (isWhitespace(c)) {
+    return true;
+  }
+
   // Skip line-feed, adding to the line counter.
   if (c == '\n') {
     _line++;
     _absolteLine++;
     return true;
   }
-
-  // Skip whitespace
-  if (isWhitespace(c)) {
-    return true;
-  }
-
+ 
   if (c == '#') {
     scanPragma();
     return true;

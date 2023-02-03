@@ -23,9 +23,9 @@ Ast* Parser::parse() {
       statement = parseTopLevelStatement();
     } catch (ParseException e) {
       std::cerr << "Error: "  << e.message << std::endl;
-      std::cerr << "  Filename: " << _scanner.filename() << std::endl;
-      std::cerr << "  Line: " << _scanner.line() << std::endl;
-      std::cerr << "  Absolute Line: " << _scanner.absoluteLine() << std::endl;
+      //std::cerr << "  Filename: " << _scanner.filename() << std::endl;
+      //std::cerr << "  Line: " << _scanner.line() << std::endl;
+      std::cerr << "  Line: " << _scanner.absoluteLine() << std::endl;
       delete _ast;
       _ast = nullptr;
       return nullptr;
