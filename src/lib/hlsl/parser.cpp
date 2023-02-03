@@ -120,7 +120,7 @@ AstStatement* Parser::parseTopLevelStatement() {
   }
 
   // Global Declaration
-  AstType* type = parseType(true/*allowVoid*/);
+  AstType* type = parseType(true);
   if (type != nullptr) {
     // Either a variable or function declaration.
     Token identifier = consume(TokenType::Identifier, "identifier expected");
@@ -147,7 +147,7 @@ AstStatement* Parser::parseTopLevelStatement() {
 
 AstTypedefStmt* Parser::parseTypedef() {
   AstTypedefStmt* node = _ast->createNode<AstTypedefStmt>();
-  node->type = parseType(true/*allowVoid*/);
+  node->type = parseType(true);
   node->name = advance().lexeme();
   return node;
 }

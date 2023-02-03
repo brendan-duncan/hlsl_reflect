@@ -138,6 +138,12 @@ void Scanner::skipPragma() {
         }
         _filename = _source.substr(start, end - start);
       }
+
+      if (current() == '\n') {
+        advance();
+        _line++;
+        return;
+      }
     }
     advance();
   }
