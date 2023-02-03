@@ -37,6 +37,14 @@ TEST(const_2, []() {
   delete ast;
 });
 
+static Test test_const_3("const_3", []() {
+  Parser parser(R"(const float y = x * 2654435769u;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_postfix_increment("postfix_increment", []() {
   Parser parser(R"(float y = x++;)");
   Ast* ast = parser.parse();
@@ -55,6 +63,22 @@ static Test test_prefix_increment("prefix_increment", []() {
 
 static Test test_ternary_expr("ternary_expr", []() {
   Parser parser(R"(float y = x < 0.0 ? 1 + x : x;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_ternary_expr_2("ternary_expr_2", []() {
+  Parser parser(R"(float y = (x < 0.0) ? 1 + x : x;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_ternary_expr_3("ternary_expr_3", []() {
+  Parser parser(R"(float foo() { f = (x < 0.0) ? 1 + x : x; })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);

@@ -742,7 +742,7 @@ AstExpression* Parser::parseAdditiveExpression() {
 
 AstExpression* Parser::parseMultiplicativeExpression() {
   AstExpression* expr = parsePrefixExpression();
-  while (check(TokenType::Star) || check(TokenType::Slash) || check(TokenType::Percent),
+  while (check(TokenType::Star) || check(TokenType::Slash) || check(TokenType::Percent) ||
       check(TokenType::PlusPlus) || check(TokenType::MinusMinus)) {
     Token tk = advance();
     AstBinaryExpr* op = _ast->createNode<AstBinaryExpr>();
@@ -940,6 +940,9 @@ AstBlock* Parser::parseBlock() {
   AstStatement* lastStmt = block->statements;
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
     AstStatement* stmt = parseStatement();
+    if (stmt == nullptr) {
+      throw ParseException(peekNext(), "Expected statement");
+    }
     lastStmt->next = stmt;
     lastStmt = stmt;
   }
