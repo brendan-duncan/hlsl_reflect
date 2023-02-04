@@ -209,6 +209,9 @@ void Visitor::visitBlock(AstBlock* node) {
 }
 
 void Visitor::visitExpression(AstExpression* node) {
+  if (node == nullptr) {
+    return;
+  }
   if (node->nodeType == AstNodeType::BinaryExpr) {
     visitBinaryOperator((AstBinaryExpr*)node);
   } else if (node->nodeType == AstNodeType::PrefixExpr) {

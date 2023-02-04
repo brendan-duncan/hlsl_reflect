@@ -61,6 +61,14 @@ static Test test_prefix_increment("Parser prefix increment", []() {
   delete ast;
 });
 
+static Test test_member_access("Parser member access", []() {
+  Parser parser(R"(float y = x.y;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_ternary_expr("Parser ternary expr", []() {
   Parser parser(R"(float y = x < 0.0 ? 1 + x : x;)");
   Ast* ast = parser.parse();

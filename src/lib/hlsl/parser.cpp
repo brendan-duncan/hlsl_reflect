@@ -793,15 +793,14 @@ AstExpression* Parser::parsePostfixExpression(AstExpression* expr) {
     AstArrayExpr* array = _ast->createNode<AstArrayExpr>();
     array->array = expr;
     array->index = index;
-    return expr;
+    return array;
   }
 
   if (match(TokenType::Dot)) {
-    Token name = consume(TokenType::Identifier, "Expected identifier after '.'");
     AstMemberExpr* member = _ast->createNode<AstMemberExpr>();
     member->object = expr;
     member->member = parseSingularExpression();   
-    return expr;
+    return member;
   }
 
   return expr;

@@ -154,6 +154,12 @@ public:
     visitExpression(node->expression);
   }
 
+  void visitMemberExpr(AstMemberExpr* node) {
+    visitExpression(node->object);
+    std::cout << ".";
+    visitExpression(node->member);
+  }
+
   void visitTernaryOperator(AstTernaryExpr* node) {
     visitExpression(node->condition);
     std::cout << " ? ";
