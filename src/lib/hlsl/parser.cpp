@@ -798,7 +798,7 @@ AstExpression* Parser::parsePostfixExpression(AstExpression* expr) {
     AstIncrementExpr* op = _ast->createNode<AstIncrementExpr>();
     op->op = tk.type() == TokenType::PlusPlus ? Operator::PlusPlus : Operator::MinusMinus;
     op->variable = expr;
-    return op;
+    return parsePostfixExpression(op);
   }
 
   if (match(TokenType::LeftBracket)) {
@@ -807,14 +807,14 @@ AstExpression* Parser::parsePostfixExpression(AstExpression* expr) {
     AstArrayExpr* array = _ast->createNode<AstArrayExpr>();
     array->array = expr;
     array->index = index;
-    return array;
+    return parsePostfixExpression(array);
   }
 
   if (match(TokenType::Dot)) {
     AstMemberExpr* member = _ast->createNode<AstMemberExpr>();
     member->object = expr;
     member->member = parseSingularExpression();   
-    return member;
+    return parsePostfixExpression(member);
   }
 
   return expr;

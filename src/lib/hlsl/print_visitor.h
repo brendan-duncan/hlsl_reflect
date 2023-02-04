@@ -185,6 +185,13 @@ public:
     visitExpression(node->falseExpr);
   }
 
+  void visitArrayExpr(AstArrayExpr* node) {
+    visitExpression(node->array);
+    std::cout << "[";
+    visitExpression(node->index);
+    std::cout << "]";
+  }
+
 private:
   int _indent = 0;
 

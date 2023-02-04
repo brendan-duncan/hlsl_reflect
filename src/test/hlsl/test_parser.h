@@ -324,6 +324,14 @@ static Test test_param_init("Parser param init", []() {
   delete ast;
 });
 
+static Test test_array_index("Parser arraay index", []() {
+  Parser parser(R"(float m12 = m[1][2];)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);
