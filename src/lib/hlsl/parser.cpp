@@ -149,10 +149,7 @@ AstStatement* Parser::parseTopLevelStatement() {
     }
 
     // variable declaration
-    AstVariableStmt* var = parseVariableStmt(type, identifier.lexeme());
-    if (var != nullptr) {
-      var->attributes = attributes;
-    }
+    AstVariableStmt* var = parseVariableStmt(type, identifier.lexeme(), attributes);
     return var;
   }
 
@@ -921,15 +918,34 @@ AstParameter* Parser::parseParameter() {
   return param;
 }
 
-AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view& name) {
+AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view& name,
+                                           AstAttribute* attributes) {
   AstVariableStmt* var = _ast->createNode<AstVariableStmt>();
   var->type = type;
   var->name = name;
+  var->attributes = attributes;
   if (match(TokenType::Equal)) {
     var->initializer = parseLogicalOrExpression();
   }
+
+  AstVariableStmt* firstVar = var;
+  // Parse multiple variable declarations
+  while (match(TokenType::Comma)) {
+    std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
+    AstVariableStmt* next = _ast->createNode<AstVariableStmt>();
+    next->type = type;
+    next->name = name;
+    next->attributes = attributes;
+    if (match(TokenType::Equal)) {
+      next->initializer = parseLogicalOrExpression();
+    }
+    next->attributes = attributes;
+    var->next = next;
+    var = next;
+  }
+
   consume(TokenType::Semicolon, "Expected ';' after variable declaration");
-  return var;
+  return firstVar;
 }
 
 // Parse a block of statements enclosed in braces
@@ -1061,8 +1077,7 @@ AstStatement* Parser::parseStatement() {
   AstType* type = parseType(false);
   if (type != nullptr) {
     const std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
-    stmt = parseVariableStmt(type, name);
-    stmt->attributes = attributes;
+    stmt = parseVariableStmt(type, name, attributes);   
     return stmt;
   }
 

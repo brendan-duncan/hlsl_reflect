@@ -3,6 +3,8 @@
 
 using namespace hlsl;
 
+namespace token_type_tests {
+
 static Test test_TokenType("TokenType", []() {
   TEST_EQUALS(findTokenType("123"), TokenType::IntLiteral);
   TEST_EQUALS(findTokenType("123u"), TokenType::IntLiteral);
@@ -19,3 +21,5 @@ static Test test_TokenType_2("TokenType 2", []() {
   TEST_EQUALS(findTokenType("-0.6473313946860445"), TokenType::FloatLiteral);
   TEST_EQUALS(findTokenType("4.8828125e-4"), TokenType::FloatLiteral);
 });
+
+} // namespace token_type_tests

@@ -6,6 +6,8 @@
 
 using namespace hlsl;
 
+namespace scanner_tests {
+
 static Test test_Scanner("Scanner", []() {
   auto tokens = Scanner("double x = -0.6473313946860445;").scan();
   TEST_EQUALS(tokens.size(), 6ull);
@@ -17,7 +19,7 @@ static Test test_Scanner("Scanner", []() {
   TEST_EQUALS(tokens[5].type(), TokenType::EndOfFile);
 });
 
-static Test test_Scanner_2("Scanner_2", []() {
+static Test test_Scanner_2("Scanner hex", []() {
   auto tokens = Scanner("0x0;").scan();
   TEST_EQUALS(tokens.size(), 3ull);
   TEST_EQUALS(tokens[0].type(), TokenType::IntLiteral);
@@ -40,7 +42,7 @@ static Test test_Scanner_struct_scanNext("Scanner struct scanNext", []() {
   TEST_EQUALS(count, 5ull);
 });
 
-static Test test_pragma("pragma", []() {
+static Test test_pragma("Scanner pragma", []() {
   auto scanner = Scanner(R"(#line 1
   foo
   #line 2 "foo"
@@ -51,7 +53,7 @@ static Test test_pragma("pragma", []() {
   TEST_EQUALS(tokens[1].lexeme(), "bar");
 });
 
-static Test test_Shader("Shader", []() {
+static Test test_Shader("Scanner Shader", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);
   size_t size = ftell(fp);
@@ -72,3 +74,4 @@ static Test test_Shader("Shader", []() {
   free(hlsl);
 });
 
+} // namespace scanner_tests

@@ -6,6 +6,8 @@
 
 using namespace hlsl;
 
+namespace parser_tests {
+
 inline void printAst(const std::string_view& source, Ast* ast) {
   if (ast != nullptr) {
     PrintVisitor visitor;
@@ -21,7 +23,7 @@ static Test test_empty("Parser empty", []() {
   delete ast;
 });
 
-static Test test_const("Parser const", []() {
+static Test test_const("Parser const int", []() {
   Parser parser(R"(static const int _USE_RGBM = 0;)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
@@ -29,7 +31,7 @@ static Test test_const("Parser const", []() {
   delete ast;
 });
 
-static Test test_const_2("Parser const 2", []() {
+static Test test_const_2("Parser float3", []() {
   Parser parser(R"(const float3 magic = float3(0.0f, 0.0, 0);)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
@@ -37,8 +39,16 @@ static Test test_const_2("Parser const 2", []() {
   delete ast;
 });
 
-static Test test_const_3("Parser const 3", []() {
+static Test test_const_3("Parser const expression", []() {
   Parser parser(R"(const float y = x * 2654435769u;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_multi_variable("Parser multi variable", []() {
+  Parser parser(R"(float x = 0, y = 1;)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
@@ -349,3 +359,5 @@ static Test test_Parse_urp("Parse urp_bloom", []() {
   delete ast;
   free(hlsl);
 });
+
+} // namespace parser_tests

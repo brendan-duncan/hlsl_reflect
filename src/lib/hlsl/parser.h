@@ -121,7 +121,8 @@ private:
 
   AstFunctionStmt* parseFunctionStmt(AstType* returnType, const std::string_view& name);
 
-  AstVariableStmt* parseVariableStmt(AstType* type, const std::string_view& name);
+  AstVariableStmt* parseVariableStmt(AstType* type, const std::string_view& name,
+    AstAttribute* attributes);
 
   AstParameter* parseParameterList();
 
