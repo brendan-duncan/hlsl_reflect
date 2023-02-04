@@ -928,8 +928,8 @@ AstBlock* Parser::parseBlock() {
 
   consume(TokenType::LeftBrace, "Expected '{' before block");
 
+  // Empty block {}
   if (match(TokenType::RightBrace)) {
-    advance();
     return block;
   }
 
@@ -937,6 +937,7 @@ AstBlock* Parser::parseBlock() {
   if (block->statements == nullptr) {
     return block;
   }
+
   AstStatement* lastStmt = block->statements;
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
     AstStatement* stmt = parseStatement();

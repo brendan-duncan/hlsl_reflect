@@ -231,7 +231,7 @@ static Test test_function_5("Parser inout", []() {
   delete ast;
 });
 
-static Test test_shader_2("Parser Shader", []() {
+static Test test_shader("Parser Shader", []() {
   Parser parser(R"(
 void LODDitheringTransition(uint3 fadeMaskSeed, float ditherFactor) {
   clip(ditherFactor - p);
@@ -242,8 +242,17 @@ void LODDitheringTransition(uint3 fadeMaskSeed, float ditherFactor) {
   delete ast;
 });
 
-static Test test_shader_3("Parser Shader 2", []() {
+static Test test_shader_2("Parser block statement", []() {
   Parser parser(R"(
+void foo() { {} })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_member_in_expression("Parser member in expression", []() {
+    Parser parser(R"(
 float CubeMapFaceID(float3 dir) {
   if (abs(dir.z) >= abs(dir.x) && abs(dir.z) >= abs(dir.y)) {}
 })");
@@ -253,7 +262,7 @@ float CubeMapFaceID(float3 dir) {
   delete ast;
 });
 
-static Test test_Parse_Shader("Parse urp_bloom", []() {
+static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);
   size_t size = ftell(fp);
@@ -270,4 +279,3 @@ static Test test_Parse_Shader("Parse urp_bloom", []() {
   delete ast;
   free(hlsl);
 });
-
