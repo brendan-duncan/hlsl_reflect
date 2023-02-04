@@ -836,7 +836,8 @@ AstExpression* Parser::parsePrimaryExpression() {
     return expr;
   }
 
-  if (check(TokenType::IntLiteral) || check(TokenType::FloatLiteral)) {
+  if (check(TokenType::IntLiteral) || check(TokenType::FloatLiteral) || check(TokenType::True) ||
+      check(TokenType::False)) {
     Token tk = advance();
     AstLiteralExpr* expr = _ast->createNode<AstLiteralExpr>();
     expr->type = tokenTypeToBaseType(tk.type());

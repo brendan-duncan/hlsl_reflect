@@ -308,6 +308,14 @@ half SafePositivePow_half(half base, half power) {
   delete ast;
 });
 
+static Test test_bool("Parser bool", []() {
+  Parser parser(R"(bool b = true;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_param_init("Parser param init", []() {
   Parser parser(R"(void foo(float a = 1.0) { })");
   Ast* ast = parser.parse();
