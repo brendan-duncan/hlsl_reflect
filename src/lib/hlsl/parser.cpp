@@ -31,7 +31,10 @@ Ast* Parser::parse() {
       return nullptr;
     }
     if (statement == nullptr) {
-      break;
+      std::cerr << "Error Line: " << _scanner.absoluteLine() << std::endl;
+      delete _ast;
+      _ast = nullptr;
+      return nullptr;
     }
     if (root->statements == nullptr) {
       root->statements = statement;
@@ -890,8 +893,8 @@ AstFunctionStmt* Parser::parseFunctionStmt(AstType* returnType, const std::strin
 
 AstParameter* Parser::parseParameterList() {
   consume(TokenType::LeftParen, "Expected '(' after function name");
-  if (check(TokenType::RightParen)) {
-    advance();
+  if (match(TokenType::RightParen)) {
+    // Empty parameter list
     return nullptr;
   }
 

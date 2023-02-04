@@ -1,6 +1,7 @@
 undefined
 void
 float
+half
 int
 uint
 bool
