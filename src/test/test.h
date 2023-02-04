@@ -278,8 +278,8 @@ private:
 #undef TOSTRING
 #undef STRINGIFY
 
-#define TEST(name, test)\
-  static Test test_##name(#name, test)
+//#define TEST(name, test)\
+//  static Test test_##name(#name, test)
 
 #define TEST_RESULTS() Test::getResults()
 

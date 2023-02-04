@@ -115,6 +115,12 @@ public:
     visitExpression(node->value);
   }
 
+  void visitCall(AstCallStmt* node) {
+    std::cout << node->name << "(";
+    visitArguments(node->arguments);
+    std::cout << ");";
+  }
+
   void visitCallExpr(AstCallExpr* node) {
     std::cout << node->name << "(";
     visitArguments(node->arguments);

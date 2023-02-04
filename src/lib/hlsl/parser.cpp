@@ -1036,6 +1036,7 @@ AstStatement* Parser::parseStatement() {
       call->name = name.lexeme();
       call->arguments = parseArgumentList();
       call->attributes = attributes;
+      consume(TokenType::Semicolon, "Expected ';' after statment");
       return call;
     }
 

@@ -6,7 +6,7 @@
 
 using namespace hlsl;
 
-TEST(Scanner, []() {
+static Test test_Scanner("Scanner", []() {
   auto tokens = Scanner("double x = -0.6473313946860445;").scan();
   TEST_EQUALS(tokens.size(), 6ull);
   TEST_EQUALS(tokens[0].type(), TokenType::Double);
@@ -25,12 +25,12 @@ static Test test_Scanner_2("Scanner_2", []() {
   TEST_EQUALS(tokens[2].type(), TokenType::EndOfFile);
 });
 
-TEST(Scanner_struct_scan, []() {
+static Test test_Scanner_struct_scan("Scanner struct scan", []() {
   auto tokens = Scanner("struct foo { };").scan();
   TEST_EQUALS(tokens.size(), (size_t)6);
 });
 
-TEST(Scanner_struct_scanNext, []() {
+static Test test_Scanner_struct_scanNext("Scanner struct scanNext", []() {
   auto scanner = Scanner(R"(struct foo { };)");
   size_t count = 0;
   while (!scanner.isAtEnd()) {

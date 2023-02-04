@@ -83,6 +83,8 @@ void Visitor::visitStatement(AstStatement* node) {
     visitAssignment((AstAssignmentStmt*)node);
   } else if (node->nodeType == AstNodeType::VariableStmt) {
     visitVariable((AstVariableStmt*)node);
+  } else if (node->nodeType == AstNodeType::CallStmt) {
+    visitCall((AstCallStmt*)node);
   }
 }
 
