@@ -46,6 +46,7 @@ enum class AstNodeType {
   VariableExpr,
   LiteralExpr,
   CastExpr,
+  AssignmentExpr,
 };
 
 } // namespace hlsl

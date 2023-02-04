@@ -55,6 +55,14 @@ static Test test_multi_variable("Parser multi variable", []() {
   delete ast;
 });
 
+static Test test_multi_variable_assignment("Parser multi variable assignment", []() {
+  Parser parser(R"(float x = y = 1;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_postfix_increment("Parser postfix increment", []() {
   Parser parser(R"(float y = x++;)");
   Ast* ast = parser.parse();

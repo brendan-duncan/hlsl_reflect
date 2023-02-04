@@ -30,6 +30,7 @@ struct AstFunctionStmt;
 struct AstIfStmt;
 struct AstLiteralExpr;
 struct AstCastExpr;
+struct AstAssignmentExpr;
 struct AstNode;
 struct AstParameter;
 struct AstReturnStmt;
@@ -217,6 +218,13 @@ struct AstCastExpr : AstExpression {
   static const AstNodeType astType = AstNodeType::CastExpr;
   AstType* type = nullptr;
   AstExpression* expression = nullptr;
+};
+
+struct AstAssignmentExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::AssignmentExpr;
+  Operator op = Operator::Undefined;
+  AstExpression* variable = nullptr;
+  AstExpression* value = nullptr;
 };
 
 struct AstVariableStmt : AstStatement {

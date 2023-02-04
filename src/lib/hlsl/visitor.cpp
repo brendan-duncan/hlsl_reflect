@@ -80,7 +80,7 @@ void Visitor::visitStatement(AstStatement* node) {
   } else if (node->nodeType == AstNodeType::Block) {
     visitBlock((AstBlock*)node);
   } else if (node->nodeType == AstNodeType::AssignmentStmt) {
-    visitAssignment((AstAssignmentStmt*)node);
+    visitAssignmentStmt((AstAssignmentStmt*)node);
   } else if (node->nodeType == AstNodeType::VariableStmt) {
     visitVariableStmt((AstVariableStmt*)node);
   } else if (node->nodeType == AstNodeType::CallStmt) {
@@ -238,6 +238,8 @@ void Visitor::visitExpression(AstExpression* node) {
     visitArrayExpr((AstArrayExpr*)node);
   } else if (node->nodeType == AstNodeType::MemberExpr) {
     visitMemberExpr((AstMemberExpr*)node);
+  } else if (node->nodeType == AstNodeType::AssignmentExpr) {
+    visitAssignmentExpr((AstAssignmentExpr*)node);
   }
 }
 
@@ -284,7 +286,7 @@ void Visitor::visitArguments(AstExpression* node) {
   }
 }
 
-void Visitor::visitAssignment(AstAssignmentStmt* node) {
+void Visitor::visitAssignmentStmt(AstAssignmentStmt* node) {
   visitExpression(node->variable);
   visitExpression(node->value);
 }
@@ -350,6 +352,11 @@ void Visitor::visitArrayExpr(AstArrayExpr* node) {
 void Visitor::visitMemberExpr(AstMemberExpr* node) {
   visitExpression(node->object);
   visitExpression(node->member);
+}
+
+void Visitor::visitAssignmentExpr(AstAssignmentExpr* node) {
+  visitExpression(node->variable);
+  visitExpression(node->value);
 }
 
 } // namespace hlsl

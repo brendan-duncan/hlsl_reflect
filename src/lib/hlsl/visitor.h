@@ -26,6 +26,7 @@ public:
   virtual void visitTypedefStmt(AstTypedefStmt* node);
   virtual void visitWhileStmt(AstWhileStmt* node);
   virtual void visitCallStmt(AstCallStmt* node);
+  virtual void visitAssignmentStmt(AstAssignmentStmt* node);
 
   virtual void visitExpression(AstExpression* node);  
   virtual void visitBinaryExpr(AstBinaryExpr* node);
@@ -42,10 +43,10 @@ public:
   virtual void visitIncrementExpr(AstIncrementExpr* node);
   virtual void visitArrayExpr(AstArrayExpr* node);
   virtual void visitMemberExpr(AstMemberExpr* node);
+  virtual void visitAssignmentExpr(AstAssignmentExpr* node);
 
   virtual void visitArgument(AstExpression* node);
   virtual void visitArguments(AstExpression* node);
-  virtual void visitAssignment(AstAssignmentStmt* node);
   virtual void visitAttribute(AstAttribute* node);
   virtual void visitAttributes(AstAttribute* node);
   virtual void visitBufferField(AstBufferField* node);

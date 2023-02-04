@@ -273,6 +273,29 @@ AstAttribute* Parser::parseAttributes() {
   return firstAttribute;
 }
 
+AstExpression* Parser::parseAssignmentExpression() {
+  AstExpression* expression = parseLogicalOrExpression();
+  if (expression == nullptr) {
+    return nullptr;
+  }
+
+  if (!isAssignmentOperator(peekNext().type())) {
+    return expression;
+  }
+
+  Operator op = tokenTypeToAssignmentOperatator(advance().type());
+
+  AstExpression* value = parseAssignmentExpression();
+  if (value == nullptr) {
+    throw ParseException(peekNext(), "expression expected for assignment");
+  }
+  AstAssignmentExpr* assignment = _ast->createNode<AstAssignmentExpr>();
+  assignment->op = op;
+  assignment->variable = expression;
+  assignment->value = value;
+  return assignment;
+}
+
 AstExpression* Parser::parseExpression() {
   return parseLogicalOrExpression();
 }
@@ -925,7 +948,7 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
   var->name = name;
   var->attributes = attributes;
   if (match(TokenType::Equal)) {
-    var->initializer = parseLogicalOrExpression();
+    var->initializer = parseAssignmentExpression();
   }
 
   AstVariableStmt* firstVar = var;
@@ -1082,6 +1105,7 @@ AstStatement* Parser::parseStatement() {
   }
 
   if (check(TokenType::Underscore) || check(TokenType::Identifier)) {
+    // Assignment statement
     const bool isUnderscore = match(TokenType::Underscore);
 
     AstAssignmentStmt* stmt = _ast->createNode<AstAssignmentStmt>();
@@ -1093,33 +1117,13 @@ AstStatement* Parser::parseStatement() {
       throw ParseException(peekNext(), "Expected variable name");
     }
 
-    if (match(TokenType::Equal)) {
-      stmt->op = Operator::Equal;
-    } else if (match(TokenType::PlusEqual)) {
-      stmt->op = Operator::AddEqual;
-    } else if (match(TokenType::MinusEqual)) {
-      stmt->op = Operator::SubtractEqual;
-    } else if (match(TokenType::StarEqual)) {
-      stmt->op = Operator::MultiplyEqual;
-    } else if (match(TokenType::SlashEqual)) {
-      stmt->op = Operator::DivideEqual;
-    } else if (match(TokenType::PercentEqual)) {
-      stmt->op = Operator::ModuloEqual;
-    } else if (match(TokenType::LessLessEqual)) {
-      stmt->op = Operator::LeftShiftEqual;
-    } else if (match(TokenType::GreaterGreaterEqual)) {
-      stmt->op = Operator::RightShiftEqual;
-    } else if (match(TokenType::AmpersandEqual)) {
-      stmt->op = Operator::AndEqual;
-    } else if (match(TokenType::CaretEqual)) {
-      stmt->op = Operator::XorEqual;
-    } else if (match(TokenType::PipeEqual)) {
-      stmt->op = Operator::OrEqual;
-    } else {
+    Token tk = advance();
+    stmt->op = tokenTypeToAssignmentOperatator(tk.type());
+    if (stmt->op == Operator::Undefined) {
       throw ParseException(peekNext(), "Expected assignment operator");
     }
 
-    stmt->value = parseLogicalOrExpression();
+    stmt->value = parseAssignmentExpression();
 
     consume(TokenType::Semicolon, "Expected ';' after assignment");
     

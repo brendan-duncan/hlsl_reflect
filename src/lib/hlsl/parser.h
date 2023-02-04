@@ -83,6 +83,8 @@ private:
 
   bool parseInterpolationModifier(uint32_t& flags);
 
+  AstExpression* parseAssignmentExpression();
+
   AstExpression* parseExpression();
 
   AstExpression* parseExpressionList();

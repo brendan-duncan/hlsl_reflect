@@ -107,7 +107,13 @@ public:
     }
   }
 
-  void visitAssignment(AstAssignmentStmt* node) override {
+  void visitAssignmentStmt(AstAssignmentStmt* node) override {
+    visitExpression(node->variable);
+    std::cout << " " << operatorToString(node->op) << " ";
+    visitExpression(node->value);
+  }
+
+  void visitAssignmentExpr(AstAssignmentExpr* node) override {
     visitExpression(node->variable);
     std::cout << " " << operatorToString(node->op) << " ";
     visitExpression(node->value);
