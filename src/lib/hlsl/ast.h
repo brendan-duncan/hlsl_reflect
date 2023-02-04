@@ -19,7 +19,7 @@ public:
   /// The root node of the AST containing all top level statements.
   AstRoot* root() const { return _root; }
 
-  /// Used byt the parser to create Ast nodes using the memory pool owned by the Ast.
+  /// Used by the parser to create Ast nodes using the memory pool owned by the Ast.
   /// Creates a new node of type T, using a memory pool to allocate the memory
   /// @tparam T An AstNode derived type. This should have a static const AstNodeType astType member.
   /// @return T* The newly created node
@@ -33,7 +33,7 @@ public:
 private:
   void* allocateMemory(size_t size);
 
-  void  allocatePage();
+  void allocatePage();
 
   static const size_t nodePageSize = 1024 * 4;
 

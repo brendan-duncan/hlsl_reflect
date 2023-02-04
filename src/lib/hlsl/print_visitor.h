@@ -21,17 +21,17 @@ public:
     std::cout << "}" << std::endl;
   }
 
-  void visitStruct(AstStructStmt* node) override {
+  void visitStructStmt(AstStructStmt* node) override {
     indent();
     std::cout << "struct " << node->name << " {" << std::endl;
     _indent++;
-    Visitor::visitStruct(node);
+    Visitor::visitStructStmt(node);
     _indent--;
     indent();
     std::cout << "}" << std::endl;
   }
 
-  void visitStructField(AstStructField* node) {
+  void visitStructField(AstStructField* node) override {
     indent();
     std::cout << " " << node->name << ": ";
     visitType(node->type);
@@ -39,21 +39,26 @@ public:
   }
 
   void visitStatement(AstStatement* node) override {
-    indent();
+    if (node->nodeType != AstNodeType::Block) {
+      indent();
+    }
     Visitor::visitStatement(node);
-    std::cout << ";" << std::endl;
+    if (node->nodeType != AstNodeType::Block && node->nodeType != AstNodeType::IfStmt) {
+      std::cout << ";" << std::endl;
+    }
   }
 
-  void visitFunction(AstFunctionStmt* node) override {
+  void visitFunctionStmt(AstFunctionStmt* node) override {
     std::cout << "fn " << node->name << "(";
     visitParameters(node->parameters);
     std::cout << ") -> ";
     visitType(node->returnType);
+    std::cout << std::endl;
     visitBlock(node->body);
     std::cout << std::endl;
   }
 
-  void visitVariable(AstVariableStmt* node) override {
+  void visitVariableStmt(AstVariableStmt* node) override {
     if (node->type->flags & TypeFlags::Const) {
       std::cout << "const ";
     } else {
@@ -90,13 +95,25 @@ public:
     std::cout << baseTypeToString(node->baseType);
   }
 
+  void visitIfStmt(AstIfStmt* node) override {
+    std::cout << "if (";
+    visitExpression(node->condition);
+    std::cout << ")" << std::endl;
+    visitStatement(node->body);
+    if (node->elseBody != nullptr) {
+      indent();
+      std::cout << "else" << std::endl;
+      visitStatement(node->elseBody);
+    }
+  }
+
   void visitAssignment(AstAssignmentStmt* node) override {
     visitExpression(node->variable);
     std::cout << " " << operatorToString(node->op) << " ";
     visitExpression(node->value);
   }
 
-  void visitBinaryOperator(AstBinaryExpr *node) override {
+  void visitBinaryExpr(AstBinaryExpr *node) override {
     visitExpression(node->left);
     std::cout << " " << operatorToString(node->op) << " ";
     visitExpression(node->right);
@@ -115,26 +132,26 @@ public:
     visitExpression(node->value);
   }
 
-  void visitCall(AstCallStmt* node) {
+  void visitCallStmt(AstCallStmt* node) override {
     std::cout << node->name << "(";
     visitArguments(node->arguments);
     std::cout << ");";
   }
 
-  void visitCallExpr(AstCallExpr* node) {
+  void visitCallExpr(AstCallExpr* node) override {
     std::cout << node->name << "(";
     visitArguments(node->arguments);
     std::cout << ")";
   }
 
-  void visitCastExpr(AstCastExpr* node) {
+  void visitCastExpr(AstCastExpr* node) override {
     visitType(node->type);
     std::cout << "(";
     visitArguments(node->expression);
     std::cout << ")";
   }
 
-  void visitArguments(AstExpression* args) {
+  void visitArguments(AstExpression* args) override {
     while (args != nullptr) {
       visitExpression(args);
       if (args->next != nullptr) {
@@ -144,23 +161,23 @@ public:
     }
   }
 
-  void visitIncrementExpr(AstIncrementExpr* node) {
+  void visitIncrementExpr(AstIncrementExpr* node) override {
     visitExpression(node->variable);
     std::cout << operatorToString(node->op);
   }
 
-  void visitPrefixOperator(AstPrefixExpr* node) {
+  void visitPrefixExpr(AstPrefixExpr* node) override {
     std::cout << operatorToString(node->op);
     visitExpression(node->expression);
   }
 
-  void visitMemberExpr(AstMemberExpr* node) {
+  void visitMemberExpr(AstMemberExpr* node) override {
     visitExpression(node->object);
     std::cout << ".";
     visitExpression(node->member);
   }
 
-  void visitTernaryOperator(AstTernaryExpr* node) {
+  void visitTernaryExpr(AstTernaryExpr* node) override {
     visitExpression(node->condition);
     std::cout << " ? ";
     visitExpression(node->trueExpression);
