@@ -242,6 +242,17 @@ void LODDitheringTransition(uint3 fadeMaskSeed, float ditherFactor) {
   delete ast;
 });
 
+static Test test_shader_3("Parser Shader 2", []() {
+  Parser parser(R"(
+float CubeMapFaceID(float3 dir) {
+  if (abs(dir.z) >= abs(dir.x) && abs(dir.z) >= abs(dir.y)) {}
+})");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_Shader("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);
