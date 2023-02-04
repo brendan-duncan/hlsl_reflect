@@ -366,7 +366,7 @@ static Test test_param_init("Parser param init", []() {
   delete ast;
 });
 
-static Test test_array_index("Parser arraay index", []() {
+static Test test_array_index("Parser array index", []() {
   Parser parser(R"(float m12 = m[1][2];)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);

@@ -274,11 +274,34 @@ AstAttribute* Parser::parseAttributes() {
 }
 
 AstExpression* Parser::parseAssignmentExpression() {
+  if (match(TokenType::LeftBrace)) {
+    // Array initialization expression (e.g. a = {1, 2, 3})
+    AstExpression* firstExpression = parseExpression();
+    if (firstExpression == nullptr) {
+      throw ParseException(peekNext(), "expression expected for assignment");
+    }
+    AstExpression* lastExpression = firstExpression;
+
+    while (!isAtEnd() && match(TokenType::Comma)) {
+      AstExpression* expression = parseExpression();
+      if (expression == nullptr) {
+        throw ParseException(peekNext(), "expression expected for assignment");
+      }
+      lastExpression->next = expression;
+      lastExpression = expression;
+    }
+
+    consume(TokenType::RightBrace, "'}' expected for array initialization");
+
+    return firstExpression;
+  }
+
   AstExpression* expression = parseLogicalOrExpression();
   if (expression == nullptr) {
     return nullptr;
   }
 
+  // Check for cascading assignment operators (a = b = c)
   if (!isAssignmentOperator(peekNext().type())) {
     return expression;
   }
