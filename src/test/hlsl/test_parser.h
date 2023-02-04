@@ -219,7 +219,7 @@ return float(s) * rcp(4294967296.0);
   delete ast;
 });
 
-static Test test_function_3("Parser function 3", []() {
+static Test test_function_3("Parser multiple functions", []() {
   Parser parser(R"(
 #line 5 "D:/Random.hlsl"
 float Hash(uint s)
@@ -259,6 +259,16 @@ m |= ieeeOne;
 float f = asfloat(m);
 return f - 1;
 })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_user_type_return("Parser struct return", []() {
+  Parser parser(R"(
+struct MyStruct { float3 f3; };
+MyStruct Foo() {})");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);

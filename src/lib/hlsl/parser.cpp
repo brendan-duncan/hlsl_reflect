@@ -187,6 +187,7 @@ AstStructStmt* Parser::parseStruct() {
   AstStructStmt* s = _ast->createNode<AstStructStmt>();
   s->name = name.lexeme();
   s->fields = firstField;
+  _structs[s->name] = s;
   return s;
 }
 
@@ -540,6 +541,15 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
       AstType* type = _ast->createNode<AstType>();
       type->flags = flags;
       type->baseType = BaseType::UserDefined;
+      type->name = token.lexeme();
+      return type;
+    }
+
+    if (_structs.find(token.lexeme()) != _structs.end()) {
+      discardRestorePoint();
+      AstType* type = _ast->createNode<AstType>();
+      type->flags = flags;
+      type->baseType = BaseType::Struct;
       type->name = token.lexeme();
       return type;
     }

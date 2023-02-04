@@ -177,6 +177,7 @@ private:
 
   // Track typedefs to verify type names.
   std::map<std::string_view, AstTypedefStmt*> _typedefs;
+  std::map<std::string_view, AstStructStmt*> _structs;
 };
 
 } // namespace hlsl
