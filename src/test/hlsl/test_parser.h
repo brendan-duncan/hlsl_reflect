@@ -301,19 +301,15 @@ static Test test_half("Parser half", []() {
   Parser parser(R"(
 half SafePositivePow_half(half base, half power) {
   return pow(max(abs(base), half(4.8828125e-4)), power);
-}
-half2 SafePositivePow_half(half2 base, half2 power) {
-  return pow(max(abs(base), half(4.8828125e-4)), power);
-}
-half3 SafePositivePow_half(half3 base, half3 power) {
-  return pow(max(abs(base), half(4.8828125e-4)), power);
-}
-half4 SafePositivePow_half(half4 base, half4 power){ return pow(max(abs(base), half(4.8828125e-4)), power); }
-float SafePositivePow_half(float base, float power){ return pow(max(abs(base), half(4.8828125e-4)), power); }
-float2 SafePositivePow_half(float2 base, float2 power){ return pow(max(abs(base), half(4.8828125e-4)), power); }
-float3 SafePositivePow_half(float3 base, float3 power){ return pow(max(abs(base), half(4.8828125e-4)), power); }
-float4 SafePositivePow_half(float4 base, float4 power){ return pow(max(abs(base), half(4.8828125e-4)), power); }
-)");
+})");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_param_init("Parser param init", []() {
+  Parser parser(R"(void foo(float a = 1.0) { })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);

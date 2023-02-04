@@ -911,9 +911,12 @@ AstParameter* Parser::parseParameterList() {
 }
 
 AstParameter* Parser::parseParameter() {
-  AstParameter* param = _ast->createNode<AstParameter>();  
+  AstParameter* param = _ast->createNode<AstParameter>();
   param->type = parseType(false, "Expected parameter type");
   param->name = consume(TokenType::Identifier, "Expected parameter name").lexeme();
+  if (match(TokenType::Equal)) {
+    param->initializer = parseExpression();
+  }
   return param;
 }
 
