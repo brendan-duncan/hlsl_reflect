@@ -800,6 +800,7 @@ AstExpression* Parser::parseSingularExpression() {
   expr = parsePostfixExpression(expr);
 
   if (match(TokenType::Question)) {
+    // Ternary conditional expression (a ? b : c)
     AstTernaryExpr* op = _ast->createNode<AstTernaryExpr>();
     op->condition = expr;
     op->trueExpr = parseExpression();
@@ -1105,19 +1106,32 @@ AstStatement* Parser::parseStatement() {
   }
 
   if (check(TokenType::Underscore) || check(TokenType::Identifier)) {
-    // Assignment statement
+    // Assignment statement or method call (a.b())
     const bool isUnderscore = match(TokenType::Underscore);
 
-    AstAssignmentStmt* stmt = _ast->createNode<AstAssignmentStmt>();
+    AstExpression* var = nullptr;
+    
     if (!isUnderscore) {
-      stmt->variable = parsePrefixExpression();
+      var = parsePrefixExpression();
     }
 
-    if (!isUnderscore && stmt->variable == nullptr) {
+    if (!isUnderscore && var == nullptr) {
       throw ParseException(peekNext(), "Expected variable name");
     }
 
     Token tk = advance();
+
+    if (tk.type() == TokenType::Semicolon) {
+      // We're done here, the "assignment" was actually a method call.
+      AstExpressionStmt* stmt = _ast->createNode<AstExpressionStmt>();
+      stmt->expression = var;
+      stmt->attributes = attributes;
+      return stmt;
+    }
+
+    AstAssignmentStmt* stmt = _ast->createNode<AstAssignmentStmt>();
+    stmt->variable = var;
+
     stmt->op = tokenTypeToAssignmentOperatator(tk.type());
     if (stmt->op == Operator::Undefined) {
       throw ParseException(peekNext(), "Expected assignment operator");

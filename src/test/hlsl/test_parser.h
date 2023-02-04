@@ -23,7 +23,7 @@ static Test test_empty("Parser empty", []() {
   delete ast;
 });
 
-static Test test_const("Parser const int", []() {
+static Test test_static_const_int("Parser const int", []() {
   Parser parser(R"(static const int _USE_RGBM = 0;)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
@@ -31,7 +31,7 @@ static Test test_const("Parser const int", []() {
   delete ast;
 });
 
-static Test test_const_2("Parser float3", []() {
+static Test test_float3("Parser float3", []() {
   Parser parser(R"(const float3 magic = float3(0.0f, 0.0, 0);)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
@@ -39,7 +39,15 @@ static Test test_const_2("Parser float3", []() {
   delete ast;
 });
 
-static Test test_const_3("Parser const expression", []() {
+static Test test_array_init("Parser array init", []() {
+  Parser parser(R"(const float3 magic = {0.0f, 0.0, 0};)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_const_init_expression("Parser const init expression", []() {
   Parser parser(R"(const float y = x * 2654435769u;)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
@@ -56,7 +64,23 @@ static Test test_multi_variable("Parser multi variable", []() {
 });
 
 static Test test_multi_variable_assignment("Parser multi variable assignment", []() {
-  Parser parser(R"(float x = y = 1;)");
+  Parser parser(R"(
+    float x = 0, y = 1;
+    int foo() {
+      a = b = c = d = 0;
+    }
+  )");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_shd("Parser call method", []() {
+  Parser parser(R"(#line 930
+void foo() {
+  foo.bar(a, b);
+})");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
