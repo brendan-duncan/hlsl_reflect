@@ -180,9 +180,9 @@ public:
   void visitTernaryExpr(AstTernaryExpr* node) override {
     visitExpression(node->condition);
     std::cout << " ? ";
-    visitExpression(node->trueExpression);
+    visitExpression(node->trueExpr);
     std::cout << " : ";
-    visitExpression(node->falseExpression);
+    visitExpression(node->falseExpr);
   }
 
 private:

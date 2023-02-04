@@ -187,8 +187,8 @@ struct AstBinaryExpr : AstExpression {
 struct AstTernaryExpr : AstExpression {
   static const AstNodeType astType = AstNodeType::TernaryExpr;
   AstExpression* condition = nullptr;
-  AstExpression* trueExpression = nullptr;
-  AstExpression* falseExpression = nullptr;
+  AstExpression* trueExpr = nullptr;
+  AstExpression* falseExpr = nullptr;
 };
 
 struct AstStringExpr : AstExpression {

@@ -119,9 +119,9 @@ private:
 
   AstExpression* parseArgumentList();
 
-  AstFunctionStmt* parseFunction(AstType* returnType, const std::string_view& name);
+  AstFunctionStmt* parseFunctionStmt(AstType* returnType, const std::string_view& name);
 
-  AstVariableStmt* parseVariable(AstType* type, const std::string_view& name);
+  AstVariableStmt* parseVariableStmt(AstType* type, const std::string_view& name);
 
   AstParameter* parseParameterList();
 
@@ -131,15 +131,15 @@ private:
 
   AstStatement* parseStatement();
 
-  AstIfStmt* parseIf();
+  AstIfStmt* parseIfStmt();
 
-  AstSwitchStmt* parseSwitch();
+  AstSwitchStmt* parseSwitchStmt();
 
-  AstForStmt* parseFor();
+  AstForStmt* parseForStmt();
 
-  AstDoWhileStmt* parseDoWhile();
+  AstDoWhileStmt* parseDoWhileStmt();
 
-  AstWhileStmt* parseWhile();
+  AstWhileStmt* parseWhileStmt();
 
   bool isType(const Token& tk) {
     return tokenTypeToBaseType(tk.type()) != BaseType::Undefined ||

@@ -262,6 +262,31 @@ float CubeMapFaceID(float3 dir) {
   delete ast;
 });
 
+static Test test_shader_3("Parser if else", []() {
+  Parser parser(R"(
+void foo() {
+  if (a) {
+  } else if (b) {
+  }
+  return faceID;
+})");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_return_ternary("Parser return ternary", []() {
+  Parser parser(R"(
+float SanitizeFinite(float x) {
+  return IsFinite(x) ? x : 0;
+})");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);

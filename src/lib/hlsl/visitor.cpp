@@ -260,11 +260,11 @@ void Visitor::visitTernaryExpr(AstTernaryExpr *node) {
   if (node->condition != nullptr) {
     visitExpression(node->condition);
   }
-  if (node->trueExpression != nullptr) {
-    visitExpression(node->trueExpression);
+  if (node->trueExpr != nullptr) {
+    visitExpression(node->trueExpr);
   }
-  if (node->falseExpression != nullptr) {
-    visitExpression(node->falseExpression);
+  if (node->falseExpr != nullptr) {
+    visitExpression(node->falseExpr);
   }
 }
 

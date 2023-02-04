@@ -138,7 +138,7 @@ AstStatement* Parser::parseTopLevelStatement() {
 
     // function declaration
     if (check(TokenType::LeftParen)) {
-      AstFunctionStmt* func = parseFunction(type, identifier.lexeme());
+      AstFunctionStmt* func = parseFunctionStmt(type, identifier.lexeme());
       if (func != nullptr) {
         func->attributes = attributes;
       }
@@ -146,7 +146,7 @@ AstStatement* Parser::parseTopLevelStatement() {
     }
 
     // variable declaration
-    AstVariableStmt* var = parseVariable(type, identifier.lexeme());
+    AstVariableStmt* var = parseVariableStmt(type, identifier.lexeme());
     if (var != nullptr) {
       var->attributes = attributes;
     }
@@ -774,7 +774,18 @@ AstExpression* Parser::parsePrefixExpression() {
 
 AstExpression* Parser::parseSingularExpression() {
   AstExpression* expr = parsePrimaryExpression();
-  return parsePostfixExpression(expr);
+  expr = parsePostfixExpression(expr);
+
+  if (match(TokenType::Question)) {
+    AstTernaryExpr* op = _ast->createNode<AstTernaryExpr>();
+    op->condition = expr;
+    op->trueExpr = parseExpression();
+    consume(TokenType::Colon, "Expected ':' after ternary expression");
+    op->falseExpr = parseExpression();
+    expr = op;
+  }
+
+  return expr;
 }
 
 AstExpression* Parser::parsePostfixExpression(AstExpression* expr) {
@@ -835,6 +846,7 @@ AstExpression* Parser::parsePrimaryExpression() {
   }
 
   Token tk = peekNext();
+  // float(x) is a cast expression
   if (isType(tk)) {
     AstCastExpr* expr = _ast->createNode<AstCastExpr>();
     expr->type = parseType(false, "Invalid type");
@@ -867,7 +879,7 @@ AstExpression* Parser::parseArgumentList() {
   return firstExpr;
 }
 
-AstFunctionStmt* Parser::parseFunction(AstType* returnType, const std::string_view& name) {
+AstFunctionStmt* Parser::parseFunctionStmt(AstType* returnType, const std::string_view& name) {
   AstFunctionStmt* func = _ast->createNode<AstFunctionStmt>();
   func->returnType = returnType;
   func->name = name;
@@ -902,21 +914,12 @@ AstParameter* Parser::parseParameter() {
   return param;
 }
 
-AstVariableStmt* Parser::parseVariable(AstType* type, const std::string_view& name) {
+AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view& name) {
   AstVariableStmt* var = _ast->createNode<AstVariableStmt>();
   var->type = type;
   var->name = name;
   if (match(TokenType::Equal)) {
     var->initializer = parseLogicalOrExpression();
-    
-    if (match(TokenType::Question)) {
-      AstTernaryExpr* ternary = _ast->createNode<AstTernaryExpr>();
-      ternary->condition = var->initializer;
-      ternary->trueExpression = parseExpression();
-      consume(TokenType::Colon, "Expected ':' after ternary expression");
-      ternary->falseExpression = parseExpression();
-      var->initializer = ternary;
-    }
   }
   consume(TokenType::Semicolon, "Expected ';' after variable declaration");
   return var;
@@ -960,32 +963,32 @@ AstStatement* Parser::parseStatement() {
   AstAttribute* attributes = parseAttributes();
 
   if (match(TokenType::If)) {
-    AstIfStmt* stmt = parseIf();
+    AstIfStmt* stmt = parseIfStmt();
     stmt->attributes = attributes;
     return stmt;
   }
 
   if (match(TokenType::Switch)) {
-    AstSwitchStmt* stmt = parseSwitch();
+    AstSwitchStmt* stmt = parseSwitchStmt();
     stmt->attributes = attributes;
     return stmt;
   }
 
   if (match(TokenType::For)) {
-    AstForStmt* stmt = parseFor();
+    AstForStmt* stmt = parseForStmt();
     stmt->attributes = attributes;
     return stmt;
   }
 
   if (match(TokenType::Do)) {
-    AstDoWhileStmt* stmt = parseDoWhile();
+    AstDoWhileStmt* stmt = parseDoWhileStmt();
     stmt->attributes = attributes;
     consume(TokenType::Semicolon, "Expected ';' after return value");
     return stmt;
   }
 
   if (match(TokenType::While)) {
-    AstWhileStmt* stmt = parseWhile();
+    AstWhileStmt* stmt = parseWhileStmt();
     stmt->attributes = attributes;
     return stmt;
   }
@@ -999,10 +1002,15 @@ AstStatement* Parser::parseStatement() {
   if (match(TokenType::Return)) {
     AstReturnStmt* stmt = _ast->createNode<AstReturnStmt>();
     stmt->attributes = attributes;
-    if (!check(TokenType::Semicolon)) {
-      stmt->value = parseExpression();
-      consume(TokenType::Semicolon, "Expected ';' after return value");
+
+    if (check(TokenType::Semicolon)) {
+      return stmt;
     }
+
+    stmt->value = parseExpression();
+
+    consume(TokenType::Semicolon, "Expected ';' after return value");
+
     return stmt;
   }
 
@@ -1046,7 +1054,7 @@ AstStatement* Parser::parseStatement() {
   AstType* type = parseType(false);
   if (type != nullptr) {
     const std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
-    stmt = parseVariable(type, name);
+    stmt = parseVariableStmt(type, name);
     stmt->attributes = attributes;
     return stmt;
   }
@@ -1091,15 +1099,6 @@ AstStatement* Parser::parseStatement() {
 
     stmt->value = parseLogicalOrExpression();
 
-    if (match(TokenType::Question)) {
-      AstTernaryExpr* ternary = _ast->createNode<AstTernaryExpr>();
-      ternary->condition = stmt->value;
-      ternary->trueExpression = parseExpression();
-      consume(TokenType::Colon, "Expected ':' after ternary expression");
-      ternary->falseExpression = parseExpression();
-      stmt->value = ternary;
-    }
-
     consume(TokenType::Semicolon, "Expected ';' after assignment");
     
     stmt->attributes = attributes;
@@ -1124,7 +1123,7 @@ AstStatement* Parser::parseStatement() {
   return nullptr;
 }
 
-AstIfStmt* Parser::parseIf() {
+AstIfStmt* Parser::parseIfStmt() {
   AstIfStmt* stmt = _ast->createNode<AstIfStmt>();
 
   consume(TokenType::LeftParen, "Expected '(' after 'if'");
@@ -1135,14 +1134,14 @@ AstIfStmt* Parser::parseIf() {
 
   stmt->body = parseStatement();
 
-  if (check(TokenType::Else)) {
+  if (match(TokenType::Else)) {
     stmt->elseBody = parseStatement();
   }
 
   return stmt;
 }
 
-AstSwitchStmt* Parser::parseSwitch() {
+AstSwitchStmt* Parser::parseSwitchStmt() {
   AstSwitchStmt* stmt = _ast->createNode<AstSwitchStmt>();
   consume(TokenType::LeftParen, "Expected '(' after 'switch'");
   stmt->condition = parseExpression();
@@ -1173,7 +1172,7 @@ AstSwitchStmt* Parser::parseSwitch() {
   return stmt;
 }
 
-AstForStmt* Parser::parseFor() {
+AstForStmt* Parser::parseForStmt() {
   AstForStmt* stmt = _ast->createNode<AstForStmt>();
 
   consume(TokenType::LeftParen, "Expected '(' after 'for'");
@@ -1195,7 +1194,7 @@ AstForStmt* Parser::parseFor() {
   return stmt;
 }
 
-AstDoWhileStmt* Parser::parseDoWhile() {
+AstDoWhileStmt* Parser::parseDoWhileStmt() {
   AstDoWhileStmt* stmt = _ast->createNode<AstDoWhileStmt>();
 
   stmt->body = parseBlock();
@@ -1208,7 +1207,7 @@ AstDoWhileStmt* Parser::parseDoWhile() {
   return stmt;
 }
 
-AstWhileStmt* Parser::parseWhile() {
+AstWhileStmt* Parser::parseWhileStmt() {
   AstWhileStmt* stmt = _ast->createNode<AstWhileStmt>();
   consume(TokenType::LeftParen, "Expected '(' after 'while'");
   stmt->condition = parseExpression();
