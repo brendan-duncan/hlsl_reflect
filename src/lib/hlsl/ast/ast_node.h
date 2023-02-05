@@ -265,6 +265,7 @@ struct AstFunctionStmt : AstStatement {
   std::string_view name;
   AstType* returnType = nullptr;
   AstParameter* parameters = nullptr;
+  std::string_view semantic;
   AstBlock* body = nullptr;
 };
 

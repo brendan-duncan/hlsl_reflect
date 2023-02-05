@@ -1064,6 +1064,11 @@ AstFunctionStmt* Parser::parseFunctionStmt(AstType* returnType, const std::strin
   func->returnType = returnType;
   func->name = name;
   func->parameters = parseParameterList();
+
+  if (match(TokenType::Colon)) {
+    func->semantic = advance().lexeme();
+  }
+
   func->body = parseBlock();
   return func;
 }

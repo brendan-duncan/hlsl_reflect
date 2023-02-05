@@ -349,6 +349,14 @@ MyStruct Foo() {})");
   delete ast;
 });
 
+static Test test_function_semantic("Parser function semantic", []() {
+  Parser parser(R"(float4 foo(): SV_Target {})");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_function_5("Parser inout", []() {
   Parser parser(R"(uint XorShift(inout uint rngState) { })");
   Ast* ast = parser.parse();
