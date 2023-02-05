@@ -71,6 +71,14 @@ static Test test_cast_2("Parser cast 2", []() {
   delete ast;
 });
 
+static Test test_struct_cast("Parser struct cast", []() {
+  Parser parser(R"(struct foo { }; const foo y = (foo)0;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_multi_variable("Parser multi variable", []() {
   Parser parser(R"(float x = 0, y = 1;)");
   Ast* ast = parser.parse();

@@ -55,6 +55,7 @@ private:
   // @return true if the next token is the given type.
   bool check(TokenType type);
 
+  /// Push a token back onto the front of the pending token list.
   void pushBack(const Token& token) {
     _pending.push_front(token);
   }
@@ -144,15 +145,21 @@ private:
 
   AstWhileStmt* parseWhileStmt();
 
+  /// Returns true if the token is a type name, either built-in, user defined, or a struct
   bool isType(const Token& tk) {
     return tokenTypeToBaseType(tk.type()) != BaseType::Undefined ||
-            _typedefs.find(tk.lexeme()) != _typedefs.end();
+            _typedefs.find(tk.lexeme()) != _typedefs.end() ||
+            _structs.find(tk.lexeme()) != _structs.end();
   }
 
+  // Start saving all tokens that are consumed. restorePoint() can be called to restore the tokens
+  // that were consumed back to the startRestorePoint. This is used to undo a parse, since some
+  // grammar rules are ambiguous.
   void startRestorePoint() {
     _restorePoint++;
   }
 
+  // Restore the tokens that were recorded since the last startRestorePoint() call.
   void restorePoint() {
     _restorePoint--;
     if (_restorePoint == 0) {
@@ -161,6 +168,7 @@ private:
     }
   }
 
+  // Discard the tokens that were recorded since the last startRestorePoint() call.
   void discardRestorePoint() {
     _restorePoint--;
     if (_restorePoint == 0) {
@@ -168,8 +176,11 @@ private:
     }
   }
 
+  // The AST being constructed.
   Ast* _ast = nullptr;
+  // The lexer that is used to scan the source string into Tokens.
   Scanner _scanner;
+  // A list of tokens that have been scanned from the scanner but not yet parsed.
   std::list<Token> _pending;
 
   int _restorePoint = 0;
@@ -177,6 +188,7 @@ private:
 
   // Track typedefs to verify type names.
   std::map<std::string_view, AstTypedefStmt*> _typedefs;
+  // Track structs to verify type names.
   std::map<std::string_view, AstStructStmt*> _structs;
 };
 

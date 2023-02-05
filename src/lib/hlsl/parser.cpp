@@ -1030,7 +1030,7 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
   }
 
   AstVariableStmt* firstVar = var;
-  // Parse multiple variable declarations
+  // Parse multiple variable declarations (a = b, c = d)
   while (match(TokenType::Comma)) {
     std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
     AstVariableStmt* next = _ast->createNode<AstVariableStmt>();
