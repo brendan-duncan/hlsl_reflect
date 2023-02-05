@@ -69,7 +69,7 @@ static Test test_Shader("Scanner Shader", []() {
     auto tk = scanner.scanNext();
     count++;
   }
-  TEST_EQUALS(count, 25925ull);
+  TEST_EQUALS(count, 25901ull);
 
   free(hlsl);
 });

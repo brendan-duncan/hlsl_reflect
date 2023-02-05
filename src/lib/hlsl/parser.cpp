@@ -202,6 +202,13 @@ AstStructField* Parser::parseStructField() {
 
   field->type = parseType(false, "struct field type expected");
   field->name = advance().lexeme();
+
+  if (match(TokenType::LeftBracket)) {
+    // Array field
+    field->isArray = true;
+    field->arraySize = parseArraySize();
+  }
+
   consume(TokenType::Semicolon, "';' expected for struct field");
 
   return field;

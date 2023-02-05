@@ -106,6 +106,8 @@ struct AstStructField : AstNode {
   InterpolationModifier interpolation = InterpolationModifier::None;
   AstType* type = nullptr;
   std::string_view name;
+  bool isArray = false;
+  AstExpression* arraySize = nullptr;
   AstStructField* next = nullptr;
 };
 

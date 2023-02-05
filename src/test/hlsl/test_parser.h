@@ -191,10 +191,11 @@ static Test test_Parser_struct("Parser struct", []() {
   delete ast;
 });
 
-static Test test_Parser_struct2("Parser struct2", []() {
+static Test test_Parser_struct2("Parser struct members", []() {
   Parser parser(R"(struct foo {
     int a;
     centroid float b;
+    float c[10];
   };)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
