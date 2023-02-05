@@ -554,7 +554,7 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
       return type;
     }
 
-    restore();
+    restorePoint();
     if (exceptionMessage != nullptr) {
       throw ParseException(token, exceptionMessage);
     }
@@ -564,7 +564,7 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   BaseType baseType = tokenTypeToBaseType(token.type());
 
   if (baseType == BaseType::Undefined) {
-    restore();
+    restorePoint();
     if (exceptionMessage != nullptr) {
       throw ParseException(token, exceptionMessage);
     }
@@ -579,7 +579,7 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
       type->baseType = baseType;
       return type;
     } else {
-      restore();
+      restorePoint();
       if (exceptionMessage != nullptr) {
       throw ParseException(token, exceptionMessage);
     }
@@ -593,7 +593,7 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
       Token samplerType = advance();
       sType = tokenTypeToSamplerType(samplerType.type());
       if (sType == SamplerType::Undefined) {
-        restore();
+        restorePoint();
         if (exceptionMessage != nullptr) {
           throw ParseException(token, exceptionMessage);
         }
@@ -900,6 +900,28 @@ AstExpression* Parser::parsePrimaryExpression() {
   }
 
   if (check(TokenType::LeftParen)) {
+    // Either a parenthesized expression or a cast expression
+    startRestorePoint();
+    advance();
+    if (isType(peekNext())) {
+      advance();
+      if (check(TokenType::RightParen)) {
+        // (Type) is a cast expression
+        restorePoint();
+
+        advance();  // consume '('
+        AstType* type = parseType(false, "Invalid type");
+        consume(TokenType::RightParen, "Expected ')' after type");
+
+        AstExpression* valueExpr = parseSingularExpression();
+        AstCastExpr* expr = _ast->createNode<AstCastExpr>();
+        expr->type = type;
+        expr->value = valueExpr;
+        return expr;
+      }
+    }
+    // parenthesized expression (x)
+    restorePoint();
     return parseParenthesizedExpression();
   }
 
@@ -909,8 +931,30 @@ AstExpression* Parser::parsePrimaryExpression() {
     AstCastExpr* expr = _ast->createNode<AstCastExpr>();
     expr->type = parseType(false, "Invalid type");
     consume(TokenType::LeftParen, "Expected '(' after type");
-    expr->expression = parseExpressionList();
+    expr->value = parseExpressionList();
     consume(TokenType::RightParen, "Expected ')' after expression");
+    return expr;
+  }
+
+  // (float)x or (float)(x) are cast expressions
+  if (tk.type() == TokenType::LeftParen) {
+    advance();
+    AstType* type = parseType(false, "Invalid type");
+    consume(TokenType::RightParen, "Expected ')' after type");
+
+    AstExpression* valueExpr = nullptr;
+    if (peekNext().type() == TokenType::LeftParen) {
+      // (float)(x) is a cast expression
+      valueExpr = parseParenthesizedExpression();
+    } else {
+      // (float)x is a cast expression
+      valueExpr = parseSingularExpression();
+    }
+
+    AstCastExpr* expr = _ast->createNode<AstCastExpr>();
+    expr->type = type;
+    expr->value = valueExpr;
+
     return expr;
   }
 

@@ -55,6 +55,22 @@ static Test test_const_init_expression("Parser const init expression", []() {
   delete ast;
 });
 
+static Test test_cast_1("Parser cast 1", []() {
+  Parser parser(R"(const float y = float(0);)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_cast_2("Parser cast 2", []() {
+  Parser parser(R"(const float y = (float)0;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_multi_variable("Parser multi variable", []() {
   Parser parser(R"(float x = 0, y = 1;)");
   Ast* ast = parser.parse();

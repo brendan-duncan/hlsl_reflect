@@ -272,7 +272,7 @@ void Visitor::visitTernaryExpr(AstTernaryExpr *node) {
 
 void Visitor::visitCastExpr(AstCastExpr* node) {
   visitType(node->type);
-  visitExpression(node->expression);
+  visitExpression(node->value);
 }
 
 void Visitor::visitArgument(AstExpression* node) {

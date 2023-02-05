@@ -217,7 +217,7 @@ struct AstLiteralExpr : AstExpression {
 struct AstCastExpr : AstExpression {
   static const AstNodeType astType = AstNodeType::CastExpr;
   AstType* type = nullptr;
-  AstExpression* expression = nullptr;
+  AstExpression* value = nullptr;
 };
 
 struct AstAssignmentExpr : AstExpression {

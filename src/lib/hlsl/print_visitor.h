@@ -153,7 +153,7 @@ public:
   void visitCastExpr(AstCastExpr* node) override {
     visitType(node->type);
     std::cout << "(";
-    visitArguments(node->expression);
+    visitArguments(node->value);
     std::cout << ")";
   }
 

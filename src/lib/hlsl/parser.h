@@ -153,7 +153,7 @@ private:
     _restorePoint++;
   }
 
-  void restore() {
+  void restorePoint() {
     _restorePoint--;
     if (_restorePoint == 0) {
       _pending.splice(_pending.begin(), _restore);
