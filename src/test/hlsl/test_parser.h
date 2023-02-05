@@ -100,6 +100,14 @@ static Test test_multi_variable_assignment("Parser multi variable assignment", [
   delete ast;
 });
 
+static Test test_multi_variable_array("Parser multi variable array", []() {
+  Parser parser(R"(float2 weights[2], offsets[2];)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_shd("Parser call method", []() {
   Parser parser(R"(#line 930
 void foo() {

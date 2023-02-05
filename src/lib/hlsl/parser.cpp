@@ -1016,24 +1016,8 @@ AstParameter* Parser::parseParameter() {
 
   if (match(TokenType::LeftBracket)) {
     // Array parameter (int a[*])
-
-    if (peekNext().type() == TokenType::IntLiteral) {
-      Token count = advance();
-      AstLiteralExpr* size = _ast->createNode<AstLiteralExpr>();
-      size->value = count.lexeme();
-      AstLiteralExpr* firstSize = size;
-      // Bounded array (int a[10
-      while (match(TokenType::Comma) && !isAtEnd()) {
-        Token count = consume(TokenType::IntLiteral, "Expected array size");
-        AstLiteralExpr* nextSize = _ast->createNode<AstLiteralExpr>();
-        nextSize->value = count.lexeme();
-        size->next = nextSize;
-        size = nextSize;
-      }
-
-      param->arraySize = firstSize;
-    }
-    consume(TokenType::RightBracket, "Expected ']' for array parameter");
+    param->isArray = true;
+    param->arraySize = parseArraySize();
   }
 
   if (match(TokenType::Equal)) {
@@ -1048,21 +1032,34 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
   var->type = type;
   var->name = name;
   var->attributes = attributes;
+
+  if (match(TokenType::LeftBracket)) {
+    var->isArray = true;
+    var->arraySize = parseArraySize();
+  }
+
   if (match(TokenType::Equal)) {
     var->initializer = parseAssignmentExpression();
   }
 
   AstVariableStmt* firstVar = var;
   // Parse multiple variable declarations (a = b, c = d)
-  while (match(TokenType::Comma)) {
+  while (match(TokenType::Comma) && !isAtEnd()) {
     std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
     AstVariableStmt* next = _ast->createNode<AstVariableStmt>();
     next->type = type;
     next->name = name;
     next->attributes = attributes;
+
+    if (match(TokenType::LeftBracket)) {
+      next->isArray = true;
+      next->arraySize = parseArraySize();
+    }
+
     if (match(TokenType::Equal)) {
       next->initializer = parseLogicalOrExpression();
     }
+
     next->attributes = attributes;
     var->next = next;
     var = next;
@@ -1070,6 +1067,27 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
 
   consume(TokenType::Semicolon, "Expected ';' after variable declaration");
   return firstVar;
+}
+
+AstLiteralExpr* Parser::parseArraySize() {
+  AstLiteralExpr* firstSize = nullptr;
+  // Array declaration (int a[10])
+  if (peekNext().type() == TokenType::IntLiteral) {
+    Token count = advance();
+    AstLiteralExpr* size = _ast->createNode<AstLiteralExpr>();
+    size->value = count.lexeme();
+    firstSize = size;
+    // Bounded array (int a[10
+    while (match(TokenType::Comma) && !isAtEnd()) {
+      Token count = consume(TokenType::IntLiteral, "Expected array size");
+      AstLiteralExpr* nextSize = _ast->createNode<AstLiteralExpr>();
+      nextSize->value = count.lexeme();
+      size->next = nextSize;
+      size = nextSize;
+    }
+  }
+  consume(TokenType::RightBracket, "Expected ']' for array declaration");
+  return nullptr;
 }
 
 // Parse a block of statements enclosed in braces

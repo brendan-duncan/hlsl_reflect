@@ -231,6 +231,8 @@ struct AstVariableStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::VariableStmt;
   std::string_view name;
   AstType* type = nullptr;
+  bool isArray = false;
+  AstLiteralExpr* arraySize = nullptr;
   AstExpression* initializer = nullptr;
 };
 
@@ -238,6 +240,7 @@ struct AstParameter : AstNode {
   static const AstNodeType astType = AstNodeType::Parameter;
   std::string_view name;
   AstType* type = nullptr;
+  bool isArray = false;
   AstLiteralExpr* arraySize = nullptr;
   AstExpression* initializer = nullptr;
   AstParameter* next = nullptr;
