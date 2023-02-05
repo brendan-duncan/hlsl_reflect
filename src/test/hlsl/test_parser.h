@@ -119,6 +119,14 @@ void foo() {
   delete ast;
 });
 
+static Test test_shd_2("Parser call method 2", []() {
+  Parser parser(R"(void foo() { n *= 1e-6; })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_postfix_increment("Parser postfix increment", []() {
   Parser parser(R"(float y = x++;)");
   Ast* ast = parser.parse();

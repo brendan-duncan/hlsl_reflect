@@ -361,6 +361,7 @@ AstBufferField* Parser::parseBufferField() {
     lastDecl = decl;
 
     decl->name = consume(TokenType::Identifier, "identifier expected for declaration").lexeme();
+    decl->type = type;
 
     if (match(TokenType::LeftBracket)) {
       decl->type->array = true;
@@ -381,7 +382,7 @@ AstBufferField* Parser::parseBufferField() {
         decl->assignment = parseExpression();
       }
     }
-  } while (match(TokenType::Comma));
+  } while (match(TokenType::Comma) && !isAtEnd());
 
   return firstDecl;
 }

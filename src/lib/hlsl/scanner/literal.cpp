@@ -59,11 +59,8 @@ TokenType matchLiteral(const std::string_view& lexeme) {
     }
 
     c = lexeme[ci];
-    while (ci < len && (isNumeric(c) || isHexAlpha(c))) {
+    while (ci < len && (isNumeric(c) || (isHex && isHexAlpha(c)))) {
       if (isOctal && (isHexAlpha(c) || c > '7')) {
-        return TokenType::Undefined;
-      }
-      if (!isHex && isHexAlpha(c)) {
         return TokenType::Undefined;
       }
       ci++;

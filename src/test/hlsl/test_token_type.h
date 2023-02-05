@@ -5,7 +5,7 @@ using namespace hlsl;
 
 namespace token_type_tests {
 
-static Test test_TokenType("TokenType", []() {
+static Test test_TokenType("TokenType IntLiteral", []() {
   TEST_EQUALS(findTokenType("123"), TokenType::IntLiteral);
   TEST_EQUALS(findTokenType("123u"), TokenType::IntLiteral);
   TEST_EQUALS(findTokenType("123U"), TokenType::IntLiteral);
@@ -14,7 +14,8 @@ static Test test_TokenType("TokenType", []() {
   TEST_EQUALS(findTokenType("0x123"), TokenType::IntLiteral);
 });
 
-static Test test_TokenType_2("TokenType 2", []() {
+static Test test_TokenType_2("TokenType FloatLiteral", []() {
+  TEST_EQUALS(findTokenType("1e-6"), TokenType::FloatLiteral);
   TEST_EQUALS(findTokenType("1."), TokenType::FloatLiteral);
   TEST_EQUALS(findTokenType("1.0"), TokenType::FloatLiteral);
   TEST_EQUALS(findTokenType("1.0f"), TokenType::FloatLiteral);
