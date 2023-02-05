@@ -284,6 +284,10 @@ AstExpression* Parser::parseAssignmentExpression() {
     AstExpression* lastExpression = firstExpression;
 
     while (!isAtEnd() && match(TokenType::Comma)) {
+      if (check(TokenType::RightBrace)) {
+        // Allow trailing comma (e.g. a = {1, 2, 3,})
+        break;
+      }
       AstExpression* expression = parseExpression();
       if (expression == nullptr) {
         throw ParseException(peekNext(), "expression expected for assignment");
@@ -332,6 +336,9 @@ AstExpression* Parser::parseExpressionList() {
   AstExpression* lastExpression = firstExpression;
 
   while (!isAtEnd() && match(TokenType::Comma)) {
+    if (check(TokenType::RightBrace) || check(TokenType::RightParen)) {
+      break;
+    }
     AstExpression* expression = parseExpression();
     if (expression == nullptr) {
       throw ParseException(peekNext(), "expression expected for expression list");
@@ -974,6 +981,10 @@ AstExpression* Parser::parseArgumentList() {
   AstExpression* firstExpr = parseLogicalOrExpression();
   AstExpression* lastExpr = firstExpr;
   while (match(TokenType::Comma)) {
+    if (check(TokenType::RightParen)) {
+      // trailing comma
+      break;
+    }
     AstExpression* expr = parseLogicalOrExpression();
     lastExpr->next = expr;
     lastExpr = expr;
@@ -1001,6 +1012,9 @@ AstParameter* Parser::parseParameterList() {
   AstParameter* firstParam = parseParameter();
   AstParameter* lastParam = firstParam;
   while (match(TokenType::Comma)) {
+    if (check(TokenType::RightParen)) {
+      break;
+    }
     AstParameter* param = parseParameter();
     lastParam->next = param;
     lastParam = param;
