@@ -1013,6 +1013,29 @@ AstParameter* Parser::parseParameter() {
   AstParameter* param = _ast->createNode<AstParameter>();
   param->type = parseType(false, "Expected parameter type");
   param->name = consume(TokenType::Identifier, "Expected parameter name").lexeme();
+
+  if (match(TokenType::LeftBracket)) {
+    // Array parameter (int a[*])
+
+    if (peekNext().type() == TokenType::IntLiteral) {
+      Token count = advance();
+      AstLiteralExpr* size = _ast->createNode<AstLiteralExpr>();
+      size->value = count.lexeme();
+      AstLiteralExpr* firstSize = size;
+      // Bounded array (int a[10
+      while (match(TokenType::Comma) && !isAtEnd()) {
+        Token count = consume(TokenType::IntLiteral, "Expected array size");
+        AstLiteralExpr* nextSize = _ast->createNode<AstLiteralExpr>();
+        nextSize->value = count.lexeme();
+        size->next = nextSize;
+        size = nextSize;
+      }
+
+      param->arraySize = firstSize;
+    }
+    consume(TokenType::RightBracket, "Expected ']' for array parameter");
+  }
+
   if (match(TokenType::Equal)) {
     param->initializer = parseExpression();
   }

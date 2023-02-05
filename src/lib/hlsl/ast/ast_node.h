@@ -238,6 +238,7 @@ struct AstParameter : AstNode {
   static const AstNodeType astType = AstNodeType::Parameter;
   std::string_view name;
   AstType* type = nullptr;
+  AstLiteralExpr* arraySize = nullptr;
   AstExpression* initializer = nullptr;
   AstParameter* next = nullptr;
 };
