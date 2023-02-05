@@ -203,6 +203,14 @@ static Test test_Parser_struct_members("Parser struct members", []() {
   delete ast;
 });
 
+static Test test_Parser_struct_member_multi_decl("Parser struct member multi-declration", []() {
+  Parser parser(R"(struct foo { int a, b, c; };)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parser_struct_init("Parser struct init", []() {
   Parser parser(R"(struct foo { float a[2]; float b; };
   foo x = { {1, 2}, 3 };)");

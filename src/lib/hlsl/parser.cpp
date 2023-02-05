@@ -172,6 +172,7 @@ AstStructStmt* Parser::parseStruct() {
   AstStructField* lastField = nullptr;
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
     AstStructField* field = parseStructField();
+
     if (firstField == nullptr) {
       firstField = field;
     }
@@ -179,6 +180,22 @@ AstStructStmt* Parser::parseStruct() {
       lastField->next = field;
     }
     lastField = field;
+
+    while (check(TokenType::Comma)) {
+      advance(); // consume comma
+      AstStructField* nextField = _ast->createNode<AstStructField>();
+      nextField->type = field->type;
+      nextField->name = advance().lexeme();
+      if (match(TokenType::LeftBracket)) {
+        // Array field
+        nextField->isArray = true;
+        nextField->arraySize = parseArraySize();
+      }
+      lastField->next = nextField;
+      lastField = nextField;
+    }
+
+    consume(TokenType::Semicolon, "';' expected for struct field");
   }
 
   consume(TokenType::RightBrace, "'}' expected for struct");
@@ -208,8 +225,6 @@ AstStructField* Parser::parseStructField() {
     field->isArray = true;
     field->arraySize = parseArraySize();
   }
-
-  consume(TokenType::Semicolon, "';' expected for struct field");
 
   return field;
 }
