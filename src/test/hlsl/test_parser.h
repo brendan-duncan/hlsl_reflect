@@ -191,7 +191,7 @@ static Test test_Parser_struct("Parser struct", []() {
   delete ast;
 });
 
-static Test test_Parser_struct_members("Parser struct members", []() {
+static Test test_Parser_struct_fields("Parser struct fields", []() {
   Parser parser(R"(struct foo {
     int a;
     centroid float b;
@@ -203,7 +203,15 @@ static Test test_Parser_struct_members("Parser struct members", []() {
   delete ast;
 });
 
-static Test test_Parser_struct_member_multi_decl("Parser struct member multi-declration", []() {
+static Test test_Parser_struct_field_semantic("Parser struct field semantic", []() {
+  Parser parser(R"(struct foo { uint vertexID : SV_VertexID; };)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_Parser_struct_member_multi_decl("Parser struct field multi-declration", []() {
   Parser parser(R"(struct foo { int a, b, c; };)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);

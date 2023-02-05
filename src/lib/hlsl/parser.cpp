@@ -226,6 +226,11 @@ AstStructField* Parser::parseStructField() {
     field->arraySize = parseArraySize();
   }
 
+  if (match(TokenType::Colon)) {
+    // Struct field has a semantic
+    field->semantic = advance().lexeme();
+  }
+
   return field;
 }
 
