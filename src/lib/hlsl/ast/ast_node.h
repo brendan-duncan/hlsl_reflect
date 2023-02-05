@@ -248,6 +248,17 @@ struct AstParameter : AstNode {
   AstParameter* next = nullptr;
 };
 
+struct AstStructInitializerExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::StructInitializerExpr;
+  AstStructStmt* structType = nullptr;
+  AstExpression* fields = nullptr;
+};
+
+struct AstArrayInitializerExpr : AstExpression {
+  static const AstNodeType astType = AstNodeType::ArrayInitializerExpr;
+  AstExpression* elements = nullptr;
+};
+
 struct AstFunctionStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::FunctionStmt;
   std::string_view name;

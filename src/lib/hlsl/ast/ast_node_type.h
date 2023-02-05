@@ -47,6 +47,8 @@ enum class AstNodeType {
   LiteralExpr,
   CastExpr,
   AssignmentExpr,
+  StructInitializerExpr,
+  ArrayInitializerExpr,
 };
 
 } // namespace hlsl

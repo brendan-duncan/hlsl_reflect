@@ -157,6 +157,28 @@ public:
     std::cout << ")";
   }
 
+  void visitArrayInitializerExpr(AstArrayInitializerExpr* node) {
+    std::cout << "{";
+    for (AstExpression* expr = node->elements; expr != nullptr; expr = expr->next) {
+      visitExpression(expr);
+      if (expr->next != nullptr) {
+        std::cout << ", ";
+      }
+    }
+    std::cout << "}";
+  }
+
+  void visitStructInitializerExpr(AstStructInitializerExpr* node) {
+    std::cout << "{";
+    for (AstExpression* expr = node->fields; expr != nullptr; expr = expr->next) {
+      visitExpression(expr);
+      if (expr->next != nullptr) {
+        std::cout << ", ";
+      }
+    }
+    std::cout << "}";
+  }
+
   void visitArguments(AstExpression* args) override {
     while (args != nullptr) {
       visitExpression(args);

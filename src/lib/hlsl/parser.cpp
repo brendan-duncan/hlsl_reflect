@@ -281,9 +281,45 @@ AstAttribute* Parser::parseAttributes() {
   return firstAttribute;
 }
 
-AstExpression* Parser::parseAssignmentExpression() {
+AstExpression* Parser::parseAssignmentExpression(AstType* type) {
   if (match(TokenType::LeftBrace)) {
-    // Array initialization expression (e.g. a = {1, 2, 3})
+    // Array or struct initialization expression (e.g. a = {1, 2, 3})
+    if (type->baseType == BaseType::Struct) {
+      // Struct initialization
+      AstStructStmt* structType = _structs[type->name];
+      if (structType == nullptr) {
+        throw ParseException(peekNext(), "unknown struct type");
+      }
+      AstStructField* field = structType->fields;
+      AstExpression* firstExpression = nullptr;
+      AstExpression* lastExpression = nullptr;
+      while (field != nullptr) {
+        AstExpression* expression = parseAssignmentExpression(field->type);
+        if (firstExpression == nullptr) {
+          firstExpression = expression;
+        }
+        if (lastExpression != nullptr) {
+          lastExpression->next = expression;
+        }
+        lastExpression = expression;
+        field = field->next;
+        if (field != nullptr) {
+          consume(TokenType::Comma, "',' expected for struct initialization");
+        }
+      }
+
+      if (check(TokenType::Comma)) {
+        advance(); // skip trailing comma
+      }
+
+      consume(TokenType::RightBrace, "'}' expected for array initialization");
+      AstStructInitializerExpr* init = _ast->createNode<AstStructInitializerExpr>();
+      init->structType = structType;
+      init->fields = firstExpression;
+      return init;
+    }
+    
+    // Array initialization
     AstExpression* firstExpression = parseExpression();
     if (firstExpression == nullptr) {
       throw ParseException(peekNext(), "expression expected for assignment");
@@ -305,7 +341,10 @@ AstExpression* Parser::parseAssignmentExpression() {
 
     consume(TokenType::RightBrace, "'}' expected for array initialization");
 
-    return firstExpression;
+    AstArrayInitializerExpr* init = _ast->createNode<AstArrayInitializerExpr>();
+    init->elements = firstExpression;
+
+    return init;
   }
 
   AstExpression* expression = parseLogicalOrExpression();
@@ -320,7 +359,7 @@ AstExpression* Parser::parseAssignmentExpression() {
 
   Operator op = tokenTypeToAssignmentOperatator(advance().type());
 
-  AstExpression* value = parseAssignmentExpression();
+  AstExpression* value = parseAssignmentExpression(type);
   if (value == nullptr) {
     throw ParseException(peekNext(), "expression expected for assignment");
   }
@@ -1061,7 +1100,7 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
   }
 
   if (match(TokenType::Equal)) {
-    var->initializer = parseAssignmentExpression();
+    var->initializer = parseAssignmentExpression(var->type);
   }
 
   AstVariableStmt* firstVar = var;
@@ -1277,7 +1316,7 @@ AstStatement* Parser::parseStatement() {
       throw ParseException(peekNext(), "Expected assignment operator");
     }
 
-    stmt->value = parseAssignmentExpression();
+    stmt->value = parseAssignmentExpression(type);
 
     consume(TokenType::Semicolon, "Expected ';' after assignment");
     

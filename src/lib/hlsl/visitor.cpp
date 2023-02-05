@@ -240,6 +240,26 @@ void Visitor::visitExpression(AstExpression* node) {
     visitMemberExpr((AstMemberExpr*)node);
   } else if (node->nodeType == AstNodeType::AssignmentExpr) {
     visitAssignmentExpr((AstAssignmentExpr*)node);
+  } else if (node->nodeType == AstNodeType::ArrayInitializerExpr) {
+    visitArrayInitializerExpr((AstArrayInitializerExpr*)node);
+  } else if (node->nodeType == AstNodeType::StructInitializerExpr) {
+    visitStructInitializerExpr((AstStructInitializerExpr*)node);
+  }
+}
+
+void Visitor::visitArrayInitializerExpr(AstArrayInitializerExpr* node) {
+  AstExpression* expr = node->elements;
+  while (expr != nullptr) {
+    visitExpression(expr);
+    expr = expr->next;
+  }
+}
+
+void Visitor::visitStructInitializerExpr(AstStructInitializerExpr* node) {
+  AstExpression* expr = node->fields;
+  while (expr != nullptr) {
+    visitExpression(expr);
+    expr = expr->next;
   }
 }
 

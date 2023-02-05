@@ -44,6 +44,8 @@ public:
   virtual void visitArrayExpr(AstArrayExpr* node);
   virtual void visitMemberExpr(AstMemberExpr* node);
   virtual void visitAssignmentExpr(AstAssignmentExpr* node);
+  virtual void visitArrayInitializerExpr(AstArrayInitializerExpr* node);
+  virtual void visitStructInitializerExpr(AstStructInitializerExpr* node);
 
   virtual void visitArgument(AstExpression* node);
   virtual void visitArguments(AstExpression* node);
