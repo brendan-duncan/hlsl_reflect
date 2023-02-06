@@ -124,7 +124,7 @@ struct AstStructStmt : AstStatement {
 /// A cbuffer or tbuffer declaration.
 struct AstBufferStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::BufferStmt;
-  BufferType bufferType;
+  BufferType bufferType = BufferType::Cbuffer;
   std::string_view name;
   std::string_view registerName;
   AstField* field = nullptr;
