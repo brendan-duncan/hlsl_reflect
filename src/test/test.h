@@ -243,9 +243,7 @@ public:
   }
 
   static void addPendingTest(const std::string& name, void (*test)()) {
-    PendingTest* pendingTest = new PendingTest();
-    pendingTest->name = name;
-    pendingTest->test = test;
+    PendingTest* pendingTest = new PendingTest{name, test};
     _pendingTests.push_back(pendingTest);
   }
 
