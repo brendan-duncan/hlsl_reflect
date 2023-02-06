@@ -134,6 +134,9 @@ const std::string& tokenTypeToString(TokenType t) {
 }
 
 TokenType findTokenType(const std::string_view& lexeme) {
+  // This is a hot path we want to be as fast as possible. I tried using an
+  // alternative "fast" map implementation but it was slower than std::map.
+  // An optimization we can try is to use a "perfect hash" function like gperf.
   auto ti = tokenDefs.find(lexeme);
   if (ti != tokenDefs.end()) {
     return (*ti).second;

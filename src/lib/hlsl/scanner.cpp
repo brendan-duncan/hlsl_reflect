@@ -31,7 +31,7 @@ std::vector<Token> Scanner::scan() {
       break;
     }
   }
-  _tokens.emplace_back(TokenType::EndOfFile, "", _line);
+  _tokens.emplace_back(TokenType::EndOfFile, "");
   std::vector<Token> tokens;
   std::move(_tokens.begin(), _tokens.end(), std::back_inserter(tokens));
   return tokens;
@@ -57,7 +57,7 @@ Token Scanner::scanNext() {
     }
   }
 
-  return Token{TokenType::EndOfFile, "", _line};
+  return Token{TokenType::EndOfFile, ""};
 }
 
 bool Scanner::isAtEnd() const { return _position >= _size; }
@@ -93,7 +93,7 @@ char Scanner::peekAhead(int count) const {
 
 void Scanner::addToken(TokenType t) {
   std::string_view lexeme = _source.substr(_start, _position - _start);
-  _tokens.emplace_back(t, lexeme, _line);
+  _tokens.emplace_back(t, lexeme);
 }
 
 void Scanner::scanPragma() {

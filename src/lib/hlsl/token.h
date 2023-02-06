@@ -11,28 +11,21 @@ public:
   Token()
       : _type(TokenType::Undefined) { }
 
-  Token(TokenType type, std::string_view lexeme, int line)
+  Token(TokenType type, std::string_view lexeme)
       : _type(type)
-      , _lexeme(lexeme)
-      , _line(line) { }
+      , _lexeme(lexeme) { }
 
   Token(const Token& other)
       : _type(other._type)
-      , _lexeme(other._lexeme)
-      , _filename(other._filename)
-      , _line(other._line) { }
+      , _lexeme(other._lexeme) { }
 
   Token(const Token&& other)
       : _type(other._type)
-      , _lexeme(std::move(other._lexeme))
-      , _filename(std::move(other._filename))
-      , _line(other._line) { }
+      , _lexeme(std::move(other._lexeme)) { }
 
   Token& operator=(const Token& other) {
     _type = other._type;
     _lexeme = other._lexeme;
-    _filename = other._filename;
-    _line = other._line;
     return *this;
   }
 
@@ -44,15 +37,9 @@ public:
 
   const std::string_view& lexeme() const { return _lexeme; }
 
-  const std::string_view& filename() const { return _filename; }
-
-  int line() const { return _line; }
-
 private:
   TokenType _type;
   std::string_view _lexeme;
-  std::string_view _filename;
-  int _line = -1;
 };
 
 } // namespace hlsl
