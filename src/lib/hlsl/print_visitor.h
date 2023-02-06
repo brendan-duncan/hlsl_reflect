@@ -21,6 +21,28 @@ public:
     std::cout << "}" << std::endl;
   }
 
+  void visitBufferStmt(AstBufferStmt* node) override {
+    indent();
+    if (node->bufferType == BufferType::Cbuffer) {
+      std::cout << "cbuffer ";
+    } else {
+      std::cout << "tbuffer ";
+    }
+    std::cout << node->name << " {" << std::endl;
+    _indent++;
+    Visitor::visitBufferStmt(node);
+    _indent--;
+    indent();
+    std::cout << "}" << std::endl;
+  }
+
+  void visitBufferField(AstBufferField* node) {
+    indent();
+    std::cout << " " << node->name << ": ";
+    visitType(node->type);
+    std::cout << ";" << std::endl;
+  }
+
   void visitStructStmt(AstStructStmt* node) override {
     indent();
     std::cout << "struct " << node->name << " {" << std::endl;
@@ -70,6 +92,7 @@ public:
       std::cout << " = ";
       visitExpression(node->initializer);
     }
+    std::cout << std::flush;
   }
 
   void visitParameter(AstParameter* node) override {

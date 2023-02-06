@@ -5,6 +5,7 @@
 #include "address_space.h"
 #include "ast_node_type.h"
 #include "base_type.h"
+#include "buffer_type.h"
 #include "interpolation_modifier.h"
 #include "operator.h"
 #include "sampler_type.h"
@@ -134,6 +135,7 @@ struct AstBufferField : AstNode {
 /// A cbuffer or tbuffer declaration.
 struct AstBufferStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::BufferStmt;
+  BufferType bufferType;
   std::string_view name;
   std::string_view registerName;
   AstBufferField* field = nullptr;

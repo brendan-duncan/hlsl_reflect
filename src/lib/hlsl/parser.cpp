@@ -116,8 +116,12 @@ AstStatement* Parser::parseTopLevelStatement() {
     return node;
   }
 
-  if (match(TokenType::Cbuffer) || match(TokenType::Tbuffer)) {
+  if (check(TokenType::Cbuffer) || check(TokenType::Tbuffer)) {
+    Token bufferType = advance();
     AstBufferStmt* node = parseBuffer();
+    node->bufferType = bufferType.type() == TokenType::Cbuffer
+        ? BufferType::Cbuffer
+        : BufferType::Tbuffer;
     if (node != nullptr) {
       node->attributes = attributes;
     }
