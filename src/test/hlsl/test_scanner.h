@@ -53,6 +53,18 @@ static Test test_pragma("Scanner pragma", []() {
   TEST_EQUALS(tokens[1].lexeme(), "bar");
 });
 
+static Test test_comments("Scanner comments", []() {
+  auto scanner = Scanner(R"(/* foo */
+  foo
+  // comment
+  bar)");
+  auto tokens = scanner.scan();
+  TEST_EQUALS(tokens.size(), 3ull);
+  TEST_EQUALS(tokens[0].lexeme(), "foo");
+  TEST_EQUALS(tokens[1].lexeme(), "bar");
+});
+
+
 static Test test_Shader("Scanner Shader", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);

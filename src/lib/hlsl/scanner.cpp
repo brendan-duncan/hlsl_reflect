@@ -170,20 +170,20 @@ bool Scanner::scanToken() {
   }
 
   if (c == '/') {
+    char next = current();
     // If it's a // comment, skip everything until the next line-feed.
-    if (peekAhead() == '/') {
+    if (next == '/') {
       while (c != '\n') {
         if (isAtEnd()) {
           return true;
         }
-        c = current();
-        advance();
+        c = advance();
       }
       // skip the linefeed
       _line++;
       _absolteLine++;
       return true;
-    } else if (peekAhead() == '*') {
+    } else if (next == '*') {
       // If it's a / * block comment, skip everything until the matching * /,
       // allowing for nested block comments.
       advance();
@@ -192,13 +192,13 @@ bool Scanner::scanToken() {
         if (isAtEnd()) {
           return true;
         }
-        c = current();
-        advance();
+        c = advance();
         if (c == '\n') {
           _line++;
           _absolteLine++;
         } else if (c == '*') {
-          if (peekAhead() == '/') {
+          next = current();
+          if (next == '/') {
             advance();
             --commentLevel;
             if (commentLevel == 0) {
@@ -206,7 +206,8 @@ bool Scanner::scanToken() {
             }
           }
         } else if (c == '/') {
-          if (peekAhead() == '*') {
+          next = current();
+          if (next == '*') {
             advance();
             commentLevel++;
           }
