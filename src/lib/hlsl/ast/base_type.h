@@ -5,6 +5,7 @@
 
 namespace hlsl {
 
+/// Built-in variable types.
 enum class BaseType {
   Undefined,
   Void,

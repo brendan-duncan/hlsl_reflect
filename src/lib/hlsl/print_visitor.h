@@ -36,7 +36,7 @@ public:
     std::cout << "}" << std::endl;
   }
 
-  void visitBufferField(AstBufferField* node) {
+  void visitBufferField(AstField* node) {
     indent();
     std::cout << " " << node->name << ": ";
     visitType(node->type);
@@ -53,7 +53,7 @@ public:
     std::cout << "}" << std::endl;
   }
 
-  void visitStructField(AstStructField* node) override {
+  void visitStructField(AstField* node) override {
     indent();
     std::cout << " " << node->name << ": ";
     visitType(node->type);

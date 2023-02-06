@@ -64,11 +64,11 @@ private:
 
   AstStructStmt* parseStruct();
 
-  AstStructField* parseStructField();
+  AstField* parseStructField();
 
   AstAttribute* parseAttributes();
 
-  AstBufferField* parseBufferField();
+  AstField* parseBufferField();
 
   AstSamplerState* parseSamplerState();
   

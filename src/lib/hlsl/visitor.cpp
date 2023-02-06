@@ -88,7 +88,7 @@ void Visitor::visitStatement(AstStatement* node) {
   }
 }
 
-void Visitor::visitBufferField(AstBufferField* node) {
+void Visitor::visitBufferField(AstField* node) {
   visitType(node->type);
   if (node->assignment != nullptr) {
     visitExpression(node->assignment);
@@ -99,19 +99,19 @@ void Visitor::visitBufferField(AstBufferField* node) {
 }
 
 void Visitor::visitStructStmt(AstStructStmt* node) {
-  AstStructField* field = node->fields;
+  AstField* field = node->fields;
   while (field != nullptr) {
     visitStructField(field);
     field = field->next;
   }
 }
 
-void Visitor::visitStructField(AstStructField* node) {
+void Visitor::visitStructField(AstField* node) {
   visitType(node->type);
 }
 
 void Visitor::visitBufferStmt(AstBufferStmt* node) {
-  AstBufferField* field = node->field;
+  AstField* field = node->field;
   while (field != nullptr) {
     visitBufferField(field);
     field = field->next;

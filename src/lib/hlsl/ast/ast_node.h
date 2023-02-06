@@ -41,7 +41,7 @@ struct AstStateAssignment;
 struct AstStatement;
 struct AstStringExpr;
 struct AstStructStmt;
-struct AstStructField;
+struct AstField;
 struct AstSwitchStmt;
 struct AstSwitchCase;
 struct AstTernaryExpr;
@@ -101,35 +101,24 @@ struct AstStatement : AstNode {
   AstStatement* next = nullptr;
 };
 
-/// A member of a struct.
-struct AstStructField : AstNode {
-  static const AstNodeType astType = AstNodeType::StructField;
+/// A field member of a struct or buffer.
+struct AstField : AstNode {
+  static const AstNodeType astType = AstNodeType::Field;
   InterpolationModifier interpolation = InterpolationModifier::None;
   AstType* type = nullptr;
   std::string_view name;
   std::string_view semantic;
   bool isArray = false;
   AstExpression* arraySize = nullptr;
-  AstStructField* next = nullptr;
+  AstExpression* assignment = nullptr;
+  AstField* next = nullptr;
 };
 
 /// A struct declaration.
 struct AstStructStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::StructStmt;
   std::string_view name;
-  AstStructField* fields = nullptr;
-};
-
-/// A field in a buffer.
-struct AstBufferField : AstNode {
-  static const AstNodeType astType = AstNodeType::BufferField;
-  AstType* type = nullptr;
-  std::string_view name;
-  std::string_view registerName;
-  std::string_view semantic;
-  AstExpression* assignment = nullptr;
-  AstBufferStmt* buffer = nullptr;
-  AstBufferField* next = nullptr;
+  AstField* fields = nullptr;
 };
 
 /// A cbuffer or tbuffer declaration.
@@ -138,7 +127,7 @@ struct AstBufferStmt : AstStatement {
   BufferType bufferType;
   std::string_view name;
   std::string_view registerName;
-  AstBufferField* field = nullptr;
+  AstField* field = nullptr;
 };
 
 struct AstSamplerState : AstExpression {

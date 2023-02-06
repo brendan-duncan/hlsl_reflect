@@ -172,10 +172,10 @@ AstStructStmt* Parser::parseStruct() {
   Token name = consume(TokenType::Identifier, "struct name expected.");
   consume(TokenType::LeftBrace, "'{' expected for struct");
 
-  AstStructField* firstField = nullptr;
-  AstStructField* lastField = nullptr;
+  AstField* firstField = nullptr;
+  AstField* lastField = nullptr;
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
-    AstStructField* field = parseStructField();
+    AstField* field = parseStructField();
 
     if (firstField == nullptr) {
       firstField = field;
@@ -187,7 +187,7 @@ AstStructStmt* Parser::parseStruct() {
 
     while (check(TokenType::Comma)) {
       advance(); // consume comma
-      AstStructField* nextField = _ast->createNode<AstStructField>();
+      AstField* nextField = _ast->createNode<AstField>();
       nextField->type = field->type;
       nextField->name = advance().lexeme();
       if (match(TokenType::LeftBracket)) {
@@ -212,8 +212,8 @@ AstStructStmt* Parser::parseStruct() {
   return s;
 }
 
-AstStructField* Parser::parseStructField() {
-  AstStructField* field = _ast->createNode<AstStructField>();
+AstField* Parser::parseStructField() {
+  AstField* field = _ast->createNode<AstField>();
 
   Token tk = peekNext();
   if (isInterpolationModifier(tk.type())) {
@@ -314,7 +314,7 @@ AstExpression* Parser::parseAssignmentExpression(AstType* type) {
       if (structType == nullptr) {
         throw ParseException(peekNext(), "unknown struct type");
       }
-      AstStructField* field = structType->fields;
+      AstField* field = structType->fields;
       AstExpression* firstExpression = nullptr;
       AstExpression* lastExpression = nullptr;
       while (field != nullptr) {
@@ -421,14 +421,14 @@ AstExpression* Parser::parseExpressionList() {
   return firstExpression;
 }
 
-AstBufferField* Parser::parseBufferField() {
+AstField* Parser::parseBufferField() {
   AstType* type = parseType(false, "buffer field type expected");
 
-  AstBufferField* lastDecl = nullptr;
-  AstBufferField* firstDecl = nullptr;
+  AstField* lastDecl = nullptr;
+  AstField* firstDecl = nullptr;
 
   do {
-    AstBufferField* decl = _ast->createNode<AstBufferField>();
+    AstField* decl = _ast->createNode<AstField>();
     if (firstDecl == nullptr) {
       firstDecl = decl;
     }
@@ -584,14 +584,13 @@ AstBufferStmt* Parser::parseBuffer() {
   }
   consume(TokenType::LeftBrace, "'{' expected for buffer");
   
-  AstBufferField* lastField = nullptr;
+  AstField* lastField = nullptr;
   while (!match(TokenType::RightBrace) && !isAtEnd()) {
-    AstBufferField* field = parseBufferField();
+    AstField* field = parseBufferField();
     if (field == nullptr) {
       throw ParseException(peekNext(), "field expected for buffer");
     }
 
-    field->buffer = buffer;
     if (buffer->field == nullptr) {
       buffer->field = field;
     } else {

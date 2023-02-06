@@ -51,10 +51,10 @@ public:
   virtual void visitArguments(AstExpression* node);
   virtual void visitAttribute(AstAttribute* node);
   virtual void visitAttributes(AstAttribute* node);
-  virtual void visitBufferField(AstBufferField* node);
+  virtual void visitBufferField(AstField* node);
   virtual void visitStateAssignment(AstStateAssignment* node);
   virtual void visitSamplerState(AstSamplerState* node);
-  virtual void visitStructField(AstStructField* node);
+  virtual void visitStructField(AstField* node);
   virtual void visitSwitchCase(AstSwitchCase* node);
   virtual void visitType(AstType* type);
 };
