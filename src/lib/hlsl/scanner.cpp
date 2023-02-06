@@ -217,6 +217,23 @@ bool Scanner::scanToken() {
     }
   }
 
+  if (c == '"') {
+    c = advance();
+    // If it's a string, scan until the next " or end of file.
+    while (c != '"') {
+      if (isAtEnd()) {
+        return true;
+      }
+      c = advance();
+      if (c == '\\') {
+        // Skip the next character, which is escaped.
+        advance();
+      }
+    }
+    addToken(TokenType::StringLiteral);
+    return true;
+  }
+
   TokenType matchType = TokenType::Undefined;
 
   std::string_view src{_source};

@@ -64,6 +64,16 @@ static Test test_comments("Scanner comments", []() {
   TEST_EQUALS(tokens[1].lexeme(), "bar");
 });
 
+static Test test_string_literals("Scanner string literals", []() {
+  auto scanner = Scanner(R"(string foo = "foo";)");
+  auto tokens = scanner.scan();
+  TEST_EQUALS(tokens.size(), 6ull);
+  TEST_EQUALS(tokens[0].type(), TokenType::String);
+  TEST_EQUALS(tokens[1].type(), TokenType::Identifier);
+  TEST_EQUALS(tokens[2].type(), TokenType::Equal);
+  TEST_EQUALS(tokens[3].type(), TokenType::StringLiteral);
+  TEST_EQUALS(tokens[4].type(), TokenType::Semicolon);
+});
 
 static Test test_Shader("Scanner Shader", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");

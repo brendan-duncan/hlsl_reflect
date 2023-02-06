@@ -18,6 +18,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::EndOfFile, "EndOfFile"},
   {TokenType::IntLiteral, "IntLiteral"},
   {TokenType::FloatLiteral, "FloatLiteral"},
+  {TokenType::StringLiteral, "StringLiteral"},
   {TokenType::Identifier, "Identifier"},
   {TokenType::LeftParen, "LeftParen"},
   {TokenType::RightParen, "RightParen"},

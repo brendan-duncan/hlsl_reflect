@@ -12,6 +12,7 @@ enum class TokenType : uint32_t {
   EndOfFile,
   IntLiteral,
   FloatLiteral,
+  StringLiteral,
   Identifier,
   LeftParen,
   RightParen,
