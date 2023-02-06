@@ -1214,6 +1214,9 @@ AstStatement* Parser::parseStatement() {
     // Ignore empty statements
   }
 
+  // Attributes are really only for top-level statements, but checking for
+  // them in all cases until we pass in something to let us know this is
+  // a top-level statement.
   AstAttribute* attributes = parseAttributes();
 
   if (match(TokenType::If)) {
@@ -1424,13 +1427,14 @@ AstForStmt* Parser::parseForStmt() {
 
   consume(TokenType::LeftParen, "Expected '(' after 'for'");
   if (!check(TokenType::Semicolon)) {
-    stmt->initializer = parseStatement();
+    stmt->initializer = parseStatement(); // The statement will consume the semicolon
   }
-  consume(TokenType::Semicolon, "Expected ';' after 'for' initializer");
+  //consume(TokenType::Semicolon, "Expected ';' after 'for' initializer");
   if (!check(TokenType::Semicolon)) {
     stmt->condition = parseExpression();
   }
   consume(TokenType::Semicolon, "Expected ';' after 'for' condition");
+
   if (!check(TokenType::RightParen)) {
     stmt->increment = parseExpression();
   }

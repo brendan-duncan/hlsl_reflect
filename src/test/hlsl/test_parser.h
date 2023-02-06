@@ -474,6 +474,14 @@ static Test test_array_index("Parser array index", []() {
   delete ast;
 });
 
+static Test test_array_index_2("Parser for loop", []() {
+  Parser parser(R"(void foo() { for (int m = 1; m <= 2; ++m) {} })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);
