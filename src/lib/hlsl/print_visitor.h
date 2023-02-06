@@ -9,55 +9,60 @@ namespace hlsl {
 /// to a different syntax style.
 class PrintVisitor : public Visitor {
 public:
+  std::ostream &_out;
+
+  PrintVisitor(std::ostream &out = std::cout)
+    : _out(out) {}
+
   void visitBlock(AstBlock* node) override {
     indent();
-    std::cout << "{" << std::endl;
+    _out << "{" << std::endl;
 
     _indent++;
     Visitor::visitBlock(node);
     _indent--;
 
     indent();
-    std::cout << "}" << std::endl;
+    _out << "}" << std::endl;
   }
 
   void visitBufferStmt(AstBufferStmt* node) override {
     indent();
     if (node->bufferType == BufferType::Cbuffer) {
-      std::cout << "cbuffer ";
+      _out << "cbuffer ";
     } else {
-      std::cout << "tbuffer ";
+      _out << "tbuffer ";
     }
-    std::cout << node->name << " {" << std::endl;
+    _out << node->name << " {" << std::endl;
     _indent++;
     Visitor::visitBufferStmt(node);
     _indent--;
     indent();
-    std::cout << "}" << std::endl;
+    _out << "}" << std::endl;
   }
 
   void visitBufferField(AstField* node) {
     indent();
-    std::cout << " " << node->name << ": ";
+    _out << " " << node->name << ": ";
     visitType(node->type);
-    std::cout << ";" << std::endl;
+    _out << ";" << std::endl;
   }
 
   void visitStructStmt(AstStructStmt* node) override {
     indent();
-    std::cout << "struct " << node->name << " {" << std::endl;
+    _out << "struct " << node->name << " {" << std::endl;
     _indent++;
     Visitor::visitStructStmt(node);
     _indent--;
     indent();
-    std::cout << "}" << std::endl;
+    _out << "}" << std::endl;
   }
 
   void visitStructField(AstField* node) override {
     indent();
-    std::cout << " " << node->name << ": ";
+    _out << " " << node->name << ": ";
     visitType(node->type);
-    std::cout << ";" << std::endl;
+    _out << ";" << std::endl;
   }
 
   void visitStatement(AstStatement* node) override {
@@ -66,40 +71,40 @@ public:
     }
     Visitor::visitStatement(node);
     if (node->nodeType != AstNodeType::Block && node->nodeType != AstNodeType::IfStmt) {
-      std::cout << ";" << std::endl;
+      _out << ";" << std::endl;
     }
   }
 
   void visitFunctionStmt(AstFunctionStmt* node) override {
-    std::cout << "fn " << node->name << "(";
+    _out << "fn " << node->name << "(";
     visitParameters(node->parameters);
-    std::cout << ") -> ";
+    _out << ") -> ";
     visitType(node->returnType);
-    std::cout << std::endl;
+    _out << std::endl;
     visitBlock(node->body);
-    std::cout << std::endl;
+    _out << std::endl;
   }
 
   void visitVariableStmt(AstVariableStmt* node) override {
     if (node->type->flags & TypeFlags::Const) {
-      std::cout << "const ";
+      _out << "const ";
     } else {
-      std::cout << "var ";
+      _out << "var ";
     }
-    std::cout << node->name << ": ";
+    _out << node->name << ": ";
     visitType(node->type);
     if (node->initializer != nullptr) {
-      std::cout << " = ";
+      _out << " = ";
       visitExpression(node->initializer);
     }
-    std::cout << std::flush;
+    _out << std::flush;
   }
 
   void visitParameter(AstParameter* node) override {
-    std::cout << node->name << ": ";
+    _out << node->name << ": ";
     visitType(node->type);
     if (node->initializer != nullptr) {
-      std::cout << " = ";
+      _out << " = ";
       visitExpression(node->initializer);
     }
   }
@@ -108,105 +113,105 @@ public:
     while (node != nullptr) {
       visitParameter(node);
       if (node->next != nullptr) {
-        std::cout << ", ";
+        _out << ", ";
       }
       node = (AstParameter*)node->next;
     }
   }
 
   void visitType(AstType* node) override {
-    std::cout << baseTypeToString(node->baseType);
+    _out << baseTypeToString(node->baseType);
   }
 
   void visitIfStmt(AstIfStmt* node) override {
-    std::cout << "if (";
+    _out << "if (";
     visitExpression(node->condition);
-    std::cout << ")" << std::endl;
+    _out << ")" << std::endl;
     visitStatement(node->body);
     if (node->elseBody != nullptr) {
       indent();
-      std::cout << "else" << std::endl;
+      _out << "else" << std::endl;
       visitStatement(node->elseBody);
     }
   }
 
   void visitAssignmentStmt(AstAssignmentStmt* node) override {
     visitExpression(node->variable);
-    std::cout << " " << operatorToString(node->op) << " ";
+    _out << " " << operatorToString(node->op) << " ";
     visitExpression(node->value);
   }
 
   void visitAssignmentExpr(AstAssignmentExpr* node) override {
     visitExpression(node->variable);
-    std::cout << " " << operatorToString(node->op) << " ";
+    _out << " " << operatorToString(node->op) << " ";
     visitExpression(node->value);
   }
 
   void visitBinaryExpr(AstBinaryExpr *node) override {
     visitExpression(node->left);
-    std::cout << " " << operatorToString(node->op) << " ";
+    _out << " " << operatorToString(node->op) << " ";
     visitExpression(node->right);
   }
 
   void visitVariableExpr(AstVariableExpr* node) override {
-    std::cout << node->name;
+    _out << node->name;
   }
 
   void visitLiteralExpr(AstLiteralExpr* node) override {
-    std::cout << node->value;
+    _out << node->value;
   }
 
   void visitReturn(AstReturnStmt* node) override {
-    std::cout << "return ";
+    _out << "return ";
     visitExpression(node->value);
   }
 
   void visitCallStmt(AstCallStmt* node) override {
-    std::cout << node->name << "(";
+    _out << node->name << "(";
     visitArguments(node->arguments);
-    std::cout << ");";
+    _out << ");";
   }
 
   void visitCallExpr(AstCallExpr* node) override {
-    std::cout << node->name << "(";
+    _out << node->name << "(";
     visitArguments(node->arguments);
-    std::cout << ")";
+    _out << ")";
   }
 
   void visitCastExpr(AstCastExpr* node) override {
     visitType(node->type);
-    std::cout << "(";
+    _out << "(";
     visitArguments(node->value);
-    std::cout << ")";
+    _out << ")";
   }
 
   void visitArrayInitializerExpr(AstArrayInitializerExpr* node) {
-    std::cout << "{";
+    _out << "{";
     for (AstExpression* expr = node->elements; expr != nullptr; expr = expr->next) {
       visitExpression(expr);
       if (expr->next != nullptr) {
-        std::cout << ", ";
+        _out << ", ";
       }
     }
-    std::cout << "}";
+    _out << "}";
   }
 
   void visitStructInitializerExpr(AstStructInitializerExpr* node) {
-    std::cout << "{";
+    _out << "{";
     for (AstExpression* expr = node->fields; expr != nullptr; expr = expr->next) {
       visitExpression(expr);
       if (expr->next != nullptr) {
-        std::cout << ", ";
+        _out << ", ";
       }
     }
-    std::cout << "}";
+    _out << "}";
   }
 
   void visitArguments(AstExpression* args) override {
     while (args != nullptr) {
       visitExpression(args);
       if (args->next != nullptr) {
-        std::cout << ", ";
+        _out << ", ";
       }
       args = args->next;
     }
@@ -214,33 +219,33 @@ public:
 
   void visitIncrementExpr(AstIncrementExpr* node) override {
     visitExpression(node->variable);
-    std::cout << operatorToString(node->op);
+    _out << operatorToString(node->op);
   }
 
   void visitPrefixExpr(AstPrefixExpr* node) override {
-    std::cout << operatorToString(node->op);
+    _out << operatorToString(node->op);
     visitExpression(node->expression);
   }
 
   void visitMemberExpr(AstMemberExpr* node) override {
     visitExpression(node->object);
-    std::cout << ".";
+    _out << ".";
     visitExpression(node->member);
   }
 
   void visitTernaryExpr(AstTernaryExpr* node) override {
     visitExpression(node->condition);
-    std::cout << " ? ";
+    _out << " ? ";
     visitExpression(node->trueExpr);
-    std::cout << " : ";
+    _out << " : ";
     visitExpression(node->falseExpr);
   }
 
   void visitArrayExpr(AstArrayExpr* node) {
     visitExpression(node->array);
-    std::cout << "[";
+    _out << "[";
     visitExpression(node->index);
-    std::cout << "]";
+    _out << "]";
   }
 
 private:
@@ -248,7 +253,7 @@ private:
 
   void indent() {
     for (int i = 0; i < _indent; ++i) {
-      std::cout << "  ";
+      _out << "  ";
     }
   }
 };
