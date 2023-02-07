@@ -9,6 +9,14 @@
 
 namespace hlsl {
 
+inline bool isWhitespace(char c) {
+  return c == ' ' || c == '\t' || c == '\r';
+}
+
+inline bool isNumeric(char c) {
+  return c >= '0' && c <= '9';
+}
+
 /// The scanner is responsible for taking a string of source code and breaking it into a list
 /// of tokens.
 class Scanner {
@@ -53,6 +61,12 @@ private:
   void addToken(TokenType t);
 
   void scanPragma();
+
+  void skipWS() {
+    while (!isAtEnd() && isWhitespace(current())) {
+      advance();
+    }
+  }
 
   const std::string_view _source;
   const size_t _size;

@@ -1,32 +1,31 @@
+#include <fstream>
 #include <iostream>
+#include <string>
 
 #include "../lib/hlsl/parser.h"
 #include "../lib/hlsl/print_visitor.h"
 
 int main(int argc, char** argv) {
   if (argc < 2) {
-    std::cout << "Usage: hlsl_reflect <file>" << std::endl;
+    std::cerr << "Usage: hlsl_reflect <file>" << std::endl;
     return 1;
   }
 
-  FILE* fp = fopen(argv[1], "rb");
-  if (fp == nullptr) {
+  std::ifstream fp(argv[1], std::ios::binary);
+
+  if (!fp) {
     std::cerr << "Unable to open file: " << argv[1] << std::endl;
     return 1;
   }
 
-  fseek(fp, 0, SEEK_END);
-  size_t size = ftell(fp);
-  fseek(fp, 0, SEEK_SET);
-  char* hlsl = (char*)calloc(1, size + 1);
-  fread(hlsl, size, 1, fp);
-  fclose(fp);
+  std::string hlsl;
+  std::getline(fp, hlsl, '\0');
+  fp.close();
 
   hlsl::Parser parser(hlsl);
   hlsl::Ast* ast = parser.parse();
 
   if (ast == nullptr) {
-    free(hlsl);
     std::cerr << "Unable to parse file: " << argv[1] << std::endl;
     return 1;
   }
@@ -36,7 +35,6 @@ int main(int argc, char** argv) {
   std::cout << std::flush;
 
   delete ast;
-  free(hlsl);
 
   return 0;
 }
