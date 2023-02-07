@@ -55,6 +55,15 @@ static Test test_array_init_trailing_comma("Parser array init trailing comma", [
   delete ast;
 });
 
+static Test test_array_multi_array("Parser multi array", []() {
+  //Parser parser(R"(static const float foo[2][2] = {{1,2},{3,4}};)");
+  Parser parser(R"(static const float foo[2][2];)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_const_init_expression("Parser const init expression", []() {
   Parser parser(R"(const float y = x * 2654435769u;)");
   Ast* ast = parser.parse();

@@ -1138,11 +1138,20 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
   var->name = name;
   var->attributes = attributes;
 
-  if (match(TokenType::LeftBracket)) {
+  AstLiteralExpr* lastArraySize = nullptr;
+  // Parse array dimensions (int a[1][2])
+  while (match(TokenType::LeftBracket)) {
     var->isArray = true;
-    var->arraySize = parseArraySize();
+    if (var->arraySize == nullptr) {
+      var->arraySize = parseArraySize();
+      lastArraySize = var->arraySize;
+    } else {
+      lastArraySize->next = parseArraySize();
+      lastArraySize = (AstLiteralExpr*)lastArraySize->next;
+    }
   }
 
+  // Parse variable initializer (int a = 1)
   if (match(TokenType::Equal)) {
     var->initializer = parseAssignmentExpression(var->type);
   }
@@ -1180,6 +1189,7 @@ AstLiteralExpr* Parser::parseArraySize() {
   if (peekNext().type() == TokenType::IntLiteral) {
     Token count = advance();
     AstLiteralExpr* size = _ast->createNode<AstLiteralExpr>();
+    size->type = BaseType::Int;
     size->value = count.lexeme();
     firstSize = size;
     // Bounded array (int a[10
@@ -1192,7 +1202,7 @@ AstLiteralExpr* Parser::parseArraySize() {
     }
   }
   consume(TokenType::RightBracket, "Expected ']' for array declaration");
-  return nullptr;
+  return firstSize;
 }
 
 // Parse a block of statements enclosed in braces

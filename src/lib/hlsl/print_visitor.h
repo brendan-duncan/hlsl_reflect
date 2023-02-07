@@ -120,6 +120,13 @@ public:
     }
     _out << node->name << ": ";
     visitType(node->type);
+
+    AstLiteralExpr* arraySize = node->arraySize;
+    while (arraySize != nullptr) {
+      _out << "[" << arraySize->value << "]";
+      arraySize = (AstLiteralExpr*)arraySize->next;
+    }
+
     if (node->initializer != nullptr) {
       _out << " = ";
       visitExpression(node->initializer);
