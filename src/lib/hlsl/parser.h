@@ -162,24 +162,23 @@ private:
   // that were consumed back to the startRestorePoint. This is used to undo a parse, since some
   // grammar rules are ambiguous.
   void startRestorePoint() {
-    _restorePoint++;
+    _restore.push_back(std::list<Token>());
   }
 
   // Restore the tokens that were recorded since the last startRestorePoint() call.
   void restorePoint() {
-    _restorePoint--;
-    if (_restorePoint == 0) {
-      _pending.splice(_pending.begin(), _restore);
-      _restore.clear();
+    if (_restore.empty()) {
+      return;
     }
+
+    std::list<Token>& restore = _restore.back();
+    _pending.splice(_pending.begin(), restore);
+    _restore.pop_back();
   }
 
   // Discard the tokens that were recorded since the last startRestorePoint() call.
   void discardRestorePoint() {
-    _restorePoint--;
-    if (_restorePoint == 0) {
-      _restore.clear();
-    }
+    _restore.pop_back();   
   }
 
   // The AST being constructed.
@@ -189,8 +188,8 @@ private:
   // A list of tokens that have been scanned from the scanner but not yet parsed.
   std::list<Token> _pending;
 
-  int _restorePoint = 0;
-  std::list<Token> _restore;
+  //std::list<size_t> _restorePointStack;
+  std::list<std::list<Token>> _restore;
 
   // Track typedefs to verify type names.
   std::map<std::string_view, AstTypedefStmt*> _typedefs;

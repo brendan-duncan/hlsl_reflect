@@ -64,7 +64,7 @@ static Test test_array_multi_array("Parser multi array", []() {
 });
 
 static Test test_const_init_expression("Parser const init expression", []() {
-  Parser parser(R"(const float y = x * 2654435769u;)");
+  Parser parser(R"(const float y = (x * 2654435769u);)");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
@@ -482,8 +482,16 @@ static Test test_array_index("Parser array index", []() {
   delete ast;
 });
 
-static Test test_array_index_2("Parser for loop", []() {
+static Test test_for_loop("Parser for loop", []() {
   Parser parser(R"(void foo() { for (uint b = 1U << firstbithigh(n - 1); b != 0; b >>= 1) {} })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_for_loop_2("Parser for loop 2", []() {
+  Parser parser(R"(void foo() { for (int i = 0, j = 0; i < 5; ++i, j++) {} })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);

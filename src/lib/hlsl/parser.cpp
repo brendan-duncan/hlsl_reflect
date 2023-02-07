@@ -63,15 +63,15 @@ Token Parser::advance() {
   if (!_pending.empty()) {
     Token t = _pending.front();
     _pending.pop_front();
-    if (_restorePoint > 0) {
-      _restore.push_back(t);
+    if (!_restore.empty()) {
+      _restore.back().push_back(t);
     }
     return t;
   }
 
-  if (_restorePoint > 0) {
+  if (!_restore.empty()) {
     Token t = _scanner.scanNext();
-    _restore.push_back(t);
+    _restore.back().push_back(t);
     return t;
   }
   
@@ -1011,7 +1011,7 @@ AstExpression* Parser::parsePrimaryExpression() {
   if (check(TokenType::LeftParen)) {
     // Either a parenthesized expression or a cast expression
     startRestorePoint();
-    advance();
+    advance(); // consume '('
     if (isType(peekNext())) {
       advance();
       if (check(TokenType::RightParen)) {
@@ -1372,6 +1372,7 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
   }
 
   if (check(TokenType::Underscore) || check(TokenType::Identifier)) {
+    startRestorePoint();
     // Assignment statement or method call (a.b())
     const bool isUnderscore = match(TokenType::Underscore);
 
@@ -1392,38 +1393,43 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
       AstExpressionStmt* stmt = _ast->createNode<AstExpressionStmt>();
       stmt->expression = var;
       stmt->attributes = attributes;
+      discardRestorePoint();
       return stmt;
     }
 
-    AstAssignmentStmt* stmt = _ast->createNode<AstAssignmentStmt>();
-    stmt->variable = var;
+    Operator op = tokenTypeToAssignmentOperatator(tk.type());
+    if (op != Operator::Undefined) {
+      AstAssignmentStmt* stmt = _ast->createNode<AstAssignmentStmt>();
+      stmt->variable = var;
+      stmt->op = op;
+      stmt->value = parseAssignmentExpression(type);
 
-    stmt->op = tokenTypeToAssignmentOperatator(tk.type());
-    if (stmt->op == Operator::Undefined) {
-      throw ParseException(peekNext(), "Expected assignment operator");
+      if (expectSemicolon) {
+        consume(TokenType::Semicolon, "Expected ';' after assignment");
+      }
+      
+      stmt->attributes = attributes;
+      discardRestorePoint();
+      return stmt;
     }
 
-    stmt->value = parseAssignmentExpression(type);
-
-    if (expectSemicolon) {
-      consume(TokenType::Semicolon, "Expected ';' after assignment");
-    }
-    
-    stmt->attributes = attributes;
-    return stmt;
+    restorePoint();
   }
 
   try {
     AstExpression* expr = parseExpression();
     if (expr != nullptr) {
-      AstExpressionStmt* stmt = _ast->createNode<AstExpressionStmt>();
-      stmt->expression = expr;
+      AstExpressionStmt* exprStmt = _ast->createNode<AstExpressionStmt>();
+      exprStmt->expression = expr;
+      stmt = exprStmt;
     }
   } catch (ParseException& e) {
   }
 
   if (stmt != nullptr) {
-    consume(TokenType::Semicolon, "Expected ';' after expression");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after expression");
+    }
     stmt->attributes = attributes;
     return stmt;
   }
@@ -1522,7 +1528,7 @@ AstForStmt* Parser::parseForStmt() {
   if (!check(TokenType::RightParen)) {
     stmt->increment = parseStatement(false);
     AstStatement* next = stmt->increment;
-    while (check(TokenType::Comma)) {
+    while (match(TokenType::Comma)) {
       next->next = parseStatement(false);
       next = next->next;
     }
