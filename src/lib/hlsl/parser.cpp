@@ -605,6 +605,8 @@ AstBufferStmt* Parser::parseBuffer() {
 }
 
 AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
+  // We don't know if this is a type or a variable name yet, so start
+  // recording the tokens in case we need to rewind.
   startRestorePoint();
 
   uint32_t flags = TypeFlags::None;
@@ -612,8 +614,10 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
 
   Token token = advance();
 
+  // If the token is an Identifier, it could be a user typedef type or a struct.
   if (token.type() == TokenType::Identifier) {
     if (_typedefs.find(token.lexeme()) != _typedefs.end()) {
+      // We can discard the tokens we recorded because we know this is a type.
       discardRestorePoint();
       AstType* type = _ast->createNode<AstType>();
       type->flags = flags;
@@ -623,6 +627,7 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
     }
 
     if (_structs.find(token.lexeme()) != _structs.end()) {
+      // We can discard the tokens we recorded because we know this is a type.
       discardRestorePoint();
       AstType* type = _ast->createNode<AstType>();
       type->flags = flags;
@@ -631,61 +636,72 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
       return type;
     }
 
+    // Roll back to the start of the type, because it wasn't a typedef or struct.
     restorePoint();
+
     if (exceptionMessage != nullptr) {
+      // If a type was expected, throw an exception.
       throw ParseException(token, exceptionMessage);
     }
+
+    // Otherwise the caller was just checking to see if it was a Type, so returning
+    // null will indicate that it wasn't.
     return nullptr;
   }
 
+  // Check to see if the token is a built-in type.
   BaseType baseType = tokenTypeToBaseType(token.type());
 
   if (baseType == BaseType::Undefined) {
+    // If the token wasn't a built-in type, roll back to the start of the type.
     restorePoint();
     if (exceptionMessage != nullptr) {
+      // If a type was expected, throw an exception.
       throw ParseException(token, exceptionMessage);
     }
+    // Otherwise the caller was just checking to see if it was a Type, so returning
+    // null will indicate that it wasn't.
     return nullptr;
   }
 
   if (baseType == BaseType::Void) {
+    // If it's a void type, check to see if void is allowed in this context.
     if (allowVoid) {
+      // We can discard the tokens we recorded because we know this is an
+      // accepted void type.
       discardRestorePoint();
       AstType* type = _ast->createNode<AstType>();
       type->flags = flags;
       type->baseType = baseType;
       return type;
     } else {
+      // If void isn't allowed, roll back to the start of the type.
       restorePoint();
       if (exceptionMessage != nullptr) {
-      throw ParseException(token, exceptionMessage);
-    }
+        // If a type was expected, throw an exception.
+        throw ParseException(token, exceptionMessage);
+      }
+      // Otherwise the caller was just checking to see if it was a Type, so returning
+      // null will indicate that it wasn't.
       return nullptr;
     }
   }
  
-  SamplerType sType = SamplerType::Undefined;
-  if (isSamplerBaseType(baseType)) {
-    if (match(TokenType::Less)) {
-      Token samplerType = advance();
-      sType = tokenTypeToSamplerType(samplerType.type());
-      if (sType == SamplerType::Undefined) {
-        restorePoint();
-        if (exceptionMessage != nullptr) {
-          throw ParseException(token, exceptionMessage);
-        }
-        return nullptr;
-      }
-      consume(TokenType::Greater, "'>' expected for sampler type");
-    }
+  // For template types like Samper<float> or RWStorageBuffer<float>, parse the template arguments.
+  AstType* templateArg = nullptr;
+  if (match(TokenType::Less)) {
+    // TODO: Support multiple template arguments.
+    templateArg = parseType(false);
+    consume(TokenType::Greater, "'>' expected for template type");
   }
 
+  // We can discard the recorded tokens we recorded because we know this is a type.
   discardRestorePoint();
 
   AstType* type = _ast->createNode<AstType>();
   type->flags = flags;
   type->baseType = baseType;
-  type->samplerType = sType;
+  type->templateArg = templateArg;
 
   return type;
 }

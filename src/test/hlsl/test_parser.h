@@ -482,6 +482,15 @@ static Test test_array_index_2("Parser for loop", []() {
   delete ast;
 });
 
+static Test test_rw_structure_buffer("Parser rw structure buffer", []() {
+  Parser parser(R"(RWStructuredBuffer<float> g_fogDensityBuffer;
+  sampler<float> g_fogDensitySampler;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);

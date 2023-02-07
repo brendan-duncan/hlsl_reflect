@@ -74,7 +74,7 @@ struct AstNode {
 struct AstType : AstNode {
   static const AstNodeType astType = AstNodeType::Type;
   BaseType baseType = BaseType::Undefined;
-  SamplerType samplerType = SamplerType::Undefined; // Half or Float
+  AstType* templateArg = nullptr;
   std::string_view name; // The name of the type if it's a user defined type
   bool array = false;
   AstExpression* arraySize = nullptr;
