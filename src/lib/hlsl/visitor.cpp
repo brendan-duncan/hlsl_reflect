@@ -120,7 +120,9 @@ void Visitor::visitBufferStmt(AstBufferStmt* node) {
 
 void Visitor::visitFunctionStmt(AstFunctionStmt* node) {
   visitType(node->returnType);
-  visitParameters(node->parameters);
+  if (node->parameters != nullptr) {
+    visitParameters(node->parameters);
+  }
   visitBlock(node->body);
 }
 
