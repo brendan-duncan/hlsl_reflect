@@ -74,7 +74,7 @@ struct AstNode {
 struct AstType : AstNode {
   static const AstNodeType astType = AstNodeType::Type;
   BaseType baseType = BaseType::Undefined;
-  SamplerType samplerType = SamplerType::Undefined; // Half or Float
+  AstType* templateArg = nullptr;
   std::string_view name; // The name of the type if it's a user defined type
   bool array = false;
   AstExpression* arraySize = nullptr;
@@ -261,7 +261,7 @@ struct AstStructInitializerExpr : AstExpression {
   AstExpression* fields = nullptr;
 };
 
-/// A value used to initialize an array.
+/// A value used to initialize an array, x = {1, 2}.
 struct AstArrayInitializerExpr : AstExpression {
   static const AstNodeType astType = AstNodeType::ArrayInitializerExpr;
   AstExpression* elements = nullptr;
@@ -306,7 +306,7 @@ struct AstForStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::ForStmt;
   AstStatement* initializer = nullptr;
   AstExpression* condition = nullptr;
-  AstExpression* increment = nullptr;
+  AstStatement* increment = nullptr;
   AstStatement* body = nullptr;
 };
 

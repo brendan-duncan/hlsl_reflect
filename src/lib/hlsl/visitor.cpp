@@ -162,7 +162,7 @@ void Visitor::visitForStmt(AstForStmt* node) {
     visitExpression(node->condition);
   }
   if (node->increment != nullptr) {
-    visitExpression(node->increment);
+    visitStatements(node->increment);
   }
   visitStatements(node->body);
 }

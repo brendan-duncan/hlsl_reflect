@@ -154,6 +154,8 @@ AstStatement* Parser::parseTopLevelStatement() {
 
     // variable declaration
     AstVariableStmt* var = parseVariableStmt(type, identifier.lexeme(), attributes);
+    consume(TokenType::Semicolon, "Expected ';' after variable declaration");
+
     return var;
   }
 
@@ -306,69 +308,15 @@ AstAttribute* Parser::parseAttributes() {
 }
 
 AstExpression* Parser::parseAssignmentExpression(AstType* type) {
-  if (match(TokenType::LeftBrace)) {
+  if (check(TokenType::LeftBrace)) {
     // Array or struct initialization expression (e.g. a = {1, 2, 3})
     if (type->baseType == BaseType::Struct) {
       // Struct initialization
-      AstStructStmt* structType = _structs[type->name];
-      if (structType == nullptr) {
-        throw ParseException(peekNext(), "unknown struct type");
-      }
-      AstField* field = structType->fields;
-      AstExpression* firstExpression = nullptr;
-      AstExpression* lastExpression = nullptr;
-      while (field != nullptr) {
-        AstExpression* expression = parseAssignmentExpression(field->type);
-        if (firstExpression == nullptr) {
-          firstExpression = expression;
-        }
-        if (lastExpression != nullptr) {
-          lastExpression->next = expression;
-        }
-        lastExpression = expression;
-        field = field->next;
-        if (field != nullptr) {
-          consume(TokenType::Comma, "',' expected for struct initialization");
-        }
-      }
-
-      if (check(TokenType::Comma)) {
-        advance(); // skip trailing comma
-      }
-
-      consume(TokenType::RightBrace, "'}' expected for array initialization");
-      AstStructInitializerExpr* init = _ast->createNode<AstStructInitializerExpr>();
-      init->structType = structType;
-      init->fields = firstExpression;
-      return init;
+      return parseStructInitialization(type);
     }
-    
+
     // Array initialization
-    AstExpression* firstExpression = parseExpression();
-    if (firstExpression == nullptr) {
-      throw ParseException(peekNext(), "expression expected for assignment");
-    }
-    AstExpression* lastExpression = firstExpression;
-
-    while (!isAtEnd() && match(TokenType::Comma)) {
-      if (check(TokenType::RightBrace)) {
-        // Allow trailing comma (e.g. a = {1, 2, 3,})
-        break;
-      }
-      AstExpression* expression = parseExpression();
-      if (expression == nullptr) {
-        throw ParseException(peekNext(), "expression expected for assignment");
-      }
-      lastExpression->next = expression;
-      lastExpression = expression;
-    }
-
-    consume(TokenType::RightBrace, "'}' expected for array initialization");
-
-    AstArrayInitializerExpr* init = _ast->createNode<AstArrayInitializerExpr>();
-    init->elements = firstExpression;
-
-    return init;
+    return parseArrayInitialization(type);
   }
 
   AstExpression* expression = parseLogicalOrExpression();
@@ -392,6 +340,74 @@ AstExpression* Parser::parseAssignmentExpression(AstType* type) {
   assignment->variable = expression;
   assignment->value = value;
   return assignment;
+}
+
+AstExpression* Parser::parseStructInitialization(AstType* type) {
+  consume(TokenType::LeftBrace, "'{' expected for struct initialization");
+
+  AstStructStmt* structType = _structs[type->name];
+  if (structType == nullptr) {
+    throw ParseException(peekNext(), "unknown struct type");
+  }
+  AstField* field = structType->fields;
+  AstExpression* firstExpression = nullptr;
+  AstExpression* lastExpression = nullptr;
+  while (field != nullptr) {
+    AstExpression* expression = parseAssignmentExpression(field->type);
+    if (firstExpression == nullptr) {
+      firstExpression = expression;
+    }
+    if (lastExpression != nullptr) {
+      lastExpression->next = expression;
+    }
+    lastExpression = expression;
+    field = field->next;
+    if (field != nullptr) {
+      consume(TokenType::Comma, "',' expected for struct initialization");
+    }
+  }
+
+  if (check(TokenType::Comma)) {
+    advance(); // skip trailing comma
+  }
+
+  consume(TokenType::RightBrace, "'}' expected for array initialization");
+
+  AstStructInitializerExpr* init = _ast->createNode<AstStructInitializerExpr>();
+  init->structType = structType;
+  init->fields = firstExpression;
+  return init;
+}
+
+AstExpression* Parser::parseArrayInitialization(AstType* type) {
+  if (match(TokenType::LeftBrace)) {
+      // Nested array initialization (e.g. a = {{1, 2}, {3, 4}}
+      AstExpression* firstExpression = parseArrayInitialization(type);
+      AstExpression* lastExpression = firstExpression;
+
+      while (!isAtEnd() && match(TokenType::Comma)) {
+        if (check(TokenType::RightBrace)) {
+          // Allow trailing comma (e.g. a = {1, 2, 3,})
+          break;
+        }
+        
+        AstExpression* expression = parseArrayInitialization(type);
+        if (expression == nullptr) {
+          throw ParseException(peekNext(), "expression expected for assignment");
+        }
+        lastExpression->next = expression;
+        lastExpression = expression;
+      }
+
+      consume(TokenType::RightBrace, "'}' expected for array initialization");
+
+      AstArrayInitializerExpr* init = _ast->createNode<AstArrayInitializerExpr>();
+      init->elements = firstExpression;
+
+      return init;
+  }
+  
+  return parseExpression();
 }
 
 AstExpression* Parser::parseExpression() {
@@ -605,6 +621,8 @@ AstBufferStmt* Parser::parseBuffer() {
 }
 
 AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
+  // We don't know if this is a type or a variable name yet, so start
+  // recording the tokens in case we need to rewind.
   startRestorePoint();
 
   uint32_t flags = TypeFlags::None;
@@ -612,8 +630,10 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
 
   Token token = advance();
 
+  // If the token is an Identifier, it could be a user typedef type or a struct.
   if (token.type() == TokenType::Identifier) {
     if (_typedefs.find(token.lexeme()) != _typedefs.end()) {
+      // We can discard the tokens we recorded because we know this is a type.
       discardRestorePoint();
       AstType* type = _ast->createNode<AstType>();
       type->flags = flags;
@@ -623,6 +643,7 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
     }
 
     if (_structs.find(token.lexeme()) != _structs.end()) {
+      // We can discard the tokens we recorded because we know this is a type.
       discardRestorePoint();
       AstType* type = _ast->createNode<AstType>();
       type->flags = flags;
@@ -631,61 +652,72 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
       return type;
     }
 
+    // Roll back to the start of the type, because it wasn't a typedef or struct.
     restorePoint();
+
     if (exceptionMessage != nullptr) {
+      // If a type was expected, throw an exception.
       throw ParseException(token, exceptionMessage);
     }
+
+    // Otherwise the caller was just checking to see if it was a Type, so returning
+    // null will indicate that it wasn't.
     return nullptr;
   }
 
+  // Check to see if the token is a built-in type.
   BaseType baseType = tokenTypeToBaseType(token.type());
 
   if (baseType == BaseType::Undefined) {
+    // If the token wasn't a built-in type, roll back to the start of the type.
     restorePoint();
     if (exceptionMessage != nullptr) {
+      // If a type was expected, throw an exception.
       throw ParseException(token, exceptionMessage);
     }
+    // Otherwise the caller was just checking to see if it was a Type, so returning
+    // null will indicate that it wasn't.
     return nullptr;
   }
 
   if (baseType == BaseType::Void) {
+    // If it's a void type, check to see if void is allowed in this context.
     if (allowVoid) {
+      // We can discard the tokens we recorded because we know this is an
+      // accepted void type.
       discardRestorePoint();
       AstType* type = _ast->createNode<AstType>();
       type->flags = flags;
       type->baseType = baseType;
       return type;
     } else {
+      // If void isn't allowed, roll back to the start of the type.
       restorePoint();
       if (exceptionMessage != nullptr) {
-      throw ParseException(token, exceptionMessage);
-    }
+        // If a type was expected, throw an exception.
+        throw ParseException(token, exceptionMessage);
+      }
+      // Otherwise the caller was just checking to see if it was a Type, so returning
+      // null will indicate that it wasn't.
       return nullptr;
     }
   }
  
-  SamplerType sType = SamplerType::Undefined;
-  if (isSamplerBaseType(baseType)) {
-    if (match(TokenType::Less)) {
-      Token samplerType = advance();
-      sType = tokenTypeToSamplerType(samplerType.type());
-      if (sType == SamplerType::Undefined) {
-        restorePoint();
-        if (exceptionMessage != nullptr) {
-          throw ParseException(token, exceptionMessage);
-        }
-        return nullptr;
-      }
-      consume(TokenType::Greater, "'>' expected for sampler type");
-    }
+  // For template types like Samper<float> or RWStorageBuffer<float>, parse the template arguments.
+  AstType* templateArg = nullptr;
+  if (match(TokenType::Less)) {
+    // TODO: Support multiple template arguments.
+    templateArg = parseType(false);
+    consume(TokenType::Greater, "'>' expected for template type");
   }
 
+  // We can discard the recorded tokens we recorded because we know this is a type.
   discardRestorePoint();
 
   AstType* type = _ast->createNode<AstType>();
   type->flags = flags;
   type->baseType = baseType;
-  type->samplerType = sType;
+  type->templateArg = templateArg;
 
   return type;
 }
@@ -1122,11 +1154,20 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
   var->name = name;
   var->attributes = attributes;
 
-  if (match(TokenType::LeftBracket)) {
+  AstLiteralExpr* lastArraySize = nullptr;
+  // Parse array dimensions (int a[1][2])
+  while (match(TokenType::LeftBracket)) {
     var->isArray = true;
-    var->arraySize = parseArraySize();
+    if (var->arraySize == nullptr) {
+      var->arraySize = parseArraySize();
+      lastArraySize = var->arraySize;
+    } else {
+      lastArraySize->next = parseArraySize();
+      lastArraySize = (AstLiteralExpr*)lastArraySize->next;
+    }
   }
 
+  // Parse variable initializer (int a = 1)
   if (match(TokenType::Equal)) {
     var->initializer = parseAssignmentExpression(var->type);
   }
@@ -1154,7 +1195,6 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
     var = next;
   }
 
-  consume(TokenType::Semicolon, "Expected ';' after variable declaration");
   return firstVar;
 }
 
@@ -1164,6 +1204,7 @@ AstLiteralExpr* Parser::parseArraySize() {
   if (peekNext().type() == TokenType::IntLiteral) {
     Token count = advance();
     AstLiteralExpr* size = _ast->createNode<AstLiteralExpr>();
+    size->type = BaseType::Int;
     size->value = count.lexeme();
     firstSize = size;
     // Bounded array (int a[10
@@ -1176,7 +1217,7 @@ AstLiteralExpr* Parser::parseArraySize() {
     }
   }
   consume(TokenType::RightBracket, "Expected ']' for array declaration");
-  return nullptr;
+  return firstSize;
 }
 
 // Parse a block of statements enclosed in braces
@@ -1209,11 +1250,14 @@ AstBlock* Parser::parseBlock() {
   return block;
 }
 
-AstStatement* Parser::parseStatement() {
+AstStatement* Parser::parseStatement(bool expectSemicolon) {
   while (match(TokenType::Semicolon)) {
     // Ignore empty statements
   }
 
+  // Attributes are really only for top-level statements, but checking for
+  // them in all cases until we pass in something to let us know this is
+  // a top-level statement.
   AstAttribute* attributes = parseAttributes();
 
   if (match(TokenType::If)) {
@@ -1237,7 +1281,9 @@ AstStatement* Parser::parseStatement() {
   if (match(TokenType::Do)) {
     AstDoWhileStmt* stmt = parseDoWhileStmt();
     stmt->attributes = attributes;
-    consume(TokenType::Semicolon, "Expected ';' after return value");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after return value");
+    }
     return stmt;
   }
 
@@ -1263,7 +1309,9 @@ AstStatement* Parser::parseStatement() {
 
     stmt->value = parseExpression();
 
-    consume(TokenType::Semicolon, "Expected ';' after return value");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after return value");
+    }
 
     return stmt;
   }
@@ -1271,21 +1319,27 @@ AstStatement* Parser::parseStatement() {
   if (match(TokenType::Break)) {
     AstBreakStmt* stmt = _ast->createNode<AstBreakStmt>();
     stmt->attributes = attributes;
-    consume(TokenType::Semicolon, "Expected ';' after 'break'");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after 'break'");
+    }
     return stmt;
   }
 
   if (match(TokenType::Continue)) {
     AstContinueStmt* stmt = _ast->createNode<AstContinueStmt>();
     stmt->attributes = attributes;
-    consume(TokenType::Semicolon, "Expected ';' after 'continue'");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after 'continue'");
+    }
     return stmt;
   }
 
   if (match(TokenType::Discard)) {
     AstDiscardStmt* stmt = _ast->createNode<AstDiscardStmt>();
     stmt->attributes = attributes;
-    consume(TokenType::Semicolon, "Expected ';' after 'discard'");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after 'discard'");
+    }
     return stmt;
   }
 
@@ -1298,7 +1352,9 @@ AstStatement* Parser::parseStatement() {
       call->name = name.lexeme();
       call->arguments = parseArgumentList();
       call->attributes = attributes;
-      consume(TokenType::Semicolon, "Expected ';' after statment");
+      if (expectSemicolon) {
+        consume(TokenType::Semicolon, "Expected ';' after statment");
+      }
       return call;
     }
 
@@ -1309,6 +1365,9 @@ AstStatement* Parser::parseStatement() {
   if (type != nullptr) {
     const std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
     stmt = parseVariableStmt(type, name, attributes);   
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after variable declaration");
+    }
     return stmt;
   }
 
@@ -1346,7 +1405,9 @@ AstStatement* Parser::parseStatement() {
 
     stmt->value = parseAssignmentExpression(type);
 
-    consume(TokenType::Semicolon, "Expected ';' after assignment");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after assignment");
+    }
     
     stmt->attributes = attributes;
     return stmt;
@@ -1389,14 +1450,18 @@ AstIfStmt* Parser::parseIfStmt() {
 }
 
 AstSwitchStmt* Parser::parseSwitchStmt() {
-  AstSwitchStmt* stmt = _ast->createNode<AstSwitchStmt>();
+  AstSwitchStmt* switchStmt = _ast->createNode<AstSwitchStmt>();
+  
   consume(TokenType::LeftParen, "Expected '(' after 'switch'");
-  stmt->condition = parseExpression();
+  switchStmt->condition = parseExpression();
   consume(TokenType::RightParen, "Expected ')' after 'switch' condition");
+  
   consume(TokenType::LeftBrace, "Expected '{' after 'switch' condition");
+  
   AstSwitchCase* lastCase = nullptr;
-  while (!check(TokenType::RightBrace) && !isAtEnd()) {
+  while (!match(TokenType::RightBrace) && !isAtEnd()) {
     AstSwitchCase* caseStmt = _ast->createNode<AstSwitchCase>();
+
     if (match(TokenType::Case)) {      
       caseStmt->isDefault = false;
       caseStmt->condition = parseExpression();
@@ -1406,17 +1471,38 @@ AstSwitchStmt* Parser::parseSwitchStmt() {
       throw ParseException(peekNext(), "Expected 'case' or 'default' in switch statement");
     }
 
-    consume(TokenType::Colon, "Expected ':' after 'case' or 'default'");
-    caseStmt->body = parseStatement();
-
-    if (stmt->cases == nullptr) {
+    if (switchStmt->cases == nullptr) {
       lastCase = caseStmt;
-      stmt->cases = caseStmt;
+      switchStmt->cases = caseStmt;
     } else {
       lastCase->next = caseStmt;
     }
+
+    consume(TokenType::Colon, "Expected ':' after 'case' or 'default'");
+
+    AstStatement* firstStatement = nullptr;
+    AstStatement* lastStatement = nullptr;
+
+    Token next = peekNext();
+    while (next.type() != TokenType::Case && next.type() != TokenType::Default && next.type() != TokenType::RightBrace) {
+      AstStatement* caseBodyStmt = parseStatement();
+      if (caseBodyStmt != nullptr) {
+        if (firstStatement == nullptr) {
+          firstStatement = caseBodyStmt;
+        } else {
+          lastStatement->next = caseBodyStmt;
+        }
+        lastStatement = caseBodyStmt;
+      }
+      if (caseBodyStmt->nodeType == AstNodeType::BreakStmt || caseBodyStmt->nodeType == AstNodeType::ReturnStmt) {
+        break;
+      }
+      next = peekNext();
+    }
+
+    caseStmt->body = firstStatement;
   }
-  return stmt;
+  return switchStmt;
 }
 
 AstForStmt* Parser::parseForStmt() {
@@ -1424,15 +1510,22 @@ AstForStmt* Parser::parseForStmt() {
 
   consume(TokenType::LeftParen, "Expected '(' after 'for'");
   if (!check(TokenType::Semicolon)) {
-    stmt->initializer = parseStatement();
+    stmt->initializer = parseStatement(false);
   }
   consume(TokenType::Semicolon, "Expected ';' after 'for' initializer");
+
   if (!check(TokenType::Semicolon)) {
     stmt->condition = parseExpression();
   }
   consume(TokenType::Semicolon, "Expected ';' after 'for' condition");
+
   if (!check(TokenType::RightParen)) {
-    stmt->increment = parseExpression();
+    stmt->increment = parseStatement(false);
+    AstStatement* next = stmt->increment;
+    while (check(TokenType::Comma)) {
+      next->next = parseStatement(false);
+      next = next->next;
+    }
   }
   consume(TokenType::RightParen, "Expected ')' after 'for' increment");
 
