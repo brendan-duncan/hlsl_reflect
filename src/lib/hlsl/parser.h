@@ -137,7 +137,7 @@ private:
 
   AstBlock* parseBlock();
 
-  AstStatement* parseStatement();
+  AstStatement* parseStatement(bool expectSemicolon = true);
 
   AstIfStmt* parseIfStmt();
 

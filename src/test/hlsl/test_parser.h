@@ -483,7 +483,7 @@ static Test test_array_index("Parser array index", []() {
 });
 
 static Test test_array_index_2("Parser for loop", []() {
-  Parser parser(R"(void foo() { for (int m = 1; m <= 2; ++m) {} })");
+  Parser parser(R"(void foo() { for (uint b = 1U << firstbithigh(n - 1); b != 0; b >>= 1) {} })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);

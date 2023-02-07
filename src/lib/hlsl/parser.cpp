@@ -154,6 +154,8 @@ AstStatement* Parser::parseTopLevelStatement() {
 
     // variable declaration
     AstVariableStmt* var = parseVariableStmt(type, identifier.lexeme(), attributes);
+    consume(TokenType::Semicolon, "Expected ';' after variable declaration");
+
     return var;
   }
 
@@ -1193,7 +1195,6 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
     var = next;
   }
 
-  consume(TokenType::Semicolon, "Expected ';' after variable declaration");
   return firstVar;
 }
 
@@ -1249,7 +1250,7 @@ AstBlock* Parser::parseBlock() {
   return block;
 }
 
-AstStatement* Parser::parseStatement() {
+AstStatement* Parser::parseStatement(bool expectSemicolon) {
   while (match(TokenType::Semicolon)) {
     // Ignore empty statements
   }
@@ -1280,7 +1281,9 @@ AstStatement* Parser::parseStatement() {
   if (match(TokenType::Do)) {
     AstDoWhileStmt* stmt = parseDoWhileStmt();
     stmt->attributes = attributes;
-    consume(TokenType::Semicolon, "Expected ';' after return value");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after return value");
+    }
     return stmt;
   }
 
@@ -1306,7 +1309,9 @@ AstStatement* Parser::parseStatement() {
 
     stmt->value = parseExpression();
 
-    consume(TokenType::Semicolon, "Expected ';' after return value");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after return value");
+    }
 
     return stmt;
   }
@@ -1314,21 +1319,27 @@ AstStatement* Parser::parseStatement() {
   if (match(TokenType::Break)) {
     AstBreakStmt* stmt = _ast->createNode<AstBreakStmt>();
     stmt->attributes = attributes;
-    consume(TokenType::Semicolon, "Expected ';' after 'break'");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after 'break'");
+    }
     return stmt;
   }
 
   if (match(TokenType::Continue)) {
     AstContinueStmt* stmt = _ast->createNode<AstContinueStmt>();
     stmt->attributes = attributes;
-    consume(TokenType::Semicolon, "Expected ';' after 'continue'");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after 'continue'");
+    }
     return stmt;
   }
 
   if (match(TokenType::Discard)) {
     AstDiscardStmt* stmt = _ast->createNode<AstDiscardStmt>();
     stmt->attributes = attributes;
-    consume(TokenType::Semicolon, "Expected ';' after 'discard'");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after 'discard'");
+    }
     return stmt;
   }
 
@@ -1341,7 +1352,9 @@ AstStatement* Parser::parseStatement() {
       call->name = name.lexeme();
       call->arguments = parseArgumentList();
       call->attributes = attributes;
-      consume(TokenType::Semicolon, "Expected ';' after statment");
+      if (expectSemicolon) {
+        consume(TokenType::Semicolon, "Expected ';' after statment");
+      }
       return call;
     }
 
@@ -1352,6 +1365,9 @@ AstStatement* Parser::parseStatement() {
   if (type != nullptr) {
     const std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
     stmt = parseVariableStmt(type, name, attributes);   
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after variable declaration");
+    }
     return stmt;
   }
 
@@ -1389,7 +1405,9 @@ AstStatement* Parser::parseStatement() {
 
     stmt->value = parseAssignmentExpression(type);
 
-    consume(TokenType::Semicolon, "Expected ';' after assignment");
+    if (expectSemicolon) {
+      consume(TokenType::Semicolon, "Expected ';' after assignment");
+    }
     
     stmt->attributes = attributes;
     return stmt;
@@ -1492,16 +1510,22 @@ AstForStmt* Parser::parseForStmt() {
 
   consume(TokenType::LeftParen, "Expected '(' after 'for'");
   if (!check(TokenType::Semicolon)) {
-    stmt->initializer = parseStatement(); // The statement will consume the semicolon
+    stmt->initializer = parseStatement(false);
   }
-  //consume(TokenType::Semicolon, "Expected ';' after 'for' initializer");
+  consume(TokenType::Semicolon, "Expected ';' after 'for' initializer");
+
   if (!check(TokenType::Semicolon)) {
     stmt->condition = parseExpression();
   }
   consume(TokenType::Semicolon, "Expected ';' after 'for' condition");
 
   if (!check(TokenType::RightParen)) {
-    stmt->increment = parseExpression();
+    stmt->increment = parseStatement(false);
+    AstStatement* next = stmt->increment;
+    while (check(TokenType::Comma)) {
+      next->next = parseStatement(false);
+      next = next->next;
+    }
   }
   consume(TokenType::RightParen, "Expected ')' after 'for' increment");
 

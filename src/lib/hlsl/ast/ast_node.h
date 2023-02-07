@@ -306,7 +306,7 @@ struct AstForStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::ForStmt;
   AstStatement* initializer = nullptr;
   AstExpression* condition = nullptr;
-  AstExpression* increment = nullptr;
+  AstStatement* increment = nullptr;
   AstStatement* body = nullptr;
 };
 

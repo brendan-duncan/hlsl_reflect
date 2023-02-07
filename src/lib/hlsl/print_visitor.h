@@ -15,7 +15,6 @@ public:
     : _out(out) {}
 
   void visitBlock(AstBlock* node) override {
-    indent();
     _out << "{" << std::endl;
 
     _indent++;
@@ -24,6 +23,15 @@ public:
 
     indent();
     _out << "}" << std::endl;
+  }
+
+  void visitStatements(AstStatement* node) override {
+    while (node) {
+      indent();
+      visitStatement(node);
+      node = node->next;
+      std::cout << std::endl;
+    }
   }
 
   void visitBufferStmt(AstBufferStmt* node) override {
@@ -66,13 +74,46 @@ public:
   }
 
   void visitStatement(AstStatement* node) override {
-    if (node->nodeType != AstNodeType::Block) {
-      indent();
-    }
     Visitor::visitStatement(node);
-    if (node->nodeType != AstNodeType::Block && node->nodeType != AstNodeType::IfStmt) {
-      _out << ";" << std::endl;
+    if (node->nodeType != AstNodeType::Block &&
+        node->nodeType != AstNodeType::IfStmt &&
+        node->nodeType != AstNodeType::ForStmt &&
+        node->nodeType != AstNodeType::SwitchStmt &&
+        node->nodeType != AstNodeType::WhileStmt) {
+      _out << ";";
     }
+  }
+
+  void visitForStmt(AstForStmt* node) override {
+    _out << "for (";
+    AstStatement* init = node->initializer;
+    while (init != nullptr) {
+      visitStatement(init);
+      if (init->next != nullptr) {
+        _out << ", ";
+      }
+      init = init->next;
+    }
+    if (node->initializer == nullptr) {
+      _out << "; ";
+    } else {
+      _out << " ";
+    }
+
+    visitExpression(node->condition);
+    _out << "; ";
+    
+    AstStatement* inc = node->increment;
+    while (inc != nullptr) {
+      visitStatement(inc);
+      if (inc->next != nullptr) {
+        _out << ", ";
+      }
+      inc = inc->next;
+    }
+    _out << ")" << std::endl;
+
+    visitStatements(node->body);
   }
 
   void visitSwitchStmt(AstSwitchStmt* node) override {
