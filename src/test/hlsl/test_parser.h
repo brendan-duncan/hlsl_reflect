@@ -499,9 +499,9 @@ static Test test_rw_structure_buffer("Parser rw structure buffer", []() {
   delete ast;
 });
 
-static Test test_switch_case_base("Parser switch case block", []() {
+static Test test_switch_case_block("Parser switch", []() {
   Parser parser(R"(
-  void foo() { switch (bar) { default: {} } })");
+  void foo() { switch (bar) { case 1: sampleCount = 21; break; default: {} } })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);

@@ -76,7 +76,6 @@ public:
   }
 
   void visitSwitchStmt(AstSwitchStmt* node) override {
-    indent();
     _out << "switch (";
     visitExpression(node->condition);
     _out << ") {" << std::endl;
@@ -100,6 +99,13 @@ public:
       visitExpression(node->condition);
       _out << ":" << std::endl;
     }
+    _indent++;
+    visitStatements(node->body);
+    _indent--;
+  }
+
+  void visitBreakStmt(AstBreakStmt* node) override {
+    _out << "break";
   }
 
   void visitFunctionStmt(AstFunctionStmt* node) override {

@@ -1432,14 +1432,18 @@ AstIfStmt* Parser::parseIfStmt() {
 }
 
 AstSwitchStmt* Parser::parseSwitchStmt() {
-  AstSwitchStmt* stmt = _ast->createNode<AstSwitchStmt>();
+  AstSwitchStmt* switchStmt = _ast->createNode<AstSwitchStmt>();
+  
   consume(TokenType::LeftParen, "Expected '(' after 'switch'");
-  stmt->condition = parseExpression();
+  switchStmt->condition = parseExpression();
   consume(TokenType::RightParen, "Expected ')' after 'switch' condition");
+  
   consume(TokenType::LeftBrace, "Expected '{' after 'switch' condition");
+  
   AstSwitchCase* lastCase = nullptr;
   while (!match(TokenType::RightBrace) && !isAtEnd()) {
     AstSwitchCase* caseStmt = _ast->createNode<AstSwitchCase>();
+
     if (match(TokenType::Case)) {      
       caseStmt->isDefault = false;
       caseStmt->condition = parseExpression();
@@ -1449,17 +1453,38 @@ AstSwitchStmt* Parser::parseSwitchStmt() {
       throw ParseException(peekNext(), "Expected 'case' or 'default' in switch statement");
     }
 
-    consume(TokenType::Colon, "Expected ':' after 'case' or 'default'");
-    caseStmt->body = parseStatement();
-
-    if (stmt->cases == nullptr) {
+    if (switchStmt->cases == nullptr) {
       lastCase = caseStmt;
-      stmt->cases = caseStmt;
+      switchStmt->cases = caseStmt;
     } else {
       lastCase->next = caseStmt;
     }
+
+    consume(TokenType::Colon, "Expected ':' after 'case' or 'default'");
+
+    AstStatement* firstStatement = nullptr;
+    AstStatement* lastStatement = nullptr;
+
+    Token next = peekNext();
+    while (next.type() != TokenType::Case && next.type() != TokenType::Default && next.type() != TokenType::RightBrace) {
+      AstStatement* caseBodyStmt = parseStatement();
+      if (caseBodyStmt != nullptr) {
+        if (firstStatement == nullptr) {
+          firstStatement = caseBodyStmt;
+        } else {
+          lastStatement->next = caseBodyStmt;
+        }
+        lastStatement = caseBodyStmt;
+      }
+      if (caseBodyStmt->nodeType == AstNodeType::BreakStmt || caseBodyStmt->nodeType == AstNodeType::ReturnStmt) {
+        break;
+      }
+      next = peekNext();
+    }
+
+    caseStmt->body = firstStatement;
   }
-  return stmt;
+  return switchStmt;
 }
 
 AstForStmt* Parser::parseForStmt() {
