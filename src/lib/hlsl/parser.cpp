@@ -1414,7 +1414,7 @@ AstSwitchStmt* Parser::parseSwitchStmt() {
   consume(TokenType::RightParen, "Expected ')' after 'switch' condition");
   consume(TokenType::LeftBrace, "Expected '{' after 'switch' condition");
   AstSwitchCase* lastCase = nullptr;
-  while (!check(TokenType::RightBrace) && !isAtEnd()) {
+  while (!match(TokenType::RightBrace) && !isAtEnd()) {
     AstSwitchCase* caseStmt = _ast->createNode<AstSwitchCase>();
     if (match(TokenType::Case)) {      
       caseStmt->isDefault = false;

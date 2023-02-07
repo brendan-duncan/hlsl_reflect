@@ -491,6 +491,15 @@ static Test test_rw_structure_buffer("Parser rw structure buffer", []() {
   delete ast;
 });
 
+static Test test_switch_case_base("Parser switch case block", []() {
+  Parser parser(R"(
+  void foo() { switch (bar) { default: {} } })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);

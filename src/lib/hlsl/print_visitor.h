@@ -75,6 +75,33 @@ public:
     }
   }
 
+  void visitSwitchStmt(AstSwitchStmt* node) override {
+    indent();
+    _out << "switch (";
+    visitExpression(node->condition);
+    _out << ") {" << std::endl;
+    _indent++;
+    AstSwitchCase* switchCase = node->cases;
+    while (switchCase != nullptr) {
+      visitSwitchCase(switchCase);
+      switchCase = switchCase->next;
+    }
+    _indent--;
+    indent();
+    _out << "}" << std::endl;
+  }
+
+  void visitSwitchCase(AstSwitchCase* node) override {
+    indent();
+    if (node->isDefault) {
+      _out << "default:" << std::endl;
+    } else {
+      _out << "case ";
+      visitExpression(node->condition);
+      _out << ":" << std::endl;
+    }
+  }
+
   void visitFunctionStmt(AstFunctionStmt* node) override {
     _out << "fn " << node->name << "(";
     visitParameters(node->parameters);
