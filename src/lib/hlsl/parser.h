@@ -86,6 +86,10 @@ private:
 
   AstExpression* parseAssignmentExpression(AstType* type);
 
+  AstExpression* parseStructInitialization(AstType* type);
+
+  AstExpression* parseArrayInitialization(AstType* type);
+
   AstExpression* parseExpression();
 
   AstExpression* parseExpressionList();

@@ -306,69 +306,15 @@ AstAttribute* Parser::parseAttributes() {
 }
 
 AstExpression* Parser::parseAssignmentExpression(AstType* type) {
-  if (match(TokenType::LeftBrace)) {
+  if (check(TokenType::LeftBrace)) {
     // Array or struct initialization expression (e.g. a = {1, 2, 3})
     if (type->baseType == BaseType::Struct) {
       // Struct initialization
-      AstStructStmt* structType = _structs[type->name];
-      if (structType == nullptr) {
-        throw ParseException(peekNext(), "unknown struct type");
-      }
-      AstField* field = structType->fields;
-      AstExpression* firstExpression = nullptr;
-      AstExpression* lastExpression = nullptr;
-      while (field != nullptr) {
-        AstExpression* expression = parseAssignmentExpression(field->type);
-        if (firstExpression == nullptr) {
-          firstExpression = expression;
-        }
-        if (lastExpression != nullptr) {
-          lastExpression->next = expression;
-        }
-        lastExpression = expression;
-        field = field->next;
-        if (field != nullptr) {
-          consume(TokenType::Comma, "',' expected for struct initialization");
-        }
-      }
-
-      if (check(TokenType::Comma)) {
-        advance(); // skip trailing comma
-      }
-
-      consume(TokenType::RightBrace, "'}' expected for array initialization");
-      AstStructInitializerExpr* init = _ast->createNode<AstStructInitializerExpr>();
-      init->structType = structType;
-      init->fields = firstExpression;
-      return init;
+      return parseStructInitialization(type);
     }
-    
+
     // Array initialization
-    AstExpression* firstExpression = parseExpression();
-    if (firstExpression == nullptr) {
-      throw ParseException(peekNext(), "expression expected for assignment");
-    }
-    AstExpression* lastExpression = firstExpression;
-
-    while (!isAtEnd() && match(TokenType::Comma)) {
-      if (check(TokenType::RightBrace)) {
-        // Allow trailing comma (e.g. a = {1, 2, 3,})
-        break;
-      }
-      AstExpression* expression = parseExpression();
-      if (expression == nullptr) {
-        throw ParseException(peekNext(), "expression expected for assignment");
-      }
-      lastExpression->next = expression;
-      lastExpression = expression;
-    }
-
-    consume(TokenType::RightBrace, "'}' expected for array initialization");
-
-    AstArrayInitializerExpr* init = _ast->createNode<AstArrayInitializerExpr>();
-    init->elements = firstExpression;
-
-    return init;
+    return parseArrayInitialization(type);
   }
 
   AstExpression* expression = parseLogicalOrExpression();
@@ -392,6 +338,74 @@ AstExpression* Parser::parseAssignmentExpression(AstType* type) {
   assignment->variable = expression;
   assignment->value = value;
   return assignment;
+}
+
+AstExpression* Parser::parseStructInitialization(AstType* type) {
+  consume(TokenType::LeftBrace, "'{' expected for struct initialization");
+
+  AstStructStmt* structType = _structs[type->name];
+  if (structType == nullptr) {
+    throw ParseException(peekNext(), "unknown struct type");
+  }
+  AstField* field = structType->fields;
+  AstExpression* firstExpression = nullptr;
+  AstExpression* lastExpression = nullptr;
+  while (field != nullptr) {
+    AstExpression* expression = parseAssignmentExpression(field->type);
+    if (firstExpression == nullptr) {
+      firstExpression = expression;
+    }
+    if (lastExpression != nullptr) {
+      lastExpression->next = expression;
+    }
+    lastExpression = expression;
+    field = field->next;
+    if (field != nullptr) {
+      consume(TokenType::Comma, "',' expected for struct initialization");
+    }
+  }
+
+  if (check(TokenType::Comma)) {
+    advance(); // skip trailing comma
+  }
+
+  consume(TokenType::RightBrace, "'}' expected for array initialization");
+
+  AstStructInitializerExpr* init = _ast->createNode<AstStructInitializerExpr>();
+  init->structType = structType;
+  init->fields = firstExpression;
+  return init;
+}
+
+AstExpression* Parser::parseArrayInitialization(AstType* type) {
+  if (match(TokenType::LeftBrace)) {
+      // Nested array initialization (e.g. a = {{1, 2}, {3, 4}}
+      AstExpression* firstExpression = parseArrayInitialization(type);
+      AstExpression* lastExpression = firstExpression;
+
+      while (!isAtEnd() && match(TokenType::Comma)) {
+        if (check(TokenType::RightBrace)) {
+          // Allow trailing comma (e.g. a = {1, 2, 3,})
+          break;
+        }
+        
+        AstExpression* expression = parseArrayInitialization(type);
+        if (expression == nullptr) {
+          throw ParseException(peekNext(), "expression expected for assignment");
+        }
+        lastExpression->next = expression;
+        lastExpression = expression;
+      }
+
+      consume(TokenType::RightBrace, "'}' expected for array initialization");
+
+      AstArrayInitializerExpr* init = _ast->createNode<AstArrayInitializerExpr>();
+      init->elements = firstExpression;
+
+      return init;
+  }
+  
+  return parseExpression();
 }
 
 AstExpression* Parser::parseExpression() {

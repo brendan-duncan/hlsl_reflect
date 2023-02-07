@@ -261,7 +261,7 @@ struct AstStructInitializerExpr : AstExpression {
   AstExpression* fields = nullptr;
 };
 
-/// A value used to initialize an array.
+/// A value used to initialize an array, x = {1, 2}.
 struct AstArrayInitializerExpr : AstExpression {
   static const AstNodeType astType = AstNodeType::ArrayInitializerExpr;
   AstExpression* elements = nullptr;
