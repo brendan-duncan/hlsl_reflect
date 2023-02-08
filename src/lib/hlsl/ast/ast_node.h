@@ -101,6 +101,13 @@ struct AstStatement : AstNode {
   AstStatement* next = nullptr;
 };
 
+/// Indicates an empty statement, such as a semicolon.
+struct AstEmptyStatement : AstStatement {
+  static const AstNodeType astType = AstNodeType::EmptyStmt;
+  // There is only one instance of this class, so we can use a static instance.
+  static AstEmptyStatement instance;
+};
+
 /// A field member of a struct or buffer.
 struct AstField : AstNode {
   static const AstNodeType astType = AstNodeType::Field;

@@ -125,7 +125,10 @@ static Test test_multi_variable_array("Parser multi variable array", []() {
 });
 
 static Test test_empty_statement("Parser empty statement", []() {
-  Parser parser(R"(void foo() { ;; })");
+  Parser parser(R"(void foo() {
+    float foo = 1;;
+    #line 55
+  })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);

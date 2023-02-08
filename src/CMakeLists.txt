@@ -1,4 +1,5 @@
 set(LIB_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/lib/hlsl/ast.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/hlsl/ast/ast_node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/hlsl/ast/base_type.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/hlsl/ast/operator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/hlsl/parser/effect_state.cpp

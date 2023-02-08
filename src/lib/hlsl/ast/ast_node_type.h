@@ -32,6 +32,7 @@ enum class AstNodeType {
   ExpressionStmt,
   CallStmt,
   TypedefStmt,
+  EmptyStmt,
 
   // Expression Nodes
   PrefixExpr,

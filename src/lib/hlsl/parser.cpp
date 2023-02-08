@@ -23,8 +23,7 @@ Ast* Parser::parse() {
       statement = parseTopLevelStatement();
     } catch (ParseException e) {
       std::cerr << "Error: "  << e.message << std::endl;
-      //std::cerr << "  Filename: " << _scanner.filename() << std::endl;
-      //std::cerr << "  Line: " << _scanner.line() << std::endl;
+      std::cerr << "  Token: " << e.token.lexeme() << std::endl;
       std::cerr << "  Line: " << _scanner.absoluteLine() << std::endl;
       delete _ast;
       _ast = nullptr;
@@ -1294,6 +1293,9 @@ AstBlock* Parser::parseBlock() {
     if (stmt == nullptr) {
       throw ParseException(peekNext(), "Expected statement");
     }
+    if (stmt->nodeType == AstNodeType::EmptyStmt) {
+      continue;
+    }
     lastStmt->next = stmt;
     lastStmt = stmt;
   }
@@ -1308,7 +1310,7 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
   }
 
   if (check(TokenType::RightBrace)) {
-    return nullptr;
+    return &AstEmptyStatement::instance;
   }
 
   // Attributes are really only for top-level statements, but checking for
@@ -1433,7 +1435,7 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
     const bool isUnderscore = match(TokenType::Underscore);
 
     AstExpression* var = nullptr;
-    
+
     if (!isUnderscore) {
       var = parsePrefixExpression();
     }
@@ -1463,7 +1465,7 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
       if (expectSemicolon) {
         consume(TokenType::Semicolon, "Expected ';' after assignment");
       }
-      
+
       stmt->attributes = attributes;
       discardRestorePoint();
       return stmt;
