@@ -109,24 +109,29 @@ for k in vectorMatrixTypes:
             fp.write('  {{TokenType::{0}{1}x{2}, "{0}{1}x{2}"}},\n'.format(enumName(k), i, j))
 fp.write('}; // _tokenTypeToString\n\n')
 
-fp.write('static const std::map<std::string_view, TokenType> tokenDefs {\n')
+tokenStrings = {}
+
+#fp.write('static const std::map<std::string_view, TokenType> tokenDefs {\n')
 for k in tokens:
-    fp.write('  {{"{0}", TokenType::{1}}},\n'.format(k[1], k[0]))
+    tokenStrings[k[1]] = 'TokenType::' + k[0]
+    #fp.write('  {{"{0}", TokenType::{1}}},\n'.format(k[1], k[0]))
 
 for k in keywords:
-    fp.write('  {{"{0}", TokenType::{1}}},\n'.format(k, enumName(k)))
+    tokenStrings[k] = 'TokenType::' + enumName(k)
+    #fp.write('  {{"{0}", TokenType::{1}}},\n'.format(k, enumName(k)))
 
 for k in vectorMatrixTypes:
     for i in range(1,5):
         tokenCount += 1
-        fp.write('  {{"{0}{2}", TokenType::{1}{2}}},\n'.format(k, enumName(k), i))
+        tokenStrings[k + str(i)] = 'TokenType::' + enumName(k) + str(i)
+        #fp.write('  {{"{0}{2}", TokenType::{1}{2}}},\n'.format(k, enumName(k), i))
         for j in range(1,5):
             tokenCount += 1
-            fp.write('  {{"{0}{2}x{3}", TokenType::{1}{2}x{3}}},\n'.format(k, enumName(k), i, j))
+            tokenStrings[k + str(i) + 'x' + str(j)] = 'TokenType::' + enumName(k) + str(i) + 'x' + str(j)
+            #fp.write('  {{"{0}{2}x{3}", TokenType::{1}{2}x{3}}},\n'.format(k, enumName(k), i, j))
 
-fp.write('''}; // tokenDefs
-
-const std::string& tokenTypeToString(TokenType t) {
+#fp.write('}; // tokenDefs\n')
+fp.write('''const std::string& tokenTypeToString(TokenType t) {
   auto ti = _tokenTypeToString.find(t);
   if (ti == _tokenTypeToString.end()) {
     static const std::string undefined{"Undefined"};
@@ -136,19 +141,63 @@ const std::string& tokenTypeToString(TokenType t) {
 }
 
 TokenType findTokenType(const std::string_view& lexeme) {
-  // This is a hot path we want to be as fast as possible. I tried using an
-  // alternative "fast" map implementation but it was slower than std::map.
-  // An optimization we can try is to use a "perfect hash" function like gperf.
-  auto ti = tokenDefs.find(lexeme);
-  if (ti != tokenDefs.end()) {
-    return (*ti).second;
-  }
+  size_t len = lexeme.length();
+  size_t ci = 0;
+''')
 
+tokenNames = list(tokenStrings.keys())
+tokenLengths = {}
+tokenLengthCount = {}
+for k in tokenNames:
+    l = len(k)
+    if l not in tokenLengths:
+        tokenLengths[l] = {}
+    charMap = tokenLengths[l]
+    for ci in range(len(k)):
+        c = k[ci]
+        if ci == len(k) - 1:
+            charMap[c] = tokenStrings[k]
+            tokenLengthCount[l] = tokenLengthCount.get(l, 0) + 1
+            break
+        if c not in charMap:
+            charMap[c] = {}
+        charMap = charMap[c]
+
+def writeCharMap(fp, charMap, indent):
+    fp.write('  ' * indent)
+    fp.write('switch (lexeme[ci]) {\n')
+    for c in charMap:
+        fp.write('  ' * (indent + 1))
+        fp.write('case \'{0}\':\n'.format(c))
+        fp.write('  ' * (indent + 2))
+        if isinstance(charMap[c], str):
+            fp.write('return {0};\n'.format(charMap[c]))
+        else:
+            fp.write('++ci;\n')
+            writeCharMap(fp, charMap[c], indent + 2)
+            fp.write('  ' * (indent + 1))
+            fp.write('break;\n')
+    fp.write('  ' * indent)
+    fp.write('}\n')
+
+lengths = list(tokenLengths.keys())
+lengths.sort()
+for l in lengths:
+    fp.write('  if (len == {0}) {{\n'.format(l))
+    #if tokenLengthCount[l] == 1:
+        #continue
+    charMap = tokenLengths[l]
+    writeCharMap(fp, charMap, 2)
+
+    fp.write('  }\n')
+
+fp.write('''
   return matchLiteral(lexeme);
 }
 
 } // namespace hlsl
 ''')
+
 fp.close()
 
 

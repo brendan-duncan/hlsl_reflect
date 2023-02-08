@@ -395,382 +395,6 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::Min16uint4x4, "Min16uint4x4"},
 }; // _tokenTypeToString
 
-static const std::map<std::string_view, TokenType> tokenDefs {
-  {"(", TokenType::LeftParen},
-  {")", TokenType::RightParen},
-  {"[", TokenType::LeftBracket},
-  {"]", TokenType::RightBracket},
-  {"{", TokenType::LeftBrace},
-  {"}", TokenType::RightBrace},
-  {"_", TokenType::Underscore},
-  {".", TokenType::Dot},
-  {",", TokenType::Comma},
-  {":", TokenType::Colon},
-  {";", TokenType::Semicolon},
-  {"+", TokenType::Plus},
-  {"-", TokenType::Minus},
-  {"*", TokenType::Star},
-  {"/", TokenType::Slash},
-  {"%", TokenType::Percent},
-  {"^", TokenType::Caret},
-  {"&", TokenType::Ampersand},
-  {"|", TokenType::Pipe},
-  {"~", TokenType::Tilde},
-  {"!", TokenType::Bang},
-  {"=", TokenType::Equal},
-  {"<", TokenType::Less},
-  {">", TokenType::Greater},
-  {"+=", TokenType::PlusEqual},
-  {"-=", TokenType::MinusEqual},
-  {"*=", TokenType::StarEqual},
-  {"/=", TokenType::SlashEqual},
-  {"%=", TokenType::PercentEqual},
-  {"^=", TokenType::CaretEqual},
-  {"&=", TokenType::AmpersandEqual},
-  {"|=", TokenType::PipeEqual},
-  {"<<", TokenType::LessLess},
-  {">>", TokenType::GreaterGreater},
-  {"<<=", TokenType::LessLessEqual},
-  {">>=", TokenType::GreaterGreaterEqual},
-  {"==", TokenType::EqualEqual},
-  {"!=", TokenType::BangEqual},
-  {"<=", TokenType::LessEqual},
-  {">=", TokenType::GreaterEqual},
-  {"&&", TokenType::AmpersandAmpersand},
-  {"||", TokenType::PipePipe},
-  {"?", TokenType::Question},
-  {"??", TokenType::QuestionQuestion},
-  {"++", TokenType::PlusPlus},
-  {"--", TokenType::MinusMinus},
-  {"#", TokenType::Hash},
-  {"AppendStructuredBuffer", TokenType::AppendStructuredBuffer},
-  {"asm", TokenType::Asm},
-  {"asm_fragment", TokenType::Asm_fragment},
-  {"BlendState", TokenType::BlendState},
-  {"bool", TokenType::Bool},
-  {"break", TokenType::Break},
-  {"Buffer", TokenType::Buffer},
-  {"ByteAddressBuffer", TokenType::ByteAddressBuffer},
-  {"case", TokenType::Case},
-  {"cbuffer", TokenType::Cbuffer},
-  {"centroid", TokenType::Centroid},
-  {"class", TokenType::Class},
-  {"column_major", TokenType::Column_major},
-  {"compile", TokenType::Compile},
-  {"compile_fragment", TokenType::Compile_fragment},
-  {"CompileShader", TokenType::CompileShader},
-  {"const", TokenType::Const},
-  {"continue", TokenType::Continue},
-  {"ComputeShader", TokenType::ComputeShader},
-  {"ConsumeStructuredBuffer", TokenType::ConsumeStructuredBuffer},
-  {"default", TokenType::Default},
-  {"DepthStencilState", TokenType::DepthStencilState},
-  {"DepthStencilView", TokenType::DepthStencilView},
-  {"discard", TokenType::Discard},
-  {"do", TokenType::Do},
-  {"double", TokenType::Double},
-  {"DomainShader", TokenType::DomainShader},
-  {"dword", TokenType::Dword},
-  {"else", TokenType::Else},
-  {"export", TokenType::Export},
-  {"extern", TokenType::Extern},
-  {"false", TokenType::False},
-  {"float", TokenType::Float},
-  {"for", TokenType::For},
-  {"fxgroup", TokenType::Fxgroup},
-  {"GeometryShader", TokenType::GeometryShader},
-  {"groupshared", TokenType::Groupshared},
-  {"half", TokenType::Half},
-  {"Hullshader", TokenType::Hullshader},
-  {"if", TokenType::If},
-  {"in", TokenType::In},
-  {"inline", TokenType::Inline},
-  {"inout", TokenType::Inout},
-  {"InputPatch", TokenType::InputPatch},
-  {"int", TokenType::Int},
-  {"interface", TokenType::Interface},
-  {"line", TokenType::Line},
-  {"lineadj", TokenType::Lineadj},
-  {"linear", TokenType::Linear},
-  {"LineStream", TokenType::LineStream},
-  {"matrix", TokenType::Matrix},
-  {"min16float", TokenType::Min16float},
-  {"min10float", TokenType::Min10float},
-  {"min16int", TokenType::Min16int},
-  {"min12int", TokenType::Min12int},
-  {"min16uint", TokenType::Min16uint},
-  {"namespace", TokenType::Namespace},
-  {"nointerpolation", TokenType::Nointerpolation},
-  {"noperspective", TokenType::Noperspective},
-  {"NULL", TokenType::Null},
-  {"out", TokenType::Out},
-  {"OutputPatch", TokenType::OutputPatch},
-  {"packoffset", TokenType::Packoffset},
-  {"pass", TokenType::Pass},
-  {"pixelfragment", TokenType::Pixelfragment},
-  {"PixelShader", TokenType::PixelShader},
-  {"point", TokenType::Point},
-  {"PointStream", TokenType::PointStream},
-  {"precise", TokenType::Precise},
-  {"RasterizerState", TokenType::RasterizerState},
-  {"RenderTargetView", TokenType::RenderTargetView},
-  {"return", TokenType::Return},
-  {"register", TokenType::Register},
-  {"row_major", TokenType::Row_major},
-  {"RWBuffer", TokenType::RWBuffer},
-  {"RWByteAddressBuffer", TokenType::RWByteAddressBuffer},
-  {"RWStructuredBuffer", TokenType::RWStructuredBuffer},
-  {"RWTexture1D", TokenType::RWTexture1D},
-  {"RWTexture1DArray", TokenType::RWTexture1DArray},
-  {"RWTexture2D", TokenType::RWTexture2D},
-  {"RWTexture2DArray", TokenType::RWTexture2DArray},
-  {"RWTexture3D", TokenType::RWTexture3D},
-  {"sample", TokenType::Sample},
-  {"sampler", TokenType::Sampler},
-  {"SamplerState", TokenType::SamplerState},
-  {"SamplerComparisonState", TokenType::SamplerComparisonState},
-  {"shared", TokenType::Shared},
-  {"snorm", TokenType::Snorm},
-  {"stateblock", TokenType::Stateblock},
-  {"stateblock_state", TokenType::Stateblock_state},
-  {"static", TokenType::Static},
-  {"string", TokenType::String},
-  {"struct", TokenType::Struct},
-  {"switch", TokenType::Switch},
-  {"StructuredBuffer", TokenType::StructuredBuffer},
-  {"tbuffer", TokenType::Tbuffer},
-  {"technique", TokenType::Technique},
-  {"technique10", TokenType::Technique10},
-  {"technique11", TokenType::Technique11},
-  {"texture", TokenType::Texture},
-  {"Texture1D", TokenType::Texture1D},
-  {"Texture1DArray", TokenType::Texture1DArray},
-  {"Texture2D", TokenType::Texture2D},
-  {"Texture2DArray", TokenType::Texture2DArray},
-  {"Texture2DMS", TokenType::Texture2DMS},
-  {"Texture2DMSArray", TokenType::Texture2DMSArray},
-  {"Texture3D", TokenType::Texture3D},
-  {"TextureCube", TokenType::TextureCube},
-  {"TextureCubeArray", TokenType::TextureCubeArray},
-  {"true", TokenType::True},
-  {"typedef", TokenType::Typedef},
-  {"triangle", TokenType::Triangle},
-  {"triangleadj", TokenType::Triangleadj},
-  {"TriangleStream", TokenType::TriangleStream},
-  {"uint", TokenType::Uint},
-  {"uniform", TokenType::Uniform},
-  {"unorm", TokenType::Unorm},
-  {"unsigned", TokenType::Unsigned},
-  {"vector", TokenType::Vector},
-  {"vertexfragment", TokenType::Vertexfragment},
-  {"VertexShader", TokenType::VertexShader},
-  {"void", TokenType::Void},
-  {"volatile", TokenType::Volatile},
-  {"while", TokenType::While},
-  {"Expression", TokenType::Expression},
-  {"UserDefined", TokenType::UserDefined},
-  {"float1", TokenType::Float1},
-  {"float1x1", TokenType::Float1x1},
-  {"float1x2", TokenType::Float1x2},
-  {"float1x3", TokenType::Float1x3},
-  {"float1x4", TokenType::Float1x4},
-  {"float2", TokenType::Float2},
-  {"float2x1", TokenType::Float2x1},
-  {"float2x2", TokenType::Float2x2},
-  {"float2x3", TokenType::Float2x3},
-  {"float2x4", TokenType::Float2x4},
-  {"float3", TokenType::Float3},
-  {"float3x1", TokenType::Float3x1},
-  {"float3x2", TokenType::Float3x2},
-  {"float3x3", TokenType::Float3x3},
-  {"float3x4", TokenType::Float3x4},
-  {"float4", TokenType::Float4},
-  {"float4x1", TokenType::Float4x1},
-  {"float4x2", TokenType::Float4x2},
-  {"float4x3", TokenType::Float4x3},
-  {"float4x4", TokenType::Float4x4},
-  {"half1", TokenType::Half1},
-  {"half1x1", TokenType::Half1x1},
-  {"half1x2", TokenType::Half1x2},
-  {"half1x3", TokenType::Half1x3},
-  {"half1x4", TokenType::Half1x4},
-  {"half2", TokenType::Half2},
-  {"half2x1", TokenType::Half2x1},
-  {"half2x2", TokenType::Half2x2},
-  {"half2x3", TokenType::Half2x3},
-  {"half2x4", TokenType::Half2x4},
-  {"half3", TokenType::Half3},
-  {"half3x1", TokenType::Half3x1},
-  {"half3x2", TokenType::Half3x2},
-  {"half3x3", TokenType::Half3x3},
-  {"half3x4", TokenType::Half3x4},
-  {"half4", TokenType::Half4},
-  {"half4x1", TokenType::Half4x1},
-  {"half4x2", TokenType::Half4x2},
-  {"half4x3", TokenType::Half4x3},
-  {"half4x4", TokenType::Half4x4},
-  {"int1", TokenType::Int1},
-  {"int1x1", TokenType::Int1x1},
-  {"int1x2", TokenType::Int1x2},
-  {"int1x3", TokenType::Int1x3},
-  {"int1x4", TokenType::Int1x4},
-  {"int2", TokenType::Int2},
-  {"int2x1", TokenType::Int2x1},
-  {"int2x2", TokenType::Int2x2},
-  {"int2x3", TokenType::Int2x3},
-  {"int2x4", TokenType::Int2x4},
-  {"int3", TokenType::Int3},
-  {"int3x1", TokenType::Int3x1},
-  {"int3x2", TokenType::Int3x2},
-  {"int3x3", TokenType::Int3x3},
-  {"int3x4", TokenType::Int3x4},
-  {"int4", TokenType::Int4},
-  {"int4x1", TokenType::Int4x1},
-  {"int4x2", TokenType::Int4x2},
-  {"int4x3", TokenType::Int4x3},
-  {"int4x4", TokenType::Int4x4},
-  {"uint1", TokenType::Uint1},
-  {"uint1x1", TokenType::Uint1x1},
-  {"uint1x2", TokenType::Uint1x2},
-  {"uint1x3", TokenType::Uint1x3},
-  {"uint1x4", TokenType::Uint1x4},
-  {"uint2", TokenType::Uint2},
-  {"uint2x1", TokenType::Uint2x1},
-  {"uint2x2", TokenType::Uint2x2},
-  {"uint2x3", TokenType::Uint2x3},
-  {"uint2x4", TokenType::Uint2x4},
-  {"uint3", TokenType::Uint3},
-  {"uint3x1", TokenType::Uint3x1},
-  {"uint3x2", TokenType::Uint3x2},
-  {"uint3x3", TokenType::Uint3x3},
-  {"uint3x4", TokenType::Uint3x4},
-  {"uint4", TokenType::Uint4},
-  {"uint4x1", TokenType::Uint4x1},
-  {"uint4x2", TokenType::Uint4x2},
-  {"uint4x3", TokenType::Uint4x3},
-  {"uint4x4", TokenType::Uint4x4},
-  {"bool1", TokenType::Bool1},
-  {"bool1x1", TokenType::Bool1x1},
-  {"bool1x2", TokenType::Bool1x2},
-  {"bool1x3", TokenType::Bool1x3},
-  {"bool1x4", TokenType::Bool1x4},
-  {"bool2", TokenType::Bool2},
-  {"bool2x1", TokenType::Bool2x1},
-  {"bool2x2", TokenType::Bool2x2},
-  {"bool2x3", TokenType::Bool2x3},
-  {"bool2x4", TokenType::Bool2x4},
-  {"bool3", TokenType::Bool3},
-  {"bool3x1", TokenType::Bool3x1},
-  {"bool3x2", TokenType::Bool3x2},
-  {"bool3x3", TokenType::Bool3x3},
-  {"bool3x4", TokenType::Bool3x4},
-  {"bool4", TokenType::Bool4},
-  {"bool4x1", TokenType::Bool4x1},
-  {"bool4x2", TokenType::Bool4x2},
-  {"bool4x3", TokenType::Bool4x3},
-  {"bool4x4", TokenType::Bool4x4},
-  {"min10float1", TokenType::Min10float1},
-  {"min10float1x1", TokenType::Min10float1x1},
-  {"min10float1x2", TokenType::Min10float1x2},
-  {"min10float1x3", TokenType::Min10float1x3},
-  {"min10float1x4", TokenType::Min10float1x4},
-  {"min10float2", TokenType::Min10float2},
-  {"min10float2x1", TokenType::Min10float2x1},
-  {"min10float2x2", TokenType::Min10float2x2},
-  {"min10float2x3", TokenType::Min10float2x3},
-  {"min10float2x4", TokenType::Min10float2x4},
-  {"min10float3", TokenType::Min10float3},
-  {"min10float3x1", TokenType::Min10float3x1},
-  {"min10float3x2", TokenType::Min10float3x2},
-  {"min10float3x3", TokenType::Min10float3x3},
-  {"min10float3x4", TokenType::Min10float3x4},
-  {"min10float4", TokenType::Min10float4},
-  {"min10float4x1", TokenType::Min10float4x1},
-  {"min10float4x2", TokenType::Min10float4x2},
-  {"min10float4x3", TokenType::Min10float4x3},
-  {"min10float4x4", TokenType::Min10float4x4},
-  {"min16float1", TokenType::Min16float1},
-  {"min16float1x1", TokenType::Min16float1x1},
-  {"min16float1x2", TokenType::Min16float1x2},
-  {"min16float1x3", TokenType::Min16float1x3},
-  {"min16float1x4", TokenType::Min16float1x4},
-  {"min16float2", TokenType::Min16float2},
-  {"min16float2x1", TokenType::Min16float2x1},
-  {"min16float2x2", TokenType::Min16float2x2},
-  {"min16float2x3", TokenType::Min16float2x3},
-  {"min16float2x4", TokenType::Min16float2x4},
-  {"min16float3", TokenType::Min16float3},
-  {"min16float3x1", TokenType::Min16float3x1},
-  {"min16float3x2", TokenType::Min16float3x2},
-  {"min16float3x3", TokenType::Min16float3x3},
-  {"min16float3x4", TokenType::Min16float3x4},
-  {"min16float4", TokenType::Min16float4},
-  {"min16float4x1", TokenType::Min16float4x1},
-  {"min16float4x2", TokenType::Min16float4x2},
-  {"min16float4x3", TokenType::Min16float4x3},
-  {"min16float4x4", TokenType::Min16float4x4},
-  {"min12int1", TokenType::Min12int1},
-  {"min12int1x1", TokenType::Min12int1x1},
-  {"min12int1x2", TokenType::Min12int1x2},
-  {"min12int1x3", TokenType::Min12int1x3},
-  {"min12int1x4", TokenType::Min12int1x4},
-  {"min12int2", TokenType::Min12int2},
-  {"min12int2x1", TokenType::Min12int2x1},
-  {"min12int2x2", TokenType::Min12int2x2},
-  {"min12int2x3", TokenType::Min12int2x3},
-  {"min12int2x4", TokenType::Min12int2x4},
-  {"min12int3", TokenType::Min12int3},
-  {"min12int3x1", TokenType::Min12int3x1},
-  {"min12int3x2", TokenType::Min12int3x2},
-  {"min12int3x3", TokenType::Min12int3x3},
-  {"min12int3x4", TokenType::Min12int3x4},
-  {"min12int4", TokenType::Min12int4},
-  {"min12int4x1", TokenType::Min12int4x1},
-  {"min12int4x2", TokenType::Min12int4x2},
-  {"min12int4x3", TokenType::Min12int4x3},
-  {"min12int4x4", TokenType::Min12int4x4},
-  {"min16int1", TokenType::Min16int1},
-  {"min16int1x1", TokenType::Min16int1x1},
-  {"min16int1x2", TokenType::Min16int1x2},
-  {"min16int1x3", TokenType::Min16int1x3},
-  {"min16int1x4", TokenType::Min16int1x4},
-  {"min16int2", TokenType::Min16int2},
-  {"min16int2x1", TokenType::Min16int2x1},
-  {"min16int2x2", TokenType::Min16int2x2},
-  {"min16int2x3", TokenType::Min16int2x3},
-  {"min16int2x4", TokenType::Min16int2x4},
-  {"min16int3", TokenType::Min16int3},
-  {"min16int3x1", TokenType::Min16int3x1},
-  {"min16int3x2", TokenType::Min16int3x2},
-  {"min16int3x3", TokenType::Min16int3x3},
-  {"min16int3x4", TokenType::Min16int3x4},
-  {"min16int4", TokenType::Min16int4},
-  {"min16int4x1", TokenType::Min16int4x1},
-  {"min16int4x2", TokenType::Min16int4x2},
-  {"min16int4x3", TokenType::Min16int4x3},
-  {"min16int4x4", TokenType::Min16int4x4},
-  {"min16uint1", TokenType::Min16uint1},
-  {"min16uint1x1", TokenType::Min16uint1x1},
-  {"min16uint1x2", TokenType::Min16uint1x2},
-  {"min16uint1x3", TokenType::Min16uint1x3},
-  {"min16uint1x4", TokenType::Min16uint1x4},
-  {"min16uint2", TokenType::Min16uint2},
-  {"min16uint2x1", TokenType::Min16uint2x1},
-  {"min16uint2x2", TokenType::Min16uint2x2},
-  {"min16uint2x3", TokenType::Min16uint2x3},
-  {"min16uint2x4", TokenType::Min16uint2x4},
-  {"min16uint3", TokenType::Min16uint3},
-  {"min16uint3x1", TokenType::Min16uint3x1},
-  {"min16uint3x2", TokenType::Min16uint3x2},
-  {"min16uint3x3", TokenType::Min16uint3x3},
-  {"min16uint3x4", TokenType::Min16uint3x4},
-  {"min16uint4", TokenType::Min16uint4},
-  {"min16uint4x1", TokenType::Min16uint4x1},
-  {"min16uint4x2", TokenType::Min16uint4x2},
-  {"min16uint4x3", TokenType::Min16uint4x3},
-  {"min16uint4x4", TokenType::Min16uint4x4},
-}; // tokenDefs
-
 const std::string& tokenTypeToString(TokenType t) {
   auto ti = _tokenTypeToString.find(t);
   if (ti == _tokenTypeToString.end()) {
@@ -781,12 +405,6422 @@ const std::string& tokenTypeToString(TokenType t) {
 }
 
 TokenType findTokenType(const std::string_view& lexeme) {
-  // This is a hot path we want to be as fast as possible. I tried using an
-  // alternative "fast" map implementation but it was slower than std::map.
-  // An optimization we can try is to use a "perfect hash" function like gperf.
-  auto ti = tokenDefs.find(lexeme);
-  if (ti != tokenDefs.end()) {
-    return (*ti).second;
+  size_t len = lexeme.length();
+  size_t ci = 0;
+  if (len == 1) {
+    switch (lexeme[ci]) {
+      case '(':
+        return TokenType::LeftParen;
+      case ')':
+        return TokenType::RightParen;
+      case '[':
+        return TokenType::LeftBracket;
+      case ']':
+        return TokenType::RightBracket;
+      case '{':
+        return TokenType::LeftBrace;
+      case '}':
+        return TokenType::RightBrace;
+      case '_':
+        return TokenType::Underscore;
+      case '.':
+        return TokenType::Dot;
+      case ',':
+        return TokenType::Comma;
+      case ':':
+        return TokenType::Colon;
+      case ';':
+        return TokenType::Semicolon;
+      case '+':
+        return TokenType::Plus;
+      case '-':
+        return TokenType::Minus;
+      case '*':
+        return TokenType::Star;
+      case '/':
+        return TokenType::Slash;
+      case '%':
+        return TokenType::Percent;
+      case '^':
+        return TokenType::Caret;
+      case '&':
+        return TokenType::Ampersand;
+      case '|':
+        return TokenType::Pipe;
+      case '~':
+        return TokenType::Tilde;
+      case '!':
+        return TokenType::Bang;
+      case '=':
+        return TokenType::Equal;
+      case '<':
+        return TokenType::Less;
+      case '>':
+        return TokenType::Greater;
+      case '?':
+        return TokenType::Question;
+      case '#':
+        return TokenType::Hash;
+    }
+  }
+  if (len == 2) {
+    switch (lexeme[ci]) {
+      case '+':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::PlusEqual;
+          case '+':
+            return TokenType::PlusPlus;
+        }
+      break;
+      case '-':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::MinusEqual;
+          case '-':
+            return TokenType::MinusMinus;
+        }
+      break;
+      case '*':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::StarEqual;
+        }
+      break;
+      case '/':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::SlashEqual;
+        }
+      break;
+      case '%':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::PercentEqual;
+        }
+      break;
+      case '^':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::CaretEqual;
+        }
+      break;
+      case '&':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::AmpersandEqual;
+          case '&':
+            return TokenType::AmpersandAmpersand;
+        }
+      break;
+      case '|':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::PipeEqual;
+          case '|':
+            return TokenType::PipePipe;
+        }
+      break;
+      case '<':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '<':
+            return TokenType::LessLess;
+          case '=':
+            return TokenType::LessEqual;
+        }
+      break;
+      case '>':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '>':
+            return TokenType::GreaterGreater;
+          case '=':
+            return TokenType::GreaterEqual;
+        }
+      break;
+      case '=':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::EqualEqual;
+        }
+      break;
+      case '!':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '=':
+            return TokenType::BangEqual;
+        }
+      break;
+      case '?':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '?':
+            return TokenType::QuestionQuestion;
+        }
+      break;
+      case 'd':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            return TokenType::Do;
+        }
+      break;
+      case 'i':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'f':
+            return TokenType::If;
+          case 'n':
+            return TokenType::In;
+        }
+      break;
+    }
+  }
+  if (len == 3) {
+    switch (lexeme[ci]) {
+      case '<':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '<':
+            ++ci;
+            switch (lexeme[ci]) {
+              case '=':
+                return TokenType::LessLessEqual;
+            }
+          break;
+        }
+      break;
+      case '>':
+        ++ci;
+        switch (lexeme[ci]) {
+          case '>':
+            ++ci;
+            switch (lexeme[ci]) {
+              case '=':
+                return TokenType::GreaterGreaterEqual;
+            }
+          break;
+        }
+      break;
+      case 'a':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 's':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                return TokenType::Asm;
+            }
+          break;
+        }
+      break;
+      case 'f':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'r':
+                return TokenType::For;
+            }
+          break;
+        }
+      break;
+      case 'i':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 't':
+                return TokenType::Int;
+            }
+          break;
+        }
+      break;
+      case 'o':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'u':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 't':
+                return TokenType::Out;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 4) {
+    switch (lexeme[ci]) {
+      case 'b':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'l':
+                    return TokenType::Bool;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'c':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 's':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    return TokenType::Case;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'e':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'l':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 's':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    return TokenType::Else;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'h':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'l':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'f':
+                    return TokenType::Half;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'l':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    return TokenType::Line;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'N':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'U':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'L':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'L':
+                    return TokenType::Null;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'p':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 's':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 's':
+                    return TokenType::Pass;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 't':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'r':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'u':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    return TokenType::True;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'u':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    return TokenType::Uint;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'v':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'd':
+                    return TokenType::Void;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'i':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 't':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '1':
+                    return TokenType::Int1;
+                  case '2':
+                    return TokenType::Int2;
+                  case '3':
+                    return TokenType::Int3;
+                  case '4':
+                    return TokenType::Int4;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 5) {
+    switch (lexeme[ci]) {
+      case 'b':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'r':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'e':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'k':
+                        return TokenType::Break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'l':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '1':
+                        return TokenType::Bool1;
+                      case '2':
+                        return TokenType::Bool2;
+                      case '3':
+                        return TokenType::Bool3;
+                      case '4':
+                        return TokenType::Bool4;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'c':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'l':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'a':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 's':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 's':
+                        return TokenType::Class;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 's':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        return TokenType::Const;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'd':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'w':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'r':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'd':
+                        return TokenType::Dword;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'f':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'l':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 's':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        return TokenType::False;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'l':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        return TokenType::Float;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'i':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'u':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        return TokenType::Inout;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'p':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'n':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        return TokenType::Point;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'r':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'm':
+                        return TokenType::Snorm;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'u':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'r':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'm':
+                        return TokenType::Unorm;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '1':
+                        return TokenType::Uint1;
+                      case '2':
+                        return TokenType::Uint2;
+                      case '3':
+                        return TokenType::Uint3;
+                      case '4':
+                        return TokenType::Uint4;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'w':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'h':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'l':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        return TokenType::While;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'h':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'l':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'f':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '1':
+                        return TokenType::Half1;
+                      case '2':
+                        return TokenType::Half2;
+                      case '3':
+                        return TokenType::Half3;
+                      case '4':
+                        return TokenType::Half4;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 6) {
+    switch (lexeme[ci]) {
+      case 'B':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'u':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'f':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'f':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            return TokenType::Buffer;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'd':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'u':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'b':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            return TokenType::Double;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'e':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'x':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'p':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'o':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'r':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            return TokenType::Export;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+              case 't':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'r':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'n':
+                            return TokenType::Extern;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'i':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'l':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'i':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'n':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            return TokenType::Inline;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+              case 't':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '1':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'x':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case '1':
+                            return TokenType::Int1x1;
+                          case '2':
+                            return TokenType::Int1x2;
+                          case '3':
+                            return TokenType::Int1x3;
+                          case '4':
+                            return TokenType::Int1x4;
+                        }
+                      break;
+                    }
+                  break;
+                  case '2':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'x':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case '1':
+                            return TokenType::Int2x1;
+                          case '2':
+                            return TokenType::Int2x2;
+                          case '3':
+                            return TokenType::Int2x3;
+                          case '4':
+                            return TokenType::Int2x4;
+                        }
+                      break;
+                    }
+                  break;
+                  case '3':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'x':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case '1':
+                            return TokenType::Int3x1;
+                          case '2':
+                            return TokenType::Int3x2;
+                          case '3':
+                            return TokenType::Int3x3;
+                          case '4':
+                            return TokenType::Int3x4;
+                        }
+                      break;
+                    }
+                  break;
+                  case '4':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'x':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case '1':
+                            return TokenType::Int4x1;
+                          case '2':
+                            return TokenType::Int4x2;
+                          case '3':
+                            return TokenType::Int4x3;
+                          case '4':
+                            return TokenType::Int4x4;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'l':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'a':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            return TokenType::Linear;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'm':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 't':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'r':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'i':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            return TokenType::Matrix;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'r':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 't':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'u':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'r':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'n':
+                            return TokenType::Return;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            return TokenType::Sample;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'h':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'a':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'r':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'd':
+                            return TokenType::Shared;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 't':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'a':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'i':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'c':
+                            return TokenType::Static;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+              case 'r':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'i':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'n':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'g':
+                            return TokenType::String;
+                        }
+                      break;
+                    }
+                  break;
+                  case 'u':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'c':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            return TokenType::Struct;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'w':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'c':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'h':
+                            return TokenType::Switch;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'v':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'c':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'o':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            return TokenType::Vector;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'f':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'l':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case '1':
+                            return TokenType::Float1;
+                          case '2':
+                            return TokenType::Float2;
+                          case '3':
+                            return TokenType::Float3;
+                          case '4':
+                            return TokenType::Float4;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 7) {
+    switch (lexeme[ci]) {
+      case 'c':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'b':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'u':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'f':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'f':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                return TokenType::Cbuffer;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'i':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'l':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                return TokenType::Compile;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'd':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'f':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'l':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 't':
+                                return TokenType::Default;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 's':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'c':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'a':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'd':
+                                return TokenType::Discard;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'f':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'x':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'g':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'r':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'o':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'u':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'p':
+                                return TokenType::Fxgroup;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'l':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'a':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'd':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'j':
+                                return TokenType::Lineadj;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'p':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'r':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'e':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'c':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'i':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 's':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                return TokenType::Precise;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                return TokenType::Sampler;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 't':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'b':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'u':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'f':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'f':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                return TokenType::Tbuffer;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                return TokenType::Texture;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'y':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'p':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'd':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'f':
+                                return TokenType::Typedef;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'u':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'f':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'o':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'm':
+                                return TokenType::Uniform;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '1':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Uint1x1;
+                              case '2':
+                                return TokenType::Uint1x2;
+                              case '3':
+                                return TokenType::Uint1x3;
+                              case '4':
+                                return TokenType::Uint1x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '2':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Uint2x1;
+                              case '2':
+                                return TokenType::Uint2x2;
+                              case '3':
+                                return TokenType::Uint2x3;
+                              case '4':
+                                return TokenType::Uint2x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '3':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Uint3x1;
+                              case '2':
+                                return TokenType::Uint3x2;
+                              case '3':
+                                return TokenType::Uint3x3;
+                              case '4':
+                                return TokenType::Uint3x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '4':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Uint4x1;
+                              case '2':
+                                return TokenType::Uint4x2;
+                              case '3':
+                                return TokenType::Uint4x3;
+                              case '4':
+                                return TokenType::Uint4x4;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'h':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'l':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'f':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '1':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Half1x1;
+                              case '2':
+                                return TokenType::Half1x2;
+                              case '3':
+                                return TokenType::Half1x3;
+                              case '4':
+                                return TokenType::Half1x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '2':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Half2x1;
+                              case '2':
+                                return TokenType::Half2x2;
+                              case '3':
+                                return TokenType::Half2x3;
+                              case '4':
+                                return TokenType::Half2x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '3':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Half3x1;
+                              case '2':
+                                return TokenType::Half3x2;
+                              case '3':
+                                return TokenType::Half3x3;
+                              case '4':
+                                return TokenType::Half3x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '4':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Half4x1;
+                              case '2':
+                                return TokenType::Half4x2;
+                              case '3':
+                                return TokenType::Half4x3;
+                              case '4':
+                                return TokenType::Half4x4;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'b':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'l':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '1':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Bool1x1;
+                              case '2':
+                                return TokenType::Bool1x2;
+                              case '3':
+                                return TokenType::Bool1x3;
+                              case '4':
+                                return TokenType::Bool1x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '2':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Bool2x1;
+                              case '2':
+                                return TokenType::Bool2x2;
+                              case '3':
+                                return TokenType::Bool2x3;
+                              case '4':
+                                return TokenType::Bool2x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '3':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Bool3x1;
+                              case '2':
+                                return TokenType::Bool3x2;
+                              case '3':
+                                return TokenType::Bool3x3;
+                              case '4':
+                                return TokenType::Bool3x4;
+                            }
+                          break;
+                        }
+                      break;
+                      case '4':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '1':
+                                return TokenType::Bool4x1;
+                              case '2':
+                                return TokenType::Bool4x2;
+                              case '3':
+                                return TokenType::Bool4x3;
+                              case '4':
+                                return TokenType::Bool4x4;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 8) {
+    switch (lexeme[ci]) {
+      case 'c':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'r':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'o':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'i':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'd':
+                                    return TokenType::Centroid;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'i':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'n':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'u':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    return TokenType::Continue;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'm':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '1':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '6':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'n':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    return TokenType::Min16int;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                      case '2':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'n':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    return TokenType::Min12int;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'r':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'g':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'i':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 's':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'r':
+                                    return TokenType::Register;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'R':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'W':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'B':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'u':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'f':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'r':
+                                    return TokenType::RWBuffer;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 't':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'r':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'n':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'g':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    return TokenType::Triangle;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'u':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 's':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'i':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'g':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'n':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'd':
+                                    return TokenType::Unsigned;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'v':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'l':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    return TokenType::Volatile;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'f':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'l':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case '1':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'x':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '1':
+                                    return TokenType::Float1x1;
+                                  case '2':
+                                    return TokenType::Float1x2;
+                                  case '3':
+                                    return TokenType::Float1x3;
+                                  case '4':
+                                    return TokenType::Float1x4;
+                                }
+                              break;
+                            }
+                          break;
+                          case '2':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'x':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '1':
+                                    return TokenType::Float2x1;
+                                  case '2':
+                                    return TokenType::Float2x2;
+                                  case '3':
+                                    return TokenType::Float2x3;
+                                  case '4':
+                                    return TokenType::Float2x4;
+                                }
+                              break;
+                            }
+                          break;
+                          case '3':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'x':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '1':
+                                    return TokenType::Float3x1;
+                                  case '2':
+                                    return TokenType::Float3x2;
+                                  case '3':
+                                    return TokenType::Float3x3;
+                                  case '4':
+                                    return TokenType::Float3x4;
+                                }
+                              break;
+                            }
+                          break;
+                          case '4':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'x':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '1':
+                                    return TokenType::Float4x1;
+                                  case '2':
+                                    return TokenType::Float4x2;
+                                  case '3':
+                                    return TokenType::Float4x3;
+                                  case '4':
+                                    return TokenType::Float4x4;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 9) {
+    switch (lexeme[ci]) {
+      case 'i':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 't':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'r':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'a':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'c':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        return TokenType::Interface;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'm':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '1':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '6':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'u':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'i':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'n':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 't':
+                                        return TokenType::Min16uint;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'n':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case '1':
+                                        return TokenType::Min16int1;
+                                      case '2':
+                                        return TokenType::Min16int2;
+                                      case '3':
+                                        return TokenType::Min16int3;
+                                      case '4':
+                                        return TokenType::Min16int4;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                      case '2':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'n':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case '1':
+                                        return TokenType::Min12int1;
+                                      case '2':
+                                        return TokenType::Min12int2;
+                                      case '3':
+                                        return TokenType::Min12int3;
+                                      case '4':
+                                        return TokenType::Min12int4;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'n':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 's':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'p':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'a':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'c':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        return TokenType::Namespace;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'r':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'w':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '_':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'm':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'a':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'j':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'r':
+                                        return TokenType::Row_major;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 't':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'c':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'h':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'n':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'q':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'u':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        return TokenType::Technique;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'T':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '1':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        return TokenType::Texture1D;
+                                    }
+                                  break;
+                                  case '2':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        return TokenType::Texture2D;
+                                    }
+                                  break;
+                                  case '3':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        return TokenType::Texture3D;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 10) {
+    switch (lexeme[ci]) {
+      case 'B':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'l':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'e':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'n':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'd':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'S':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 't':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'a':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 't':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'e':
+                                            return TokenType::BlendState;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'H':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'u':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'l':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'l':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 's':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'h':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'a':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'd':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'r':
+                                            return TokenType::Hullshader;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'I':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'n':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'p':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'u':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'P':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'a':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'c':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'h':
+                                            return TokenType::InputPatch;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'L':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'S':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'm':
+                                            return TokenType::LineStream;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'm':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '1':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '6':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            return TokenType::Min16float;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                          case 'u':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'i':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'n':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 't':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '1':
+                                            return TokenType::Min16uint1;
+                                          case '2':
+                                            return TokenType::Min16uint2;
+                                          case '3':
+                                            return TokenType::Min16uint3;
+                                          case '4':
+                                            return TokenType::Min16uint4;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                      case '0':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            return TokenType::Min10float;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'p':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'c':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'k':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'o':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'f':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 's':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            return TokenType::Packoffset;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 't':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'a':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'b':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'c':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'k':
+                                            return TokenType::Stateblock;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'E':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'x':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'p':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'r':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 's':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 's':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'i':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'o':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'n':
+                                            return TokenType::Expression;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 11) {
+    switch (lexeme[ci]) {
+      case 'g':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'r':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'u':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'p':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 's':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'h':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'a':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'r':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'e':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'd':
+                                                return TokenType::Groupshared;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'O':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'u':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 't':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'P':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'a':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 't':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'c':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'h':
+                                                return TokenType::OutputPatch;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'P':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'S':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'h':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'a':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'd':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'e':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'r':
+                                                return TokenType::PixelShader;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'n':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'S':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 't':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'r':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'a':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'm':
+                                                return TokenType::PointStream;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'R':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'W':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'T':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'x':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'u':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'r':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '1':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'D':
+                                                return TokenType::RWTexture1D;
+                                            }
+                                          break;
+                                          case '2':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'D':
+                                                return TokenType::RWTexture2D;
+                                            }
+                                          break;
+                                          case '3':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'D':
+                                                return TokenType::RWTexture3D;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 't':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'c':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'h':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'n':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'q':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'u':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '1':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '0':
+                                                return TokenType::Technique10;
+                                              case '1':
+                                                return TokenType::Technique11;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'r':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'n':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'g':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'd':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'j':
+                                                return TokenType::Triangleadj;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'T':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '2':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'M':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'S':
+                                                return TokenType::Texture2DMS;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                  case 'C':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'u':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'b':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                return TokenType::TextureCube;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'U':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 's':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'e':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'r':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'D':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'f':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'i':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'n':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'e':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'd':
+                                                return TokenType::UserDefined;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'm':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '1':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '0':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min10float1;
+                                              case '2':
+                                                return TokenType::Min10float2;
+                                              case '3':
+                                                return TokenType::Min10float3;
+                                              case '4':
+                                                return TokenType::Min10float4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                      case '6':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min16float1;
+                                              case '2':
+                                                return TokenType::Min16float2;
+                                              case '3':
+                                                return TokenType::Min16float3;
+                                              case '4':
+                                                return TokenType::Min16float4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'n':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case '1':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'x':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min16int1x1;
+                                              case '2':
+                                                return TokenType::Min16int1x2;
+                                              case '3':
+                                                return TokenType::Min16int1x3;
+                                              case '4':
+                                                return TokenType::Min16int1x4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                      case '2':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'x':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min16int2x1;
+                                              case '2':
+                                                return TokenType::Min16int2x2;
+                                              case '3':
+                                                return TokenType::Min16int2x3;
+                                              case '4':
+                                                return TokenType::Min16int2x4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                      case '3':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'x':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min16int3x1;
+                                              case '2':
+                                                return TokenType::Min16int3x2;
+                                              case '3':
+                                                return TokenType::Min16int3x3;
+                                              case '4':
+                                                return TokenType::Min16int3x4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                      case '4':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'x':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min16int4x1;
+                                              case '2':
+                                                return TokenType::Min16int4x2;
+                                              case '3':
+                                                return TokenType::Min16int4x3;
+                                              case '4':
+                                                return TokenType::Min16int4x4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                      case '2':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'i':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'n':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case '1':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'x':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min12int1x1;
+                                              case '2':
+                                                return TokenType::Min12int1x2;
+                                              case '3':
+                                                return TokenType::Min12int1x3;
+                                              case '4':
+                                                return TokenType::Min12int1x4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                      case '2':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'x':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min12int2x1;
+                                              case '2':
+                                                return TokenType::Min12int2x2;
+                                              case '3':
+                                                return TokenType::Min12int2x3;
+                                              case '4':
+                                                return TokenType::Min12int2x4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                      case '3':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'x':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min12int3x1;
+                                              case '2':
+                                                return TokenType::Min12int3x2;
+                                              case '3':
+                                                return TokenType::Min12int3x3;
+                                              case '4':
+                                                return TokenType::Min12int3x4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                      case '4':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'x':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                return TokenType::Min12int4x1;
+                                              case '2':
+                                                return TokenType::Min12int4x2;
+                                              case '3':
+                                                return TokenType::Min12int4x3;
+                                              case '4':
+                                                return TokenType::Min12int4x4;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 12) {
+    switch (lexeme[ci]) {
+      case 'a':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 's':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '_':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'f':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'a':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'g':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'm':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'e':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'n':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 't':
+                                                    return TokenType::Asm_fragment;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'c':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'l':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'u':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'm':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'n':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case '_':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'm':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'j':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'o':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'r':
+                                                    return TokenType::Column_major;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'D':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'i':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'n':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'S':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'h':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'd':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'r':
+                                                    return TokenType::DomainShader;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'S':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'S':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 't':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'a':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 't':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'e':
+                                                    return TokenType::SamplerState;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'V':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'r':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'S':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'h':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'd':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'r':
+                                                    return TokenType::VertexShader;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'm':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '1':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '6':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'u':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'i':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'n':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 't':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '1':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'x':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case '1':
+                                                    return TokenType::Min16uint1x1;
+                                                  case '2':
+                                                    return TokenType::Min16uint1x2;
+                                                  case '3':
+                                                    return TokenType::Min16uint1x3;
+                                                  case '4':
+                                                    return TokenType::Min16uint1x4;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                          case '2':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'x':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case '1':
+                                                    return TokenType::Min16uint2x1;
+                                                  case '2':
+                                                    return TokenType::Min16uint2x2;
+                                                  case '3':
+                                                    return TokenType::Min16uint2x3;
+                                                  case '4':
+                                                    return TokenType::Min16uint2x4;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                          case '3':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'x':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case '1':
+                                                    return TokenType::Min16uint3x1;
+                                                  case '2':
+                                                    return TokenType::Min16uint3x2;
+                                                  case '3':
+                                                    return TokenType::Min16uint3x3;
+                                                  case '4':
+                                                    return TokenType::Min16uint3x4;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                          case '4':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'x':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case '1':
+                                                    return TokenType::Min16uint4x1;
+                                                  case '2':
+                                                    return TokenType::Min16uint4x2;
+                                                  case '3':
+                                                    return TokenType::Min16uint4x3;
+                                                  case '4':
+                                                    return TokenType::Min16uint4x4;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 13) {
+    switch (lexeme[ci]) {
+      case 'C':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'i':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'l':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'S':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'h':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'a':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'd':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'e':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'r':
+                                                        return TokenType::CompileShader;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'S':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'h':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'a':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'd':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'e':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'r':
+                                                        return TokenType::ComputeShader;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'n':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'p':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'r':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 's':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'p':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'c':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'i':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'v':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'e':
+                                                        return TokenType::Noperspective;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'p':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'a':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'g':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'm':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'n':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 't':
+                                                        return TokenType::Pixelfragment;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'm':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'i':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case '1':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case '0':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'x':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case '1':
+                                                        return TokenType::Min10float1x1;
+                                                      case '2':
+                                                        return TokenType::Min10float1x2;
+                                                      case '3':
+                                                        return TokenType::Min10float1x3;
+                                                      case '4':
+                                                        return TokenType::Min10float1x4;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                              case '2':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'x':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case '1':
+                                                        return TokenType::Min10float2x1;
+                                                      case '2':
+                                                        return TokenType::Min10float2x2;
+                                                      case '3':
+                                                        return TokenType::Min10float2x3;
+                                                      case '4':
+                                                        return TokenType::Min10float2x4;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                              case '3':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'x':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case '1':
+                                                        return TokenType::Min10float3x1;
+                                                      case '2':
+                                                        return TokenType::Min10float3x2;
+                                                      case '3':
+                                                        return TokenType::Min10float3x3;
+                                                      case '4':
+                                                        return TokenType::Min10float3x4;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                              case '4':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'x':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case '1':
+                                                        return TokenType::Min10float4x1;
+                                                      case '2':
+                                                        return TokenType::Min10float4x2;
+                                                      case '3':
+                                                        return TokenType::Min10float4x3;
+                                                      case '4':
+                                                        return TokenType::Min10float4x4;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                      case '6':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'f':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '1':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'x':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case '1':
+                                                        return TokenType::Min16float1x1;
+                                                      case '2':
+                                                        return TokenType::Min16float1x2;
+                                                      case '3':
+                                                        return TokenType::Min16float1x3;
+                                                      case '4':
+                                                        return TokenType::Min16float1x4;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                              case '2':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'x':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case '1':
+                                                        return TokenType::Min16float2x1;
+                                                      case '2':
+                                                        return TokenType::Min16float2x2;
+                                                      case '3':
+                                                        return TokenType::Min16float2x3;
+                                                      case '4':
+                                                        return TokenType::Min16float2x4;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                              case '3':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'x':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case '1':
+                                                        return TokenType::Min16float3x1;
+                                                      case '2':
+                                                        return TokenType::Min16float3x2;
+                                                      case '3':
+                                                        return TokenType::Min16float3x3;
+                                                      case '4':
+                                                        return TokenType::Min16float3x4;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                              case '4':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'x':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case '1':
+                                                        return TokenType::Min16float4x1;
+                                                      case '2':
+                                                        return TokenType::Min16float4x2;
+                                                      case '3':
+                                                        return TokenType::Min16float4x3;
+                                                      case '4':
+                                                        return TokenType::Min16float4x4;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 14) {
+    switch (lexeme[ci]) {
+      case 'G':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'o':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'm':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'y':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'S':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'h':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'a':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'd':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'e':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'r':
+                                                            return TokenType::GeometryShader;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'T':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '1':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'A':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'r':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'r':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'a':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'y':
+                                                            return TokenType::Texture1DArray;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                  case '2':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'A':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'r':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'r':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'a':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'y':
+                                                            return TokenType::Texture2DArray;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'r':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'a':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'n':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'g':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'S':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 't':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'r':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'e':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'a':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'm':
+                                                            return TokenType::TriangleStream;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'v':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'r':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'x':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'f':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'r':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'a':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'g':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'm':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'e':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'n':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 't':
+                                                            return TokenType::Vertexfragment;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 15) {
+    switch (lexeme[ci]) {
+      case 'n':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'i':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'n':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'p':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'o':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'l':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'a':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 't':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'i':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'o':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'n':
+                                                                return TokenType::Nointerpolation;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'R':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 's':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'i':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'z':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'r':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'S':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 't':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'a':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 't':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'e':
+                                                                return TokenType::RasterizerState;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 16) {
+    switch (lexeme[ci]) {
+      case 'c':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'i':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'l':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '_':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'f':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'r':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'a':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'g':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'm':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'e':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'n':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 't':
+                                                                    return TokenType::Compile_fragment;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'D':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'p':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'h':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'S':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 't':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'n':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'c':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'i':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'l':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'V':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'i':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'e':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'w':
+                                                                    return TokenType::DepthStencilView;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'R':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'd':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'T':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'a':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'r':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'g':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 't':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'V':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'i':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'e':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'w':
+                                                                    return TokenType::RenderTargetView;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+          case 'W':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'T':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'x':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'u':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'r':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '1':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'D':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'A':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'r':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'r':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'a':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'y':
+                                                                    return TokenType::RWTexture1DArray;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                          case '2':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'D':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'A':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'r':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'r':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'a':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'y':
+                                                                    return TokenType::RWTexture2DArray;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 't':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'a':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'e':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'b':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'l':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'o':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'c':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'k':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case '_':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 's':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 't':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'a':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 't':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'e':
+                                                                    return TokenType::Stateblock_state;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'S':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 't':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'r':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'u':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'c':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 't':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'u':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'r':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'd':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'B':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'u':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'f':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'f':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'e':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'r':
+                                                                    return TokenType::StructuredBuffer;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'T':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '2':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'M':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'S':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'A':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'r':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'r':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'a':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'y':
+                                                                    return TokenType::Texture2DMSArray;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                  case 'C':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'u':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'b':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'A':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'r':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'r':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'a':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'y':
+                                                                    return TokenType::TextureCubeArray;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 17) {
+    switch (lexeme[ci]) {
+      case 'B':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'y':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 't':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'A':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'd':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'd':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'r':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'e':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 's':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 's':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'B':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'u':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'f':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'f':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'e':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 'r':
+                                                                        return TokenType::ByteAddressBuffer;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'D':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'p':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'h':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'S':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 't':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'e':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'n':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'c':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'i':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'l':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'S':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 't':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'a':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 't':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 'e':
+                                                                        return TokenType::DepthStencilState;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 18) {
+    switch (lexeme[ci]) {
+      case 'R':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'W':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'S':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'r':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'u':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'c':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'u':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'r':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'd':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'B':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'u':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'f':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'f':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 'e':
+                                                                        ++ci;
+                                                                        switch (lexeme[ci]) {
+                                                                          case 'r':
+                                                                            return TokenType::RWStructuredBuffer;
+                                                                        }
+                                                                      break;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 19) {
+    switch (lexeme[ci]) {
+      case 'R':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'W':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'B':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'y':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 't':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'A':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'd':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'd':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'r':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 's':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 's':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'B':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'u':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'f':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 'f':
+                                                                        ++ci;
+                                                                        switch (lexeme[ci]) {
+                                                                          case 'e':
+                                                                            ++ci;
+                                                                            switch (lexeme[ci]) {
+                                                                              case 'r':
+                                                                                return TokenType::RWByteAddressBuffer;
+                                                                            }
+                                                                          break;
+                                                                        }
+                                                                      break;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 22) {
+    switch (lexeme[ci]) {
+      case 'A':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'p':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'p':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'e':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'n':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'd':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'S':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 't':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'r':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'u':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'c':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 't':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'u':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'r':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'e':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'd':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 'B':
+                                                                        ++ci;
+                                                                        switch (lexeme[ci]) {
+                                                                          case 'u':
+                                                                            ++ci;
+                                                                            switch (lexeme[ci]) {
+                                                                              case 'f':
+                                                                                ++ci;
+                                                                                switch (lexeme[ci]) {
+                                                                                  case 'f':
+                                                                                    ++ci;
+                                                                                    switch (lexeme[ci]) {
+                                                                                      case 'e':
+                                                                                        ++ci;
+                                                                                        switch (lexeme[ci]) {
+                                                                                          case 'r':
+                                                                                            return TokenType::AppendStructuredBuffer;
+                                                                                        }
+                                                                                      break;
+                                                                                    }
+                                                                                  break;
+                                                                                }
+                                                                              break;
+                                                                            }
+                                                                          break;
+                                                                        }
+                                                                      break;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'S':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'C':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'o':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'm':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'p':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'a':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'r':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'i':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 's':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'o':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 'n':
+                                                                        ++ci;
+                                                                        switch (lexeme[ci]) {
+                                                                          case 'S':
+                                                                            ++ci;
+                                                                            switch (lexeme[ci]) {
+                                                                              case 't':
+                                                                                ++ci;
+                                                                                switch (lexeme[ci]) {
+                                                                                  case 'a':
+                                                                                    ++ci;
+                                                                                    switch (lexeme[ci]) {
+                                                                                      case 't':
+                                                                                        ++ci;
+                                                                                        switch (lexeme[ci]) {
+                                                                                          case 'e':
+                                                                                            return TokenType::SamplerComparisonState;
+                                                                                        }
+                                                                                      break;
+                                                                                    }
+                                                                                  break;
+                                                                                }
+                                                                              break;
+                                                                            }
+                                                                          break;
+                                                                        }
+                                                                      break;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
+  }
+  if (len == 23) {
+    switch (lexeme[ci]) {
+      case 'C':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'o':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'n':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 's':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'm':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'S':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 't':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'r':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'u':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'c':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 't':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'u':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'r':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'e':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 'd':
+                                                                        ++ci;
+                                                                        switch (lexeme[ci]) {
+                                                                          case 'B':
+                                                                            ++ci;
+                                                                            switch (lexeme[ci]) {
+                                                                              case 'u':
+                                                                                ++ci;
+                                                                                switch (lexeme[ci]) {
+                                                                                  case 'f':
+                                                                                    ++ci;
+                                                                                    switch (lexeme[ci]) {
+                                                                                      case 'f':
+                                                                                        ++ci;
+                                                                                        switch (lexeme[ci]) {
+                                                                                          case 'e':
+                                                                                            ++ci;
+                                                                                            switch (lexeme[ci]) {
+                                                                                              case 'r':
+                                                                                                return TokenType::ConsumeStructuredBuffer;
+                                                                                            }
+                                                                                          break;
+                                                                                        }
+                                                                                      break;
+                                                                                    }
+                                                                                  break;
+                                                                                }
+                                                                              break;
+                                                                            }
+                                                                          break;
+                                                                        }
+                                                                      break;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+    }
   }
 
   return matchLiteral(lexeme);
