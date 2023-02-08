@@ -91,70 +91,6 @@ void Scanner::addToken(TokenType t) {
 void Scanner::scanPragma() {
   skipWS();
 
-#define TOKENIZE(word) do { \
-  const char* word = #word; \
-  while (advance() == *word) { word++; } \
-  if (*word != '\0') { return; } \
-} while(0)
-
-  switch(current()) { 
-    case 'd': {
-      // #define
-      TOKENIZE(define);
-    } break;
-
-    case 'e': {
-      advance();
-      // #else, #elif, #endif
-      if (current() == 'l') {
-        char c = advance();
-      }
-    } break;
-    
-    case 'i': {
-      // #if, #ifdef, #ifndef
-      if (current() != 'f') { return; }
-    } break;
-
-    case 'l': {
-      // #line
-      TOKENIZE(line);
-      skipWS();
-      if (isNumeric(current())) {
-        _line = 0;
-        while (!isAtEnd() && isNumeric(current())) {
-          _line = _line * 10 + (current() - '0');
-        advance();          
-      }
-      skipWS();
-      if (current() == '"') {
-        advance();
-        int start = _position;
-        int end = _position;
-        while (!isAtEnd() && current() != '\n' && current() != '"') {
-          end++;
-          advance();
-        }
-        if (current() == '"') {
-          advance();
-          _filename = _source.substr(start, end - start);
-        }
-      }
-    } break;
-
-    case 'u': {
-      // #undef
-      TOKENIZE(undef);
-    } break;
-
-#undef TOKENIZE
-
-    default:
-      return;
-  }
-
-
-#if 0
   // Parse line pragma if present, e.g. #line 1 "file.hlsl"
   // Otherwise, just skip the rest of the line.
   static const char *linePragma = "line";
@@ -167,9 +103,7 @@ void Scanner::scanPragma() {
     if (ci == 4 && isLine) {
       ci++;
       advance();
-      while (!isAtEnd() && isWhitespace(current())) {
-        advance();
-      }
+      skipWS();
       if (isNumeric(current())) {
         _line = 0;
         while (!isAtEnd() && isNumeric(current())) {
@@ -198,8 +132,6 @@ void Scanner::scanPragma() {
     advance();
   }
   advance();
-#endif
-  }
   
   _line++;
   _absoluteLine++;
