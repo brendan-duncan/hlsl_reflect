@@ -543,6 +543,15 @@ static Test test_parameter_default_value("Parser parameter default value", []() 
   delete ast;
 });
 
+static Test test_multi_statement("Parser multi statement", []() {
+  Parser parser(R"(void foo() { surface.smoothness = saturate(surfaceDescription.Smoothness),
+    surface.occlusion = surfaceDescription.Occlusion; })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);

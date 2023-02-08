@@ -1423,7 +1423,12 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
   if (type != nullptr) {
     const std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
     stmt = parseVariableStmt(type, name, attributes);   
-    if (expectSemicolon) {
+    if (match(TokenType::Comma)) {
+      AstStatement* next = parseStatement(expectSemicolon);
+      if (next != nullptr && next->nodeType != AstNodeType::EmptyStmt) {
+        stmt->next = next;
+      }
+    } else if (expectSemicolon) {
       consume(TokenType::Semicolon, "Expected ';' after variable declaration");
     }
     return stmt;
@@ -1462,7 +1467,12 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
       stmt->op = op;
       stmt->value = parseAssignmentExpression(type);
 
-      if (expectSemicolon) {
+      if (match(TokenType::Comma)) {
+        AstStatement* next = parseStatement(expectSemicolon);
+        if (next != nullptr && next->nodeType != AstNodeType::EmptyStmt) {
+          stmt->next = next;
+        }
+      } else if (expectSemicolon) {
         consume(TokenType::Semicolon, "Expected ';' after assignment");
       }
 
@@ -1485,7 +1495,13 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
   }
 
   if (stmt != nullptr) {
-    if (expectSemicolon) {
+    
+    if (match(TokenType::Comma)) {
+      AstStatement* next = parseStatement(expectSemicolon);
+      if (next != nullptr && next->nodeType != AstNodeType::EmptyStmt) {
+        stmt->next = next;
+      }
+    } else if (expectSemicolon) {
       consume(TokenType::Semicolon, "Expected ';' after expression");
     }
     stmt->attributes = attributes;
