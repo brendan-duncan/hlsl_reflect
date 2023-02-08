@@ -174,43 +174,73 @@ AstStructStmt* Parser::parseStruct() {
   Token name = consume(TokenType::Identifier, "struct name expected.");
   consume(TokenType::LeftBrace, "'{' expected for struct");
 
-  AstField* firstField = nullptr;
+  AstStructStmt* s = _ast->createNode<AstStructStmt>();
+  s->name = name.lexeme();
+  _structs[s->name] = s;
+
   AstField* lastField = nullptr;
+  AstFunctionStmt* lastMethod = nullptr;
+
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
     AstField* field = parseStructField();
 
-    if (firstField == nullptr) {
-      firstField = field;
+    if (check(TokenType::LeftParen)) {
+      // we have a function, so the field parsed above should contain
+      //   the return type and function name.  We just need to parse the
+      //   body of the function.
+
+      AstFunctionStmt *method = parseFunctionStmt(field->type, field->name);
+
+      if (s->methods == nullptr) {
+        s->methods = method;
+      }
+      if (lastMethod != nullptr) {
+        lastMethod->next = method;
+      }
+      lastMethod = method;
+    
+      continue;
+    }
+
+    if (s->fields == nullptr) {
+      s->fields = field;
     }
     if (lastField != nullptr) {
       lastField->next = field;
     }
     lastField = field;
 
-    while (check(TokenType::Comma)) {
-      advance(); // consume comma
-      AstField* nextField = _ast->createNode<AstField>();
-      nextField->type = field->type;
-      nextField->name = advance().lexeme();
-      if (match(TokenType::LeftBracket)) {
-        // Array field
-        nextField->isArray = true;
-        nextField->arraySize = parseArraySize();
-      }
-      lastField->next = nextField;
-      lastField = nextField;
+    // We hit a semicolon, so that's the end of this field declaration
+    if (check(TokenType::Semicolon)) {
+        consume(TokenType::Semicolon, "';' expected for struct field");
+        continue;
     }
 
-    consume(TokenType::Semicolon, "';' expected for struct field");
+    // If we have a comma, then there are more variables for the same
+    //   type coming, so consume them.
+    if (check(TokenType::Comma)) {
+      while (check(TokenType::Comma)) {
+        advance(); // consume comma
+        AstField* nextField = _ast->createNode<AstField>();
+        nextField->type = field->type;
+        nextField->name = advance().lexeme();
+        if (match(TokenType::LeftBracket)) {
+          // Array field
+          nextField->isArray = true;
+          nextField->arraySize = parseArraySize();
+        }
+        lastField->next = nextField;
+        lastField = nextField;
+      }
+
+      consume(TokenType::Semicolon, "';' expected for struct field");
+      continue;
+    }
   }
 
   consume(TokenType::RightBrace, "'}' expected for struct");
   consume(TokenType::Semicolon, "';' expected for struct");
 
-  AstStructStmt* s = _ast->createNode<AstStructStmt>();
-  s->name = name.lexeme();
-  s->fields = firstField;
-  _structs[s->name] = s;
   return s;
 }
 
@@ -223,7 +253,7 @@ AstField* Parser::parseStructField() {
     advance();
   }
 
-  field->type = parseType(false, "struct field type expected");
+  field->type = parseType(false /* , "struct field type expected" */);
   field->name = advance().lexeme();
 
   if (match(TokenType::LeftBracket)) {
@@ -757,6 +787,16 @@ bool Parser::parseTypeModifier(uint32_t& flags) {
     return true;
   }
 
+  if (match(TokenType::Unorm)) {
+    flags |= TypeFlags::Unorm;
+    return true;
+  }
+
+  if (match(TokenType::Snorm)) {
+    flags |= TypeFlags::Snorm;
+    return true;
+  }
+
   return false;
 }
 
@@ -1223,6 +1263,13 @@ AstLiteralExpr* Parser::parseArraySize() {
 // Parse a block of statements enclosed in braces
 AstBlock* Parser::parseBlock() {
   AstBlock* block = _ast->createNode<AstBlock>();
+
+  if (check(TokenType::Semicolon)) {
+    // We have a function forward declaration.  Just eat the
+    //   semicolon and return
+    consume(TokenType::Semicolon);
+    return block;
+  }
 
   consume(TokenType::LeftBrace, "Expected '{' before block");
 

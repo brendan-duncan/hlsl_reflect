@@ -119,6 +119,7 @@ struct AstStructStmt : AstStatement {
   static const AstNodeType astType = AstNodeType::StructStmt;
   std::string_view name;
   AstField* fields = nullptr;
+  AstFunctionStmt* methods = nullptr;
 };
 
 /// A cbuffer or tbuffer declaration.

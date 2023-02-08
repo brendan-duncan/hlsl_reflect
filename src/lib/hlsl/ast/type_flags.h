@@ -20,6 +20,9 @@ namespace TypeFlags {
   static const uint32_t Sample = 0x10000;
 
   static const uint32_t NoPromote = 0x20000;
+
+  static const uint32_t Unorm = 0x40000;
+  static const uint32_t Snorm = 0x80000;
 }
 
 } // namespace hlsl
