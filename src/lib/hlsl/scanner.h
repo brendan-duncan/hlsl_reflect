@@ -44,7 +44,7 @@ public:
   }
 
   int absoluteLine() const {
-    return _absolteLine;
+    return _absoluteLine;
   }
 
 private:
@@ -76,7 +76,7 @@ private:
   size_t _lexemeLength = 0;
   std::string _filename;
   int _line = 1;
-  int _absolteLine = 1;
+  int _absoluteLine = 1;
 };
 
 } // namespace hlsl

@@ -38,7 +38,6 @@ void Visitor::visitTopLevelStatement(AstStatement* node) {
     visitTypedefStmt((AstTypedefStmt*)node);
   } else if (node->nodeType == AstNodeType::VariableStmt) {
     visitVariableStmt((AstVariableStmt*)node);
-    std::cout << ";" << std::endl;
   }
 }
 

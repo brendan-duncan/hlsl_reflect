@@ -202,7 +202,7 @@ void Scanner::scanPragma() {
   }
   
   _line++;
-  _absolteLine++;
+  _absoluteLine++;
 }
 
 bool Scanner::scanToken() {
@@ -218,7 +218,7 @@ bool Scanner::scanToken() {
   // Skip line-feed, adding to the line counter.
   if (c == '\n') {
     _line++;
-    _absolteLine++;
+    _absoluteLine++;
     return true;
   }
  
@@ -239,7 +239,7 @@ bool Scanner::scanToken() {
       }
       // skip the linefeed
       _line++;
-      _absolteLine++;
+      _absoluteLine++;
       return true;
     } else if (next == '*') {
       // If it's a / * block comment, skip everything until the matching * /,
@@ -253,7 +253,7 @@ bool Scanner::scanToken() {
         c = advance();
         if (c == '\n') {
           _line++;
-          _absolteLine++;
+          _absoluteLine++;
         } else if (c == '*') {
           next = current();
           if (next == '/') {

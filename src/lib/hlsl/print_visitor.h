@@ -30,7 +30,7 @@ public:
       indent();
       visitStatement(node);
       node = node->next;
-      std::cout << std::endl;
+      _out << std::endl;
     }
   }
 
