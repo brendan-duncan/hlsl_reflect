@@ -124,7 +124,15 @@ static Test test_multi_variable_array("Parser multi variable array", []() {
   delete ast;
 });
 
-static Test test_shd("Parser call method", []() {
+static Test test_empty_statement("Parser empty statement", []() {
+  Parser parser(R"(void foo() { ;; })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_call_method("Parser call method", []() {
   Parser parser(R"(#line 930
 void foo() {
   foo.bar(a, b);
@@ -135,7 +143,7 @@ void foo() {
   delete ast;
 });
 
-static Test test_shd_2("Parser call method 2", []() {
+static Test test_multiply_assign("Parser call method 2", []() {
   Parser parser(R"(void foo() { n *= 1e-6; })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
@@ -516,8 +524,16 @@ static Test test_switch_case_block("Parser switch", []() {
   delete ast;
 });
 
-static Test test_switch_shader_error("Parser parameter semantic", []() {
+static Test test_parameter_semantic("Parser parameter semantic", []() {
   Parser parser(R"(void SplatmapFragment(float IN, out half4 outColor : SV_Target0) { })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_parameter_default_value("Parser parameter default value", []() {
+  Parser parser(R"(void UnpackNormalAG(float4 packedNormal, float scale = 1.0) { })");
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);

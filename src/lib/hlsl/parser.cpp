@@ -1284,6 +1284,7 @@ AstBlock* Parser::parseBlock() {
 
   block->statements = parseStatement();
   if (block->statements == nullptr) {
+    consume(TokenType::RightBrace, "Expected '}' after block");
     return block;
   }
 
@@ -1304,6 +1305,10 @@ AstBlock* Parser::parseBlock() {
 AstStatement* Parser::parseStatement(bool expectSemicolon) {
   while (match(TokenType::Semicolon)) {
     // Ignore empty statements
+  }
+
+  if (check(TokenType::RightBrace)) {
+    return nullptr;
   }
 
   // Attributes are really only for top-level statements, but checking for
