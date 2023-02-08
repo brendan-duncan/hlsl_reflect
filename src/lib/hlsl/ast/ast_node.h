@@ -251,6 +251,7 @@ struct AstParameter : AstNode {
   AstType* type = nullptr;
   bool isArray = false;
   AstLiteralExpr* arraySize = nullptr;
+  std::string_view semantic;
   AstExpression* initializer = nullptr;
   AstParameter* next = nullptr;
 };

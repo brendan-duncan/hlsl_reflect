@@ -1181,6 +1181,10 @@ AstParameter* Parser::parseParameter() {
     param->arraySize = parseArraySize();
   }
 
+  if (match(TokenType::Colon)) {
+    param->semantic = advance().lexeme();
+  }
+
   if (match(TokenType::Equal)) {
     param->initializer = parseExpression();
   }

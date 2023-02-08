@@ -516,6 +516,14 @@ static Test test_switch_case_block("Parser switch", []() {
   delete ast;
 });
 
+static Test test_switch_shader_error("Parser parameter semantic", []() {
+  Parser parser(R"(void SplatmapFragment(float IN, out half4 outColor : SV_Target0) { })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);
