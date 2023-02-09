@@ -151,6 +151,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::RWTexture3D, "RWTexture3D"},
   {TokenType::Sample, "Sample"},
   {TokenType::Sampler, "Sampler"},
+  {TokenType::Sampler2D, "Sampler2D"},
   {TokenType::SamplerState, "SamplerState"},
   {TokenType::SamplerComparisonState, "SamplerComparisonState"},
   {TokenType::Shared, "Shared"},
@@ -2891,6 +2892,48 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                     switch (lexeme[ci]) {
                                       case 'r':
                                         return TokenType::Row_major;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '2':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        return TokenType::Sampler2D;
                                     }
                                   break;
                                 }

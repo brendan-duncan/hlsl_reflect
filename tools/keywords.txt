@@ -82,6 +82,7 @@ RWTexture2DArray
 RWTexture3D
 sample
 sampler
+sampler2D
 SamplerState
 SamplerComparisonState
 shared
