@@ -80,6 +80,9 @@ struct AstType : AstNode {
   AstExpression* arraySize = nullptr;
   uint32_t flags = TypeFlags::None;
   AddressSpace addressSpace = AddressSpace::Undefined;
+
+  inline bool isConst() const { return flags & TypeFlags::Const; }
+  inline bool isStatic() const { return flags & TypeFlags::Static; }
 };
 
 /// Base class for all expressions

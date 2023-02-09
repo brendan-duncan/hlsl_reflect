@@ -392,6 +392,14 @@ static Test test_function_5("Parser inout", []() {
   delete ast;
 });
 
+static Test test_const_array_size("Parser const array size", []() {
+  Parser parser(R"(const int stepCount = 2; const int gWeights[stepCount] = {0, 1};)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_function_array_params("Parser function array parameters", []() {
   Parser parser(R"(void foo(out float2 bar[2]) { bar[0] = 42; })");
   Ast* ast = parser.parse();

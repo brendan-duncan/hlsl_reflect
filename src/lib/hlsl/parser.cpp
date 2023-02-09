@@ -1215,6 +1215,8 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
     var->initializer = parseAssignmentExpression(var->type);
   }
 
+  _variables[var->name] = var;
+
   AstVariableStmt* firstVar = var;
   // Parse multiple variable declarations (a = b, c = d)
   while (match(TokenType::Comma) && !isAtEnd()) {
@@ -1233,6 +1235,8 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
       next->initializer = parseLogicalOrExpression();
     }
 
+    _variables[next->name] = next;
+
     next->attributes = attributes;
     var->next = next;
     var = next;
@@ -1244,13 +1248,35 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
 AstLiteralExpr* Parser::parseArraySize() {
   AstLiteralExpr* firstSize = nullptr;
   // Array declaration (int a[10])
-  if (peekNext().type() == TokenType::IntLiteral) {
+  Token next = peekNext();
+  if (next.type() == TokenType::Identifier) {
+    advance();
+    auto var = _variables.find(next.lexeme());
+    if (var == _variables.end()) {
+      throw ParseException(next, "Unknown variable");
+    }
+    AstVariableStmt* varStmt = var->second;
+    if (!varStmt->type->isConst() || varStmt->type->baseType != BaseType::Int) {
+      throw ParseException(next, "Expected const int");
+    }
+    if (varStmt->initializer == nullptr ||
+        varStmt->initializer->nodeType != AstNodeType::LiteralExpr) {
+      throw ParseException(next, "Expected const int");
+    }
+    AstLiteralExpr* size = (AstLiteralExpr*)varStmt->initializer;
+    /*if (size->type != BaseType::Int) {
+      throw ParseException(next, "Expected const int");
+    }*/
+
+    firstSize = size;
+  } else if (next.type() == TokenType::IntLiteral) {
     Token count = advance();
     AstLiteralExpr* size = _ast->createNode<AstLiteralExpr>();
     size->type = BaseType::Int;
     size->value = count.lexeme();
     firstSize = size;
-    // Bounded array (int a[10
+
+    // This isn't needed if HLSL doesn't support multi-dimensional arrays declared as [10, 20].
     while (match(TokenType::Comma) && !isAtEnd()) {
       Token count = consume(TokenType::IntLiteral, "Expected array size");
       AstLiteralExpr* nextSize = _ast->createNode<AstLiteralExpr>();
@@ -1259,6 +1285,7 @@ AstLiteralExpr* Parser::parseArraySize() {
       size = nextSize;
     }
   }
+
   consume(TokenType::RightBracket, "Expected ']' for array declaration");
   return firstSize;
 }
