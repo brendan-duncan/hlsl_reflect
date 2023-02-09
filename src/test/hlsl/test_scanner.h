@@ -10,26 +10,31 @@ namespace scanner_tests {
 
 static Test test_Scanner("Scanner", []() {
   auto tokens = Scanner("double x = -0.6473313946860445;").scan();
-  TEST_EQUALS(tokens.size(), 6ull);
-  TEST_EQUALS(tokens[0].type(), TokenType::Double);
-  TEST_EQUALS(tokens[1].type(), TokenType::Identifier);
-  TEST_EQUALS(tokens[2].type(), TokenType::Equal);
-  TEST_EQUALS(tokens[3].type(), TokenType::FloatLiteral);
-  TEST_EQUALS(tokens[4].type(), TokenType::Semicolon);
-  TEST_EQUALS(tokens[5].type(), TokenType::EndOfFile);
+  TEST_EQUALS(tokens.size(), 5ull);
+  auto tIter = tokens.begin();
+  TEST_EQUALS((*tIter).type(), TokenType::Double);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Identifier);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Equal);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::FloatLiteral);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Semicolon);
 });
 
 static Test test_Scanner_2("Scanner hex", []() {
   auto tokens = Scanner("0x0;").scan();
-  TEST_EQUALS(tokens.size(), 3ull);
-  TEST_EQUALS(tokens[0].type(), TokenType::IntLiteral);
-  TEST_EQUALS(tokens[1].type(), TokenType::Semicolon);
-  TEST_EQUALS(tokens[2].type(), TokenType::EndOfFile);
+  TEST_EQUALS(tokens.size(), 2ull);
+  auto tIter = tokens.begin();
+  TEST_EQUALS((*tIter).type(), TokenType::IntLiteral);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Semicolon);
 });
 
 static Test test_Scanner_struct_scan("Scanner struct scan", []() {
   auto tokens = Scanner("struct foo { };").scan();
-  TEST_EQUALS(tokens.size(), (size_t)6);
+  TEST_EQUALS(tokens.size(), (size_t)5);
 });
 
 static Test test_Scanner_struct_scanNext("Scanner struct scanNext", []() {
@@ -48,9 +53,11 @@ static Test test_pragma("Scanner pragma", []() {
   #line 2 "foo"
   bar)");
   auto tokens = scanner.scan();
-  TEST_EQUALS(tokens.size(), 3ull);
-  TEST_EQUALS(tokens[0].lexeme(), "foo");
-  TEST_EQUALS(tokens[1].lexeme(), "bar");
+  TEST_EQUALS(tokens.size(), 2ull);
+  auto tIter = tokens.begin();
+  TEST_EQUALS((*tIter).lexeme(), "foo");
+  tIter++;
+  TEST_EQUALS((*tIter).lexeme(), "bar");
 });
 
 static Test test_comments("Scanner comments", []() {
@@ -59,20 +66,49 @@ static Test test_comments("Scanner comments", []() {
   // comment
   bar)");
   auto tokens = scanner.scan();
-  TEST_EQUALS(tokens.size(), 3ull);
-  TEST_EQUALS(tokens[0].lexeme(), "foo");
-  TEST_EQUALS(tokens[1].lexeme(), "bar");
+  TEST_EQUALS(tokens.size(), 2ull);
+  auto tIter = tokens.begin();
+  TEST_EQUALS((*tIter).lexeme(), "foo");
+  tIter++;
+  TEST_EQUALS((*tIter).lexeme(), "bar");
 });
 
 static Test test_string_literals("Scanner string literals", []() {
   auto scanner = Scanner(R"(string foo = "foo";)");
   auto tokens = scanner.scan();
-  TEST_EQUALS(tokens.size(), 6ull);
-  TEST_EQUALS(tokens[0].type(), TokenType::String);
-  TEST_EQUALS(tokens[1].type(), TokenType::Identifier);
-  TEST_EQUALS(tokens[2].type(), TokenType::Equal);
-  TEST_EQUALS(tokens[3].type(), TokenType::StringLiteral);
-  TEST_EQUALS(tokens[4].type(), TokenType::Semicolon);
+  TEST_EQUALS(tokens.size(), 5ull);
+  auto tIter = tokens.begin();
+  TEST_EQUALS((*tIter).type(), TokenType::String);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Identifier);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Equal);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::StringLiteral);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Semicolon);
+});
+
+static Test test_define("Scanner define", []() {
+  auto scanner = Scanner(R"(#define FOO float c = 1 + 2
+  FOO;)");
+  auto tokens = scanner.scan();
+  // This should have expanded the FOO define and parsed as float c = 1 + 2 ;
+  TEST_EQUALS(tokens.size(), 7ull);
+  auto tIter = tokens.begin();
+  TEST_EQUALS((*tIter).type(), TokenType::Float);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Identifier);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Equal);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::IntLiteral);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Plus);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::IntLiteral);
+  tIter++;
+  TEST_EQUALS((*tIter).type(), TokenType::Semicolon);
 });
 
 static Test test_Shader("Scanner Shader", []() {

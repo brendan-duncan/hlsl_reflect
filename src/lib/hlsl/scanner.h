@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <map>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -24,7 +25,7 @@ public:
   Scanner(const std::string_view& source, const std::string filename = "");
 
   /// Scan the source code and return a list of all tokens.
-  std::vector<Token> scan();
+  const std::list<Token>& scan();
 
   /// Scan the next token in the source code. This is used to stream tokens from the
   /// scanner rather than scanning the entire source code at once.
@@ -62,7 +63,7 @@ private:
 
   void scanPragma();
 
-  void skipWS() {
+  void skipWhitespace() {
     while (!isAtEnd() && isWhitespace(current())) {
       advance();
     }
@@ -77,6 +78,8 @@ private:
   std::string _filename;
   int _line = 1;
   int _absoluteLine = 1;
+
+  std::map<std::string_view, std::list<Token>> _defines;
 };
 
 } // namespace hlsl

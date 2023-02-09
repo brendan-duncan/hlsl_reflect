@@ -1,8 +1,6 @@
 #include "scanner.h"
 
 #include <iterator>
-#include <map>
-#include <string_view>
 
 #include "scanner/literal.h"
 #include "scanner/template_types.h"
@@ -15,7 +13,7 @@ Scanner::Scanner(const std::string_view& source, const std::string filename)
     , _size(source.size())
     , _filename(filename) {}
 
-std::vector<Token> Scanner::scan() {
+const std::list<Token>& Scanner::scan() {
   while (!isAtEnd()) {
     _start = _position;
     _lexemeLength = 0;
@@ -23,10 +21,7 @@ std::vector<Token> Scanner::scan() {
       break;
     }
   }
-  _tokens.emplace_back(TokenType::EndOfFile, "");
-  std::vector<Token> tokens;
-  std::move(_tokens.begin(), _tokens.end(), std::back_inserter(tokens));
-  return tokens;
+  return _tokens;
 }
 
 Token Scanner::scanNext() {
@@ -85,25 +80,94 @@ char Scanner::peekAhead(int count) const {
 
 void Scanner::addToken(TokenType t) {
   std::string_view lexeme = _source.substr(_start, _position - _start);
+
+  if (!_defines.empty()) {
+    auto dIter = _defines.find(lexeme);
+    if (dIter != _defines.end()) {
+      auto& define = dIter->second;
+      _tokens.insert(_tokens.end(), define.begin(), define.end());
+      return;
+    }
+  }
+
   _tokens.emplace_back(t, lexeme);
 }
 
 void Scanner::scanPragma() {
-  skipWS();
+  skipWhitespace();
 
   // Parse line pragma if present, e.g. #line 1 "file.hlsl"
   // Otherwise, just skip the rest of the line.
-  static const char *linePragma = "line";
+  static const char* definePragma = "define";
+  static const char* linePragma = "line";
+  
   int ci = 0;
   bool isLine = true;
+  bool isDefine = true;
   while (!isAtEnd() && current() != '\n') {
+    char c = current();
     if (ci < 4) {
-      isLine &= current() == linePragma[ci++];
+      isLine &= c == linePragma[ci];
     }
+    if (ci < 6) {
+      isDefine &= c == definePragma[ci];
+    }
+    ci++;
+
+    if (ci == 6 && isDefine) {
+      ci++;
+      advance();
+      skipWhitespace();
+    
+      size_t start = _position;
+      size_t end = _position;
+      while (!isAtEnd() && current() != '\n' && !isWhitespace(current())) {
+        ++end;
+        advance();
+      }
+
+      std::string_view defineName = _source.substr(start, end - start);
+
+      for (auto& c : _defines) {
+        if (c.first == defineName) {
+          std::cerr << "ERROR: Redefinition of " << defineName << std::endl;
+          //return;
+        }
+      }
+
+      skipWhitespace();
+      start = _position;
+      end = _position;
+      while (!isAtEnd()) {
+        if (current() == '\\') {
+          advance(); // skip the backslash
+          advance(); // skip the control character
+          end += 2;
+          continue;
+        }
+        if (current() == '\n') {
+          break;
+        }
+        ++end;
+        advance();
+      }
+      std::string_view defineValue = _source.substr(start, end - start);
+
+      Scanner defineScanner(defineValue, _filename);
+      auto defineTokens = defineScanner.scan();
+
+      _defines[defineName] = defineTokens;
+
+      _line++;
+      _absoluteLine++;
+      advance();
+      return;
+    }
+
     if (ci == 4 && isLine) {
       ci++;
       advance();
-      skipWS();
+      skipWhitespace();
       if (isNumeric(current())) {
         _line = 0;
         while (!isAtEnd() && isNumeric(current())) {
@@ -116,10 +180,10 @@ void Scanner::scanPragma() {
       }
       if (current() == '"') {
         advance();
-        int start = _position;
-        int end = _position;
+        size_t start = _position;
+        size_t end = _position;
         while (!isAtEnd() && current() != '\n' && current() != '"') {
-          end++;
+          ++end;
           advance();
         }
         if (current() == '"') {
@@ -129,6 +193,7 @@ void Scanner::scanPragma() {
       }
       continue;
     }
+
     advance();
   }
   advance();
@@ -144,6 +209,8 @@ bool Scanner::scanToken() {
 
   // Skip whitespace
   if (isWhitespace(c)) {
+    //c = advance();
+    //_start++;
     return true;
   }
 

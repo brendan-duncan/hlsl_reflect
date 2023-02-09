@@ -565,7 +565,7 @@ static Test test_Parse_urp("Parse urp_bloom", []() {
   Parser parser(hlsl);
   Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
-  printAst(parser.source(), ast);
+  //printAst(parser.source(), ast);
   delete ast;
   free(hlsl);
 });
