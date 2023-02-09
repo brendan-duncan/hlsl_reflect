@@ -1367,6 +1367,20 @@ AstStatement* Parser::parseStatement(bool expectSemicolon) {
 
     stmt->value = parseExpression();
 
+    Token assignmentOp = peekNext();
+    if (isAssignmentOperator(assignmentOp.type())) {
+      advance(); // consume the assignment operator
+      AstExpression* value = parseExpression();
+      if (value == nullptr) {
+        throw ParseException(assignmentOp, "Expected expression after assignment operator");
+      }
+      AstAssignmentExpr* assign = _ast->createNode<AstAssignmentExpr>();
+      assign->op = tokenTypeToAssignmentOperatator(assignmentOp.type());
+      assign->variable = stmt->value;
+      assign->value = value;
+      stmt->value = assign;
+    }
+
     if (expectSemicolon) {
       consume(TokenType::Semicolon, "Expected ';' after return value");
     }

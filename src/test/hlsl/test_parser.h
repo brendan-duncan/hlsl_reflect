@@ -368,6 +368,14 @@ MyStruct Foo() {})");
   delete ast;
 });
 
+static Test test_assignment_return("Parser assignment return", []() {
+  Parser parser(R"(float foo() { float a; return a *= 1 + 2; })");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_function_semantic("Parser function semantic", []() {
   Parser parser(R"(float4 foo(): SV_Target {})");
   Ast* ast = parser.parse();
