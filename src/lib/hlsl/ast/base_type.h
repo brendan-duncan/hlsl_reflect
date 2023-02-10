@@ -45,6 +45,7 @@ enum class BaseType {
   SamplerState,
   SamplerComparisonState,
   Struct,
+  StructuredBuffer,
   Expression,
   UserDefined,
   Float1,
