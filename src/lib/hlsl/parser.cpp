@@ -30,6 +30,9 @@ Ast* Parser::parse() {
       return nullptr;
     }
     if (statement == nullptr) {
+      if (isAtEnd()) {
+        break;
+      }
       std::cerr << "Error Line: " << _scanner.absoluteLine() << std::endl;
       delete _ast;
       _ast = nullptr;
@@ -108,10 +111,33 @@ AstStatement* Parser::parseTopLevelStatement() {
   AstAttribute* attributes = parseAttributes();
 
   if (match(TokenType::Struct)) {
-    AstStructStmt* node = parseStruct();
-    if (node != nullptr) {
-      node->attributes = attributes;
+    AstStructStmt* structNode = parseStruct();
+    if (structNode != nullptr) {
+      structNode->attributes = attributes;
     }
+    
+    AstStatement* node = structNode;
+    if (peekNext().type() == TokenType::Identifier) {
+      Token name = advance();
+      AstVariableStmt* var = _ast->createNode<AstVariableStmt>();
+      var->type = _ast->createNode<AstType>();
+      var->type->baseType = BaseType::Struct;
+      var->type->name = structNode->name;
+      var->name = name.lexeme();
+      node = var;
+      while (match(TokenType::Comma)) {
+        Token name = consume(TokenType::Identifier, "identifier expected");
+        AstVariableStmt* next = _ast->createNode<AstVariableStmt>();
+        next->type = _ast->createNode<AstType>();
+        next->type->baseType = BaseType::Struct;
+        next->type->name = structNode->name;
+        next->name = name.lexeme();
+        var->next = next;
+        var = next;
+      }
+    }
+
+    consume(TokenType::Semicolon, "';' expected for struct");
     return node;
   }
 
@@ -170,11 +196,19 @@ AstTypedefStmt* Parser::parseTypedef() {
 }
 
 AstStructStmt* Parser::parseStruct() {
-  Token name = consume(TokenType::Identifier, "struct name expected.");
-  consume(TokenType::LeftBrace, "'{' expected for struct");
-
   AstStructStmt* s = _ast->createNode<AstStructStmt>();
-  s->name = name.lexeme();
+
+  if (peekNext().type() == TokenType::LeftBrace) {
+    // anonymous struct
+    static int anonStructCount = 0;
+    _anonymousStructNames.push_back("__anon_struct_" + std::to_string(anonStructCount++));
+    s->name = std::string_view(_anonymousStructNames.back());
+  } else {
+    Token name = consume(TokenType::Identifier, "struct name expected.");
+    consume(TokenType::LeftBrace, "'{' expected for struct");  
+    s->name = name.lexeme();
+  }
+
   _structs[s->name] = s;
 
   AstField* lastField = nullptr;
@@ -238,7 +272,6 @@ AstStructStmt* Parser::parseStruct() {
   }
 
   consume(TokenType::RightBrace, "'}' expected for struct");
-  consume(TokenType::Semicolon, "';' expected for struct");
 
   return s;
 }
@@ -658,6 +691,17 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   while (parseTypeModifier(flags) || parseInterpolationModifier(flags)) {}
 
   Token token = advance();
+
+  if (token.type() == TokenType::Struct) {
+    // We can discard the tokens we recorded because we know this is a type.
+    discardRestorePoint();
+    AstStructStmt* structType = parseStruct();
+    AstType* type = _ast->createNode<AstType>();
+    type->flags = flags;
+    type->baseType = BaseType::Struct;
+    type->name = structType->name;
+    return type;
+  }
 
   // If the token is an Identifier, it could be a user typedef type or a struct.
   if (token.type() == TokenType::Identifier) {

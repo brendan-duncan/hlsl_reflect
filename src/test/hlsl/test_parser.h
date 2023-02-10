@@ -210,6 +210,22 @@ static Test test_Parser_struct("Parser struct", []() {
   delete ast;
 });
 
+static Test test_Parser_struct_var("Parser struct var", []() {
+  Parser parser("struct { } foo;");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_Parser_cbuffer_struct_var("Parser cbuffer struct var", []() {
+  Parser parser("cbuffer foo { struct { } bar; };");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parser_struct_fields("Parser struct fields", []() {
   Parser parser(R"(struct foo {
     int a;

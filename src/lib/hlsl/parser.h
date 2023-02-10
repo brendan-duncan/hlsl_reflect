@@ -196,6 +196,7 @@ private:
   // Track structs to verify type names.
   std::map<std::string_view, AstStructStmt*> _structs;
   std::map<std::string_view, AstVariableStmt*> _variables;
+  std::list<std::string> _anonymousStructNames;
 };
 
 } // namespace hlsl
