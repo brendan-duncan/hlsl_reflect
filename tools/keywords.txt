@@ -83,6 +83,7 @@ RWTexture3D
 sample
 sampler
 sampler2D
+sampler2D_float
 SamplerState
 SamplerComparisonState
 shared

@@ -31,6 +31,8 @@ Texture3D
 TextureCube
 TextureCubeArray
 sampler
+sampler2D
+sampler2D_float
 SamplerState
 SamplerComparisonState
 Struct

@@ -152,6 +152,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::Sample, "Sample"},
   {TokenType::Sampler, "Sampler"},
   {TokenType::Sampler2D, "Sampler2D"},
+  {TokenType::Sampler2D_float, "Sampler2D_float"},
   {TokenType::SamplerState, "SamplerState"},
   {TokenType::SamplerComparisonState, "SamplerComparisonState"},
   {TokenType::Shared, "Shared"},
@@ -5534,6 +5535,78 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                                             switch (lexeme[ci]) {
                                                               case 'e':
                                                                 return TokenType::RasterizerState;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '2':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '_':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'f':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'l':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'o':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'a':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 't':
+                                                                return TokenType::Sampler2D_float;
                                                             }
                                                           break;
                                                         }

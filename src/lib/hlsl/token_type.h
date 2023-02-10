@@ -146,6 +146,7 @@ enum class TokenType : uint32_t {
   Sample,
   Sampler,
   Sampler2D,
+  Sampler2D_float,
   SamplerState,
   SamplerComparisonState,
   Shared,
