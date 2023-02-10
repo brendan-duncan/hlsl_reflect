@@ -82,6 +82,7 @@ RWTexture2DArray
 RWTexture3D
 sample
 sampler
+samplerCUBE
 sampler2D
 sampler2D_float
 SamplerState

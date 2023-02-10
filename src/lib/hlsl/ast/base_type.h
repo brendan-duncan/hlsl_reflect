@@ -39,6 +39,7 @@ enum class BaseType {
   TextureCube,
   TextureCubeArray,
   Sampler,
+  SamplerCUBE,
   Sampler2D,
   Sampler2D_float,
   SamplerState,

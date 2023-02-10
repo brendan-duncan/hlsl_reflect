@@ -151,6 +151,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::RWTexture3D, "RWTexture3D"},
   {TokenType::Sample, "Sample"},
   {TokenType::Sampler, "Sampler"},
+  {TokenType::SamplerCUBE, "SamplerCUBE"},
   {TokenType::Sampler2D, "Sampler2D"},
   {TokenType::Sampler2D_float, "Sampler2D_float"},
   {TokenType::SamplerState, "SamplerState"},
@@ -3737,6 +3738,58 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                             switch (lexeme[ci]) {
                                               case 'D':
                                                 return TokenType::RWTexture3D;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'C':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'U':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'B':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'E':
+                                                return TokenType::SamplerCUBE;
                                             }
                                           break;
                                         }

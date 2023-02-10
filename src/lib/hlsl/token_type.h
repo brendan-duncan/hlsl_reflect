@@ -145,6 +145,7 @@ enum class TokenType : uint32_t {
   RWTexture3D,
   Sample,
   Sampler,
+  SamplerCUBE,
   Sampler2D,
   Sampler2D_float,
   SamplerState,
