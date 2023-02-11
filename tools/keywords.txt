@@ -83,6 +83,7 @@ RWTexture3D
 sample
 sampler
 samplerCUBE
+samplerCUBE_float
 sampler2D
 sampler2D_float
 SamplerState
@@ -102,14 +103,19 @@ technique10
 technique11
 texture
 Texture1D
+Texture1D_float
 Texture1DArray
 Texture2D
+Texture2D_float
 Texture2DArray
 Texture2DMS
+Texture2DMS_float
 Texture2DMSArray
 Texture3D
+Texture3D_float
 TextureCube
 TextureCubeArray
+TextureCube_float
 true
 typedef
 triangle

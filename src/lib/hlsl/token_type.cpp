@@ -152,6 +152,7 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::Sample, "Sample"},
   {TokenType::Sampler, "Sampler"},
   {TokenType::SamplerCUBE, "SamplerCUBE"},
+  {TokenType::SamplerCUBE_float, "SamplerCUBE_float"},
   {TokenType::Sampler2D, "Sampler2D"},
   {TokenType::Sampler2D_float, "Sampler2D_float"},
   {TokenType::SamplerState, "SamplerState"},
@@ -171,14 +172,19 @@ static const std::map<TokenType, std::string> _tokenTypeToString{
   {TokenType::Technique11, "Technique11"},
   {TokenType::Texture, "Texture"},
   {TokenType::Texture1D, "Texture1D"},
+  {TokenType::Texture1D_float, "Texture1D_float"},
   {TokenType::Texture1DArray, "Texture1DArray"},
   {TokenType::Texture2D, "Texture2D"},
+  {TokenType::Texture2D_float, "Texture2D_float"},
   {TokenType::Texture2DArray, "Texture2DArray"},
   {TokenType::Texture2DMS, "Texture2DMS"},
+  {TokenType::Texture2DMS_float, "Texture2DMS_float"},
   {TokenType::Texture2DMSArray, "Texture2DMSArray"},
   {TokenType::Texture3D, "Texture3D"},
+  {TokenType::Texture3D_float, "Texture3D_float"},
   {TokenType::TextureCube, "TextureCube"},
   {TokenType::TextureCubeArray, "TextureCubeArray"},
+  {TokenType::TextureCube_float, "TextureCube_float"},
   {TokenType::True, "True"},
   {TokenType::Typedef, "Typedef"},
   {TokenType::Triangle, "Triangle"},
@@ -5688,6 +5694,152 @@ TokenType findTokenType(const std::string_view& lexeme) {
           break;
         }
       break;
+      case 'T':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '1':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '_':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'f':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'l':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'o':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'a':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 't':
+                                                                return TokenType::Texture1D_float;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                  case '2':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '_':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'f':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'l':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'o':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'a':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 't':
+                                                                return TokenType::Texture2D_float;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                  case '3':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case '_':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'f':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case 'l':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'o':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'a':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 't':
+                                                                return TokenType::Texture3D_float;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
     }
   }
   if (len == 16) {
@@ -6436,6 +6588,217 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                                                     switch (lexeme[ci]) {
                                                                       case 'e':
                                                                         return TokenType::DepthStencilState;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 's':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'a':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'm':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 'p':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'l':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'e':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'r':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case 'C':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'U':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'B':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'E':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case '_':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'f':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'l':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'o':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'a':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 't':
+                                                                        return TokenType::SamplerCUBE_float;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                }
+                              break;
+                            }
+                          break;
+                        }
+                      break;
+                    }
+                  break;
+                }
+              break;
+            }
+          break;
+        }
+      break;
+      case 'T':
+        ++ci;
+        switch (lexeme[ci]) {
+          case 'e':
+            ++ci;
+            switch (lexeme[ci]) {
+              case 'x':
+                ++ci;
+                switch (lexeme[ci]) {
+                  case 't':
+                    ++ci;
+                    switch (lexeme[ci]) {
+                      case 'u':
+                        ++ci;
+                        switch (lexeme[ci]) {
+                          case 'r':
+                            ++ci;
+                            switch (lexeme[ci]) {
+                              case 'e':
+                                ++ci;
+                                switch (lexeme[ci]) {
+                                  case '2':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'D':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'M':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'S':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case '_':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'f':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'l':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'o':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'a':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 't':
+                                                                        return TokenType::Texture2DMS_float;
+                                                                    }
+                                                                  break;
+                                                                }
+                                                              break;
+                                                            }
+                                                          break;
+                                                        }
+                                                      break;
+                                                    }
+                                                  break;
+                                                }
+                                              break;
+                                            }
+                                          break;
+                                        }
+                                      break;
+                                    }
+                                  break;
+                                  case 'C':
+                                    ++ci;
+                                    switch (lexeme[ci]) {
+                                      case 'u':
+                                        ++ci;
+                                        switch (lexeme[ci]) {
+                                          case 'b':
+                                            ++ci;
+                                            switch (lexeme[ci]) {
+                                              case 'e':
+                                                ++ci;
+                                                switch (lexeme[ci]) {
+                                                  case '_':
+                                                    ++ci;
+                                                    switch (lexeme[ci]) {
+                                                      case 'f':
+                                                        ++ci;
+                                                        switch (lexeme[ci]) {
+                                                          case 'l':
+                                                            ++ci;
+                                                            switch (lexeme[ci]) {
+                                                              case 'o':
+                                                                ++ci;
+                                                                switch (lexeme[ci]) {
+                                                                  case 'a':
+                                                                    ++ci;
+                                                                    switch (lexeme[ci]) {
+                                                                      case 't':
+                                                                        return TokenType::TextureCube_float;
                                                                     }
                                                                   break;
                                                                 }
