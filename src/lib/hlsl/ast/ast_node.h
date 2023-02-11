@@ -70,11 +70,18 @@ struct AstNode {
   AstNodeType nodeType = AstNodeType::Undefined;
 };
 
+/// A template argument, either an AstType or an AstExpression.
+struct AstTemplateArg : AstNode {
+  static const AstNodeType astType = AstNodeType::TemplateArg;
+  AstNode* value = nullptr;
+  AstTemplateArg* next = nullptr;
+};
+
 /// Type declaration for a variable or function
 struct AstType : AstNode {
   static const AstNodeType astType = AstNodeType::Type;
   BaseType baseType = BaseType::Undefined;
-  AstType* templateArg = nullptr;
+  AstTemplateArg* templateArg = nullptr;
   std::string_view name; // The name of the type if it's a user defined type
   bool array = false;
   AstExpression* arraySize = nullptr;
@@ -250,7 +257,7 @@ struct AstVariableStmt : AstStatement {
   std::string_view name;
   AstType* type = nullptr;
   bool isArray = false;
-  AstLiteralExpr* arraySize = nullptr;
+  AstExpression* arraySize = nullptr;
   AstExpression* initializer = nullptr;
 };
 
@@ -260,7 +267,7 @@ struct AstParameter : AstNode {
   std::string_view name;
   AstType* type = nullptr;
   bool isArray = false;
-  AstLiteralExpr* arraySize = nullptr;
+  AstExpression* arraySize = nullptr;
   std::string_view semantic;
   AstExpression* initializer = nullptr;
   AstParameter* next = nullptr;

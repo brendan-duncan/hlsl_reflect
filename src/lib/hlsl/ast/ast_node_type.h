@@ -13,6 +13,7 @@ enum class AstNodeType {
   StateAssignment,
   SwitchCase,
   Block,
+  TemplateArg,
 
   // Statement Nodes
   StructStmt,

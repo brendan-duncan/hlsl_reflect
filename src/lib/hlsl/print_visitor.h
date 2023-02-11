@@ -168,9 +168,11 @@ public:
     _out << node->name << ": ";
     visitType(node->type);
 
-    AstLiteralExpr* arraySize = node->arraySize;
+    AstExpression* arraySize = node->arraySize;
     while (arraySize != nullptr) {
-      _out << "[" << arraySize->value << "]";
+      _out << "[";
+      visitExpression(arraySize);
+       _out << "]";
       arraySize = (AstLiteralExpr*)arraySize->next;
     }
 

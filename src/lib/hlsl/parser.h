@@ -149,7 +149,7 @@ private:
 
   AstWhileStmt* parseWhileStmt();
 
-  AstLiteralExpr* parseArraySize();
+  AstExpression* parseArraySize();
 
   /// Returns true if the token is a type name, either built-in, user defined, or a struct
   bool isType(const Token& tk) {

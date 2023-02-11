@@ -777,10 +777,15 @@ AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   }
  
   // For template types like Samper<float> or RWStorageBuffer<float>, parse the template arguments.
-  AstType* templateArg = nullptr;
+  AstTemplateArg* templateArg = nullptr;
   if (match(TokenType::Less)) {
-    // TODO: Support multiple template arguments.
-    templateArg = parseType(false);
+    templateArg = _ast->createNode<AstTemplateArg>();
+    templateArg->value = parseType(false);
+    if (match(TokenType::Comma)) {
+      AstTemplateArg* next = _ast->createNode<AstTemplateArg>();
+      next->value = parseSingularExpression();
+      templateArg->next = next;
+    }
     consume(TokenType::Greater, "'>' expected for template type");
   }
 
@@ -1241,7 +1246,7 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
   var->name = name;
   var->attributes = attributes;
 
-  AstLiteralExpr* lastArraySize = nullptr;
+  AstExpression* lastArraySize = nullptr;
   // Parse array dimensions (int a[1][2])
   while (match(TokenType::LeftBracket)) {
     var->isArray = true;
@@ -1289,8 +1294,8 @@ AstVariableStmt* Parser::parseVariableStmt(AstType* type, const std::string_view
   return firstVar;
 }
 
-AstLiteralExpr* Parser::parseArraySize() {
-  AstLiteralExpr* firstSize = nullptr;
+AstExpression* Parser::parseArraySize() {
+  AstExpression* firstSize = nullptr;
   // Array declaration (int a[10])
   Token next = peekNext();
   if (next.type() == TokenType::Identifier) {
@@ -1314,20 +1319,23 @@ AstLiteralExpr* Parser::parseArraySize() {
 
     firstSize = size;
   } else if (next.type() == TokenType::IntLiteral) {
-    Token count = advance();
+    AstExpression* size = parseExpression();
+    firstSize = size;
+
+    /*Token count = advance();
     AstLiteralExpr* size = _ast->createNode<AstLiteralExpr>();
     size->type = BaseType::Int;
     size->value = count.lexeme();
-    firstSize = size;
+    firstSize = size;*/
 
     // This isn't needed if HLSL doesn't support multi-dimensional arrays declared as [10, 20].
-    while (match(TokenType::Comma) && !isAtEnd()) {
+    /*while (match(TokenType::Comma) && !isAtEnd()) {
       Token count = consume(TokenType::IntLiteral, "Expected array size");
       AstLiteralExpr* nextSize = _ast->createNode<AstLiteralExpr>();
       nextSize->value = count.lexeme();
       size->next = nextSize;
       size = nextSize;
-    }
+    }*/
   }
 
   consume(TokenType::RightBracket, "Expected ']' for array declaration");

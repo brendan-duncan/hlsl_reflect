@@ -584,6 +584,22 @@ static Test test_multi_statement("Parser multi statement", []() {
   delete ast;
 });
 
+static Test test_texture2dms("Parser Texture2DMS", []() {
+  Parser parser(R"(Texture2DMS<float, 4> _CameraDepthAttachment;)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
+static Test test_array_const_expr_size("Parser Array const expr size", []() {
+  Parser parser(R"(float4 _TextureInfo[8 * 2];)");
+  Ast* ast = parser.parse();
+  TEST_NOT_NULL(ast);
+  printAst(parser.source(), ast);
+  delete ast;
+});
+
 static Test test_Parse_urp("Parse urp_bloom", []() {
   FILE* fp = fopen(TEST_DATA_PATH("/hlsl/urp_bloom.hlsl"), "rb");
   fseek(fp, 0, SEEK_END);
