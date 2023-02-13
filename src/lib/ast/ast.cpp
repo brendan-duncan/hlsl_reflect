@@ -11,7 +11,7 @@ Ast::Ast(util::Allocator* allocator)
   _currentPage = _firstPage;
   _currentPageOffset = 0;
 
-  _root = createNode<AstRoot>();
+  _root = createNode<Root>();
 }
 
 Ast::~Ast() {

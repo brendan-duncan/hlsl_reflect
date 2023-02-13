@@ -17,7 +17,7 @@ public:
   ~Ast();
 
   /// The root node of the AST containing all top level statements.
-  AstRoot* root() const { return _root; }
+  Root* root() const { return _root; }
 
   /// Used by the parser to create Ast nodes using the memory pool owned by the Ast.
   /// Creates a new node of type T, using a memory pool to allocate the memory
@@ -25,7 +25,7 @@ public:
   /// @return T* The newly created node
   template<typename T>
   T* createNode() {
-    AstNode* n = new (allocateMemory(sizeof(T))) T();
+    Node* n = new (allocateMemory(sizeof(T))) T();
     n->nodeType = T::astType;
     return static_cast<T*>(n);
   }
@@ -48,7 +48,7 @@ private:
   NodePage* _currentPage;
   size_t _currentPageOffset;
 
-  AstRoot* _root;
+  Root* _root;
 };
 
 } // namespace ast

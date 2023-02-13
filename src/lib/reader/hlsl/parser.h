@@ -12,7 +12,7 @@
 
 namespace hlsl {
 
-/// The parser is responsible for taking the tokens from the scanner and building an ast::Ast.
+/// The parser is responsible for taking the tokens from the scanner and building an ast::.
 /// This is a recursive descent parser, which means that each method is responsible for parsing
 /// a single grammar rule. HLSL does not have a formal specification defining its grammar,
 /// so the grammar rules are based on the HLSL documentation.
@@ -25,7 +25,7 @@ public:
   Parser(const std::string_view& source);
 
   /// Parse the source string and return the resulting Ast object.
-  /// @return ast::Ast* The resulting Ast object.
+  /// @return ast::* The resulting Ast object.
   ast::Ast* parse();
 
   const std::string_view& source() { return _scanner.source(); }
@@ -62,96 +62,96 @@ private:
     _pending.push_front(token);
   }
 
-  ast::AstStatement* parseTopLevelStatement();
+  ast::Statement* parseTopLevelStatement();
 
-  ast::AstStructStmt* parseStruct();
+  ast::StructStmt* parseStruct();
 
-  ast::AstField* parseStructField();
+  ast::Field* parseStructField();
 
-  ast::AstAttribute* parseAttributes();
+  ast::Attribute* parseAttributes();
 
-  ast::AstField* parseBufferField();
+  ast::Field* parseBufferField();
 
-  ast::AstSamplerState* parseSamplerState();
+  ast::SamplerState* parseSamplerState();
   
-  ast::AstTypedefStmt* parseTypedef();
+  ast::TypedefStmt* parseTypedef();
 
-  ast::AstStateAssignment* parseStateAssignment(bool isSamplerState, bool isPipelineState);
+  ast::StateAssignment* parseStateAssignment(bool isSamplerState, bool isPipelineState);
 
-  ast::AstBufferStmt* parseBuffer();
+  ast::BufferStmt* parseBuffer();
 
-  ast::AstType* parseType(bool allowVoid, const char* exceptionMessage = nullptr);
+  ast::Type* parseType(bool allowVoid, const char* exceptionMessage = nullptr);
 
   bool parseTypeModifier(uint32_t& flags);
 
   bool parseInterpolationModifier(uint32_t& flags);
 
-  ast::AstExpression* parseAssignmentExpression(ast::AstType* type);
+  ast::Expression* parseAssignmentExpression(ast::Type* type);
 
-  ast::AstExpression* parseStructInitialization(ast::AstType* type);
+  ast::Expression* parseStructInitialization(ast::Type* type);
 
-  ast::AstExpression* parseArrayInitialization(ast::AstType* type);
+  ast::Expression* parseArrayInitialization(ast::Type* type);
 
-  ast::AstExpression* parseExpression();
+  ast::Expression* parseExpression();
 
-  ast::AstExpression* parseExpressionList();
+  ast::Expression* parseExpressionList();
 
-  ast::AstExpression* parseLogicalOrExpression();
+  ast::Expression* parseLogicalOrExpression();
 
-  ast::AstExpression* parseLogicalAndExpression();
+  ast::Expression* parseLogicalAndExpression();
 
-  ast::AstExpression* parseInclusiveOrExpression();
+  ast::Expression* parseInclusiveOrExpression();
 
-  ast::AstExpression* parseExclusiveOrExpression();
+  ast::Expression* parseExclusiveOrExpression();
 
-  ast::AstExpression* parseAndExpression();
+  ast::Expression* parseAndExpression();
 
-  ast::AstExpression* parseEqualityExpression();
+  ast::Expression* parseEqualityExpression();
 
-  ast::AstExpression* parseRelationalExpression();
+  ast::Expression* parseRelationalExpression();
 
-  ast::AstExpression* parseShiftExpression();
+  ast::Expression* parseShiftExpression();
 
-  ast::AstExpression* parseAdditiveExpression();
+  ast::Expression* parseAdditiveExpression();
 
-  ast::AstExpression* parseMultiplicativeExpression();
+  ast::Expression* parseMultiplicativeExpression();
 
-  ast::AstExpression* parsePrefixExpression();
+  ast::Expression* parsePrefixExpression();
 
-  ast::AstExpression* parseSingularExpression();
+  ast::Expression* parseSingularExpression();
 
-  ast::AstExpression* parsePostfixExpression(ast::AstExpression* expr);
+  ast::Expression* parsePostfixExpression(ast::Expression* expr);
 
-  ast::AstExpression* parsePrimaryExpression();
+  ast::Expression* parsePrimaryExpression();
 
-  ast::AstExpression* parseParenthesizedExpression();
+  ast::Expression* parseParenthesizedExpression();
 
-  ast::AstExpression* parseArgumentList();
+  ast::Expression* parseArgumentList();
 
-  ast::AstFunctionStmt* parseFunctionStmt(ast::AstType* returnType, const std::string_view& name);
+  ast::FunctionStmt* parseFunctionStmt(ast::Type* returnType, const std::string_view& name);
 
-  ast::AstVariableStmt* parseVariableStmt(ast::AstType* type, const std::string_view& name,
-    ast::AstAttribute* attributes);
+  ast::VariableStmt* parseVariableStmt(ast::Type* type, const std::string_view& name,
+    ast::Attribute* attributes);
 
-  ast::AstParameter* parseParameterList();
+  ast::Parameter* parseParameterList();
 
-  ast::AstParameter* parseParameter();
+  ast::Parameter* parseParameter();
 
-  ast::AstBlock* parseBlock();
+  ast::Block* parseBlock();
 
-  ast::AstStatement* parseStatement(bool expectSemicolon = true);
+  ast::Statement* parseStatement(bool expectSemicolon = true);
 
-  ast::AstIfStmt* parseIfStmt();
+  ast::IfStmt* parseIfStmt();
 
-  ast::AstSwitchStmt* parseSwitchStmt();
+  ast::SwitchStmt* parseSwitchStmt();
 
-  ast::AstForStmt* parseForStmt();
+  ast::ForStmt* parseForStmt();
 
-  ast::AstDoWhileStmt* parseDoWhileStmt();
+  ast::DoWhileStmt* parseDoWhileStmt();
 
-  ast::AstWhileStmt* parseWhileStmt();
+  ast::WhileStmt* parseWhileStmt();
 
-  ast::AstExpression* parseArraySize();
+  ast::Expression* parseArraySize();
 
   /// Returns true if the token is a type name, either built-in, user defined, or a struct
   bool isType(const Token& tk) {
@@ -194,10 +194,10 @@ private:
   std::list<std::list<Token>> _restore;
 
   // Track typedefs to verify type names.
-  std::map<std::string_view, ast::AstTypedefStmt*> _typedefs;
+  std::map<std::string_view, ast::TypedefStmt*> _typedefs;
   // Track structs to verify type names.
-  std::map<std::string_view, ast::AstStructStmt*> _structs;
-  std::map<std::string_view, ast::AstVariableStmt*> _variables;
+  std::map<std::string_view, ast::StructStmt*> _structs;
+  std::map<std::string_view, ast::VariableStmt*> _variables;
   std::list<std::string> _anonymousStructNames;
 };
 

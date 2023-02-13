@@ -2,7 +2,7 @@
 
 namespace ast {
 
-enum class AstNodeType {
+enum class NodeType {
   Undefined,
   Type,
   Root,

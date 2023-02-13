@@ -13,47 +13,47 @@
 
 namespace ast {
 
-struct AstAssignmentStmt;
-struct AstAttribute;
-struct AstBinaryExpr;
-struct AstBlock;
-struct AstBreakStmt;
-struct AstBufferStmt;
-struct AstCallExpr;
-struct AstContinueStmt;
-struct AstDiscardStmt;
-struct AstDoWhileStmt;
-struct AstExpression;
-struct AstExpressionStmt;
-struct AstForStmt;
-struct AstFunctionStmt;
-struct AstIfStmt;
-struct AstLiteralExpr;
-struct AstCastExpr;
-struct AstAssignmentExpr;
-struct AstNode;
-struct AstParameter;
-struct AstReturnStmt;
-struct AstRoot;
-struct AstSamplerState;
-struct AstStateAssignment;
-struct AstStatement;
-struct AstStringExpr;
-struct AstStructStmt;
-struct AstField;
-struct AstSwitchStmt;
-struct AstSwitchCase;
-struct AstTernaryExpr;
-struct AstType;
-struct AstTypedefStmt;
-struct AstUnaryExpr;
-struct AstVariableStmt;
-struct AstVariableExpr;
-struct AstWhileStmt;
-struct AstCallStmt;
+struct AssignmentStmt;
+struct Attribute;
+struct BinaryExpr;
+struct Block;
+struct BreakStmt;
+struct BufferStmt;
+struct CallExpr;
+struct ContinueStmt;
+struct DiscardStmt;
+struct DoWhileStmt;
+struct Expression;
+struct ExpressionStmt;
+struct ForStmt;
+struct FunctionStmt;
+struct IfStmt;
+struct LiteralExpr;
+struct CastExpr;
+struct AssignmentExpr;
+struct Node;
+struct Parameter;
+struct ReturnStmt;
+struct Root;
+struct SamplerState;
+struct StateAssignment;
+struct Statement;
+struct StringExpr;
+struct StructStmt;
+struct Field;
+struct SwitchStmt;
+struct SwitchCase;
+struct TernaryExpr;
+struct Type;
+struct TypedefStmt;
+struct UnaryExpr;
+struct VariableStmt;
+struct VariableExpr;
+struct WhileStmt;
+struct CallStmt;
 
 /// Call the callback for each node in the linked list
-/// @tparam T AstNode with a next pointer, such as AstExpression
+/// @tparam T Node with a next pointer, such as Expression
 /// @param node The start of the linked list
 /// @param callback The callback to call for each node
 template<typename T>
@@ -65,25 +65,25 @@ void foreach(T* node, void (*callback)(T* node)) {
 }
 
 /// Base class for all AST nodes
-struct AstNode {
-  AstNodeType nodeType = AstNodeType::Undefined;
+struct Node {
+  NodeType nodeType = NodeType::Undefined;
 };
 
-/// A template argument, either an AstType or an AstExpression.
-struct AstTemplateArg : AstNode {
-  static const AstNodeType astType = AstNodeType::TemplateArg;
-  AstNode* value = nullptr;
-  AstTemplateArg* next = nullptr;
+/// A template argument, either an Type or an Expression.
+struct TemplateArg : Node {
+  static const NodeType astType = NodeType::TemplateArg;
+  Node* value = nullptr;
+  TemplateArg* next = nullptr;
 };
 
 /// Type declaration for a variable or function
-struct AstType : AstNode {
-  static const AstNodeType astType = AstNodeType::Type;
+struct Type : Node {
+  static const NodeType astType = NodeType::Type;
   BaseType baseType = BaseType::Undefined;
-  AstTemplateArg* templateArg = nullptr;
+  TemplateArg* templateArg = nullptr;
   std::string_view name; // The name of the type if it's a user defined type
   bool array = false;
-  AstExpression* arraySize = nullptr;
+  Expression* arraySize = nullptr;
   uint32_t flags = TypeFlags::None;
   AddressSpace addressSpace = AddressSpace::Undefined;
 
@@ -92,69 +92,69 @@ struct AstType : AstNode {
 };
 
 /// Base class for all expressions
-struct AstExpression : AstNode {
-  AstExpression* next = nullptr;
+struct Expression : Node {
+  Expression* next = nullptr;
 };
 
 /// Attributes augment a statement or expression with additional information.
-struct AstAttribute : AstNode {
-  static const AstNodeType astType = AstNodeType::Attribute;
+struct Attribute : Node {
+  static const NodeType astType = NodeType::Attribute;
   std::string_view name;
-  AstExpression* argument = nullptr;
-  AstAttribute* next = nullptr;
+  Expression* argument = nullptr;
+  Attribute* next = nullptr;
 };
 
 /// Base class for all statements
-struct AstStatement : AstNode {
-  AstAttribute* attributes = nullptr;
-  AstStatement* next = nullptr;
+struct Statement : Node {
+  Attribute* attributes = nullptr;
+  Statement* next = nullptr;
 };
 
 /// Indicates an empty statement, such as a semicolon.
-struct AstEmptyStatement : AstStatement {
-  static const AstNodeType astType = AstNodeType::EmptyStmt;
+struct EmptyStatement : Statement {
+  static const NodeType astType = NodeType::EmptyStmt;
   // There is only one instance of this class, so we can use a static instance.
-  static AstEmptyStatement instance;
+  static EmptyStatement instance;
 };
 
 /// A field member of a struct or buffer.
-struct AstField : AstNode {
-  static const AstNodeType astType = AstNodeType::Field;
+struct Field : Node {
+  static const NodeType astType = NodeType::Field;
   InterpolationModifier interpolation = InterpolationModifier::None;
-  AstType* type = nullptr;
+  Type* type = nullptr;
   std::string_view name;
   std::string_view semantic;
   bool isArray = false;
-  AstExpression* arraySize = nullptr;
-  AstExpression* assignment = nullptr;
-  AstField* next = nullptr;
+  Expression* arraySize = nullptr;
+  Expression* assignment = nullptr;
+  Field* next = nullptr;
 };
 
 /// A struct declaration.
-struct AstStructStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::StructStmt;
+struct StructStmt : Statement {
+  static const NodeType astType = NodeType::StructStmt;
   std::string_view name;
-  AstField* fields = nullptr;
-  AstFunctionStmt* methods = nullptr;
+  Field* fields = nullptr;
+  FunctionStmt* methods = nullptr;
 };
 
 /// A cbuffer or tbuffer declaration.
-struct AstBufferStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::BufferStmt;
+struct BufferStmt : Statement {
+  static const NodeType astType = NodeType::BufferStmt;
   BufferType bufferType = BufferType::Cbuffer;
   std::string_view name;
   std::string_view registerName;
-  AstField* field = nullptr;
+  Field* field = nullptr;
 };
 
-struct AstSamplerState : AstExpression {
-  static const AstNodeType astType = AstNodeType::SamplerState;
+struct SamplerState : Expression {
+  static const NodeType astType = NodeType::SamplerState;
   int numStateAssignments = 0;
-  AstStateAssignment* stateAssignments = nullptr;
+  StateAssignment* stateAssignments = nullptr;
 };
 
-struct AstStateAssignment : AstNode {
-  static const AstNodeType astType = AstNodeType::StateAssignment;
+struct StateAssignment : Node {
+  static const NodeType astType = NodeType::StateAssignment;
   std::string_view stateName;
   int d3dRenderState = 0;
   union {
@@ -162,246 +162,246 @@ struct AstStateAssignment : AstNode {
     float floatValue;
   };
   std::string_view stringValue;
-  AstStateAssignment* next = nullptr;
+  StateAssignment* next = nullptr;
 };
 
 /// A prefix expression, such as a unary operator - or !.
-struct AstPrefixExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::PrefixExpr;
+struct PrefixExpr : Expression {
+  static const NodeType astType = NodeType::PrefixExpr;
   Operator op = Operator::Undefined;
-  AstExpression* expression = nullptr;
+  Expression* expression = nullptr;
 };
 
 /// A postfix increment operator ++ or --.
-struct AstIncrementExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::IncrementExpr;
+struct IncrementExpr : Expression {
+  static const NodeType astType = NodeType::IncrementExpr;
   Operator op = Operator::Undefined;
-  AstExpression* variable = nullptr;
+  Expression* variable = nullptr;
 };
 
 /// An array index expression such as foo[0].
-struct AstArrayExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::ArrayExpr;
-  AstExpression* array = nullptr;
-  AstExpression* index = nullptr;
+struct ArrayExpr : Expression {
+  static const NodeType astType = NodeType::ArrayExpr;
+  Expression* array = nullptr;
+  Expression* index = nullptr;
 };
 
 /// A member access expression such as foo.bar.
-struct AstMemberExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::MemberExpr;
-  AstExpression* object = nullptr;
-  AstExpression* member = nullptr;
+struct MemberExpr : Expression {
+  static const NodeType astType = NodeType::MemberExpr;
+  Expression* object = nullptr;
+  Expression* member = nullptr;
 };
 
 /// A binary operator expression such as 1 + 2.
-struct AstBinaryExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::BinaryExpr;
+struct BinaryExpr : Expression {
+  static const NodeType astType = NodeType::BinaryExpr;
   Operator op = Operator::Undefined;
-  AstExpression* left = nullptr;
-  AstExpression* right = nullptr;
+  Expression* left = nullptr;
+  Expression* right = nullptr;
 };
 
 /// A conditional expression such as foo ? bar : baz.
-struct AstTernaryExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::TernaryExpr;
-  AstExpression* condition = nullptr;
-  AstExpression* trueExpr = nullptr;
-  AstExpression* falseExpr = nullptr;
+struct TernaryExpr : Expression {
+  static const NodeType astType = NodeType::TernaryExpr;
+  Expression* condition = nullptr;
+  Expression* trueExpr = nullptr;
+  Expression* falseExpr = nullptr;
 };
 
 /// A string value in an expression
-struct AstStringExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::StringExpr;
+struct StringExpr : Expression {
+  static const NodeType astType = NodeType::StringExpr;
   std::string_view value;
 };
 
 /// A function call expression such as foo(1, 2, 3).
-struct AstCallExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::CallExpr;
+struct CallExpr : Expression {
+  static const NodeType astType = NodeType::CallExpr;
   std::string_view name;
-  AstExpression* arguments = nullptr;
+  Expression* arguments = nullptr;
 };
 
 /// A variable reference in an expression.
-struct AstVariableExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::VariableExpr;
+struct VariableExpr : Expression {
+  static const NodeType astType = NodeType::VariableExpr;
   std::string_view name;
 };
 
 /// A literal value in an expression.
-struct AstLiteralExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::LiteralExpr;
+struct LiteralExpr : Expression {
+  static const NodeType astType = NodeType::LiteralExpr;
   BaseType type = BaseType::Undefined;
   std::string_view value;
 };
 
 /// A cast expression such as (float)foo.
-struct AstCastExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::CastExpr;
-  AstType* type = nullptr;
-  AstExpression* value = nullptr;
+struct CastExpr : Expression {
+  static const NodeType astType = NodeType::CastExpr;
+  Type* type = nullptr;
+  Expression* value = nullptr;
 };
 
 /// An assignment expression such as foo = 1.
-struct AstAssignmentExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::AssignmentExpr;
+struct AssignmentExpr : Expression {
+  static const NodeType astType = NodeType::AssignmentExpr;
   Operator op = Operator::Undefined;
-  AstExpression* variable = nullptr;
-  AstExpression* value = nullptr;
+  Expression* variable = nullptr;
+  Expression* value = nullptr;
 };
 
 /// A variable declaration statement.
-struct AstVariableStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::VariableStmt;
+struct VariableStmt : Statement {
+  static const NodeType astType = NodeType::VariableStmt;
   std::string_view name;
-  AstType* type = nullptr;
+  Type* type = nullptr;
   bool isArray = false;
-  AstExpression* arraySize = nullptr;
-  AstExpression* initializer = nullptr;
+  Expression* arraySize = nullptr;
+  Expression* initializer = nullptr;
 };
 
 /// A function parameter declaration.
-struct AstParameter : AstNode {
-  static const AstNodeType astType = AstNodeType::Parameter;
+struct Parameter : Node {
+  static const NodeType astType = NodeType::Parameter;
   std::string_view name;
-  AstType* type = nullptr;
+  Type* type = nullptr;
   bool isArray = false;
-  AstExpression* arraySize = nullptr;
+  Expression* arraySize = nullptr;
   std::string_view semantic;
-  AstExpression* initializer = nullptr;
-  AstParameter* next = nullptr;
+  Expression* initializer = nullptr;
+  Parameter* next = nullptr;
 };
 
 /// A value used to initialize a struct.
-struct AstStructInitializerExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::StructInitializerExpr;
-  AstStructStmt* structType = nullptr;
-  AstExpression* fields = nullptr;
+struct StructInitializerExpr : Expression {
+  static const NodeType astType = NodeType::StructInitializerExpr;
+  StructStmt* structType = nullptr;
+  Expression* fields = nullptr;
 };
 
 /// A value used to initialize an array, x = {1, 2}.
-struct AstArrayInitializerExpr : AstExpression {
-  static const AstNodeType astType = AstNodeType::ArrayInitializerExpr;
-  AstExpression* elements = nullptr;
+struct ArrayInitializerExpr : Expression {
+  static const NodeType astType = NodeType::ArrayInitializerExpr;
+  Expression* elements = nullptr;
 };
 
 /// A function declaration statement.
-struct AstFunctionStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::FunctionStmt;
+struct FunctionStmt : Statement {
+  static const NodeType astType = NodeType::FunctionStmt;
   std::string_view name;
-  AstType* returnType = nullptr;
-  AstParameter* parameters = nullptr;
+  Type* returnType = nullptr;
+  Parameter* parameters = nullptr;
   std::string_view semantic;
-  AstBlock* body = nullptr;
+  Block* body = nullptr;
 };
 
 /// An if statement.
-struct AstIfStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::IfStmt;
-  AstExpression* condition = nullptr;
-  AstStatement* body = nullptr;
-  AstStatement* elseBody = nullptr;
+struct IfStmt : Statement {
+  static const NodeType astType = NodeType::IfStmt;
+  Expression* condition = nullptr;
+  Statement* body = nullptr;
+  Statement* elseBody = nullptr;
 };
 
 /// A switch statement.
-struct AstSwitchStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::SwitchStmt;
-  AstExpression* condition = nullptr;
-  AstSwitchCase* cases = nullptr;
+struct SwitchStmt : Statement {
+  static const NodeType astType = NodeType::SwitchStmt;
+  Expression* condition = nullptr;
+  SwitchCase* cases = nullptr;
 };
 
 /// A switch case.
-struct AstSwitchCase : AstNode {
-  static const AstNodeType astType = AstNodeType::SwitchCase;
+struct SwitchCase : Node {
+  static const NodeType astType = NodeType::SwitchCase;
   bool isDefault = false; // true if this is the default case with no condition.
-  AstExpression* condition = nullptr;
-  AstStatement* body = nullptr;
-  AstSwitchCase* next = nullptr;
+  Expression* condition = nullptr;
+  Statement* body = nullptr;
+  SwitchCase* next = nullptr;
 };
 
 /// A for loop statement.
-struct AstForStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::ForStmt;
-  AstStatement* initializer = nullptr;
-  AstExpression* condition = nullptr;
-  AstStatement* increment = nullptr;
-  AstStatement* body = nullptr;
+struct ForStmt : Statement {
+  static const NodeType astType = NodeType::ForStmt;
+  Statement* initializer = nullptr;
+  Expression* condition = nullptr;
+  Statement* increment = nullptr;
+  Statement* body = nullptr;
 };
 
 /// A do-while loop statement.
-struct AstDoWhileStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::DoWhileStmt;
-  AstStatement* body = nullptr;
-  AstExpression* condition = nullptr;
+struct DoWhileStmt : Statement {
+  static const NodeType astType = NodeType::DoWhileStmt;
+  Statement* body = nullptr;
+  Expression* condition = nullptr;
 };
 
 /// A while loop statement.
-struct AstWhileStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::WhileStmt;
-  AstExpression* condition = nullptr;
-  AstStatement* body = nullptr;
+struct WhileStmt : Statement {
+  static const NodeType astType = NodeType::WhileStmt;
+  Expression* condition = nullptr;
+  Statement* body = nullptr;
 };
 
 /// A discard statement.
-struct AstDiscardStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::DiscardStmt;
+struct DiscardStmt : Statement {
+  static const NodeType astType = NodeType::DiscardStmt;
 };
 
 /// A return statement.
-struct AstReturnStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::ReturnStmt;
-  AstExpression* value = nullptr;
+struct ReturnStmt : Statement {
+  static const NodeType astType = NodeType::ReturnStmt;
+  Expression* value = nullptr;
 };
 
 /// A break statement.
-struct AstBreakStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::BreakStmt;
+struct BreakStmt : Statement {
+  static const NodeType astType = NodeType::BreakStmt;
 };
 
 /// A continue statement.
-struct AstContinueStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::ContinueStmt;
+struct ContinueStmt : Statement {
+  static const NodeType astType = NodeType::ContinueStmt;
 };
 
 /// A block of statements, encapsulated by { }.
-struct AstBlock : AstStatement {
-  static const AstNodeType astType = AstNodeType::Block;
-  AstStatement* statements = nullptr;
+struct Block : Statement {
+  static const NodeType astType = NodeType::Block;
+  Statement* statements = nullptr;
 };
 
 /// A statement that assigns a value to a variable.
-struct AstAssignmentStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::AssignmentStmt;
+struct AssignmentStmt : Statement {
+  static const NodeType astType = NodeType::AssignmentStmt;
   /// The type of assignment operation such as = or +=.
   Operator op = Operator::Undefined;
-  AstExpression* variable = nullptr;
-  AstExpression* value = nullptr;
+  Expression* variable = nullptr;
+  Expression* value = nullptr;
 };
 
 /// A statement that contains an expression.
-struct AstExpressionStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::ExpressionStmt;
-  AstExpression* expression = nullptr;
+struct ExpressionStmt : Statement {
+  static const NodeType astType = NodeType::ExpressionStmt;
+  Expression* expression = nullptr;
 };
 
 /// A statement that calls a function.
-struct AstCallStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::CallStmt;
+struct CallStmt : Statement {
+  static const NodeType astType = NodeType::CallStmt;
   std::string_view name;
-  AstExpression* arguments = nullptr;
+  Expression* arguments = nullptr;
 };
 
 /// A statement that declares a user type.
-struct AstTypedefStmt : AstStatement {
-  static const AstNodeType astType = AstNodeType::TypedefStmt;
+struct TypedefStmt : Statement {
+  static const NodeType astType = NodeType::TypedefStmt;
   std::string_view name;
-  AstType* type = nullptr;
+  Type* type = nullptr;
 };
 
 /// The root of the AST, containing a list of top-level statements.
-struct AstRoot : AstNode {
-  static const AstNodeType astType = AstNodeType::Root;
-  AstStatement* statements = nullptr;
+struct Root : Node {
+  static const NodeType astType = NodeType::Root;
+  Statement* statements = nullptr;
 };
 
 } // namespace ast

@@ -2,6 +2,6 @@
 
 namespace ast {
 
-AstEmptyStatement AstEmptyStatement::instance{AstNodeType::EmptyStmt};
+EmptyStatement EmptyStatement::instance{NodeType::EmptyStmt};
 
 } // namespace ast

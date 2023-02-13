@@ -15,7 +15,7 @@ public:
   BufferMap bufferMap;
   BufferFieldSizeMap* _fieldSizeMap = nullptr;
 
-  void visitBufferStmt(ast::AstBufferStmt* node) override {
+  void visitBufferStmt(ast::BufferStmt* node) override {
     BufferFieldSizeMap fieldSizeMap;
     BufferFieldSizeMap* origFieldSizeMap = _fieldSizeMap;
     _fieldSizeMap = &fieldSizeMap;
@@ -25,7 +25,7 @@ public:
     _fieldSizeMap = origFieldSizeMap;
   }
 
-  void visitBufferField(ast::AstField* node) override {
+  void visitBufferField(ast::Field* node) override {
     (*_fieldSizeMap)[std::string(node->name)] = 0; // calculate field size, offset, etc.
   }
 };

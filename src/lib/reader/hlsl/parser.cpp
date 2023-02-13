@@ -14,11 +14,11 @@ Parser::Parser(const std::string_view& source)
 ast::Ast* Parser::parse() {
   _ast = new ast::Ast();
 
-  ast::AstRoot* root = _ast->root();
+  ast::Root* root = _ast->root();
 
-  ast::AstStatement* lastStatement = nullptr;
+  ast::Statement* lastStatement = nullptr;
   while (!isAtEnd()) {
-    ast::AstStatement* statement = nullptr;
+    ast::Statement* statement = nullptr;
     try {
       statement = parseTopLevelStatement();
     } catch (ParseException e) {
@@ -104,31 +104,31 @@ bool Parser::check(TokenType type) {
   return tk.type() == type;
 }
 
-ast::AstStatement* Parser::parseTopLevelStatement() {
+ast::Statement* Parser::parseTopLevelStatement() {
   // Discard any solo semicolons
   while (match(TokenType::Semicolon) && !isAtEnd()) {}
 
-  ast::AstAttribute* attributes = parseAttributes();
+  ast::Attribute* attributes = parseAttributes();
 
   if (match(TokenType::Struct)) {
-    ast::AstStructStmt* structNode = parseStruct();
+    ast::StructStmt* structNode = parseStruct();
     if (structNode != nullptr) {
       structNode->attributes = attributes;
     }
     
-    ast::AstStatement* node = structNode;
+    ast::Statement* node = structNode;
     if (peekNext().type() == TokenType::Identifier) {
       Token name = advance();
-      ast::AstVariableStmt* var = _ast->createNode<ast::AstVariableStmt>();
-      var->type = _ast->createNode<ast::AstType>();
+      ast::VariableStmt* var = _ast->createNode<ast::VariableStmt>();
+      var->type = _ast->createNode<ast::Type>();
       var->type->baseType = ast::BaseType::Struct;
       var->type->name = structNode->name;
       var->name = name.lexeme();
       node = var;
       while (match(TokenType::Comma)) {
         Token name = consume(TokenType::Identifier, "identifier expected");
-        ast::AstVariableStmt* next = _ast->createNode<ast::AstVariableStmt>();
-        next->type = _ast->createNode<ast::AstType>();
+        ast::VariableStmt* next = _ast->createNode<ast::VariableStmt>();
+        next->type = _ast->createNode<ast::Type>();
         next->type->baseType = ast::BaseType::Struct;
         next->type->name = structNode->name;
         next->name = name.lexeme();
@@ -143,7 +143,7 @@ ast::AstStatement* Parser::parseTopLevelStatement() {
 
   if (check(TokenType::Cbuffer) || check(TokenType::Tbuffer)) {
     Token bufferType = advance();
-    ast::AstBufferStmt* node = parseBuffer();
+    ast::BufferStmt* node = parseBuffer();
     node->bufferType = bufferType.type() == TokenType::Cbuffer
         ? ast::BufferType::Cbuffer
         : ast::BufferType::Tbuffer;
@@ -154,7 +154,7 @@ ast::AstStatement* Parser::parseTopLevelStatement() {
   }
 
   if (match(TokenType::Typedef)) {
-    ast::AstTypedefStmt* node = parseTypedef();
+    ast::TypedefStmt* node = parseTypedef();
     if (node != nullptr) {
       node->attributes = attributes;
     }
@@ -163,14 +163,14 @@ ast::AstStatement* Parser::parseTopLevelStatement() {
   }
 
   // Global Declaration
-  ast::AstType* type = parseType(true);
+  ast::Type* type = parseType(true);
   if (type != nullptr) {
     // Either a variable or function declaration.
     Token identifier = consume(TokenType::Identifier, "identifier expected");
 
     // function declaration
     if (check(TokenType::LeftParen)) {
-      ast::AstFunctionStmt* func = parseFunctionStmt(type, identifier.lexeme());
+      ast::FunctionStmt* func = parseFunctionStmt(type, identifier.lexeme());
       if (func != nullptr) {
         func->attributes = attributes;
       }
@@ -178,7 +178,7 @@ ast::AstStatement* Parser::parseTopLevelStatement() {
     }
 
     // variable declaration
-    ast::AstVariableStmt* var = parseVariableStmt(type, identifier.lexeme(), attributes);
+    ast::VariableStmt* var = parseVariableStmt(type, identifier.lexeme(), attributes);
     consume(TokenType::Semicolon, "Expected ';' after variable declaration");
 
     return var;
@@ -187,16 +187,16 @@ ast::AstStatement* Parser::parseTopLevelStatement() {
   return nullptr;
 }
 
-ast::AstTypedefStmt* Parser::parseTypedef() {
-  ast::AstTypedefStmt* node = _ast->createNode<ast::AstTypedefStmt>();
+ast::TypedefStmt* Parser::parseTypedef() {
+  ast::TypedefStmt* node = _ast->createNode<ast::TypedefStmt>();
   node->type = parseType(true, "typedef type expected");
   node->name = advance().lexeme();
   _typedefs[node->name] = node;
   return node;
 }
 
-ast::AstStructStmt* Parser::parseStruct() {
-  ast::AstStructStmt* s = _ast->createNode<ast::AstStructStmt>();
+ast::StructStmt* Parser::parseStruct() {
+  ast::StructStmt* s = _ast->createNode<ast::StructStmt>();
 
   if (peekNext().type() == TokenType::LeftBrace) {
     // anonymous struct
@@ -211,18 +211,18 @@ ast::AstStructStmt* Parser::parseStruct() {
 
   _structs[s->name] = s;
 
-  ast::AstField* lastField = nullptr;
-  ast::AstFunctionStmt* lastMethod = nullptr;
+  ast::Field* lastField = nullptr;
+  ast::FunctionStmt* lastMethod = nullptr;
 
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
-    ast::AstField* field = parseStructField();
+    ast::Field* field = parseStructField();
 
     if (check(TokenType::LeftParen)) {
       // we have a function, so the field parsed above should contain
       //   the return type and function name.  We just need to parse the
       //   body of the function.
 
-      ast::AstFunctionStmt *method = parseFunctionStmt(field->type, field->name);
+      ast::FunctionStmt *method = parseFunctionStmt(field->type, field->name);
 
       if (s->methods == nullptr) {
         s->methods = method;
@@ -254,7 +254,7 @@ ast::AstStructStmt* Parser::parseStruct() {
     if (check(TokenType::Comma)) {
       while (check(TokenType::Comma)) {
         advance(); // consume comma
-        ast::AstField* nextField = _ast->createNode<ast::AstField>();
+        ast::Field* nextField = _ast->createNode<ast::Field>();
         nextField->type = field->type;
         nextField->name = advance().lexeme();
         if (match(TokenType::LeftBracket)) {
@@ -276,8 +276,8 @@ ast::AstStructStmt* Parser::parseStruct() {
   return s;
 }
 
-ast::AstField* Parser::parseStructField() {
-  ast::AstField* field = _ast->createNode<ast::AstField>();
+ast::Field* Parser::parseStructField() {
+  ast::Field* field = _ast->createNode<ast::Field>();
 
   Token tk = peekNext();
   if (isInterpolationModifier(tk.type())) {
@@ -302,7 +302,7 @@ ast::AstField* Parser::parseStructField() {
   return field;
 }
 
-ast::AstAttribute* Parser::parseAttributes() {
+ast::Attribute* Parser::parseAttributes() {
   // Parse attributes in the forms:
   // [A] statement
   // [A, B] statement
@@ -310,15 +310,15 @@ ast::AstAttribute* Parser::parseAttributes() {
   // Where: A, B are attributes in the form of:
   // A
   // A(a[,b]*) where a and b are expressions
-  ast::AstAttribute* firstAttribute = nullptr;
-  ast::AstAttribute* lastAttribute = nullptr;;
+  ast::Attribute* firstAttribute = nullptr;
+  ast::Attribute* lastAttribute = nullptr;;
 
   if (!match(TokenType::LeftBracket)) {
     return firstAttribute;
   }
 
   while (!isAtEnd()) {
-    ast::AstAttribute* attribute = _ast->createNode<ast::AstAttribute>();
+    ast::Attribute* attribute = _ast->createNode<ast::Attribute>();
     if (firstAttribute == nullptr) {
       firstAttribute = attribute;
     }
@@ -331,10 +331,10 @@ ast::AstAttribute* Parser::parseAttributes() {
     lastAttribute->name = name.lexeme();
 
     if (match(TokenType::LeftParen)) {
-      ast::AstExpression* firstArg = nullptr;
-      ast::AstExpression* lastArg = nullptr;
+      ast::Expression* firstArg = nullptr;
+      ast::Expression* lastArg = nullptr;
       while (!isAtEnd() && !match(TokenType::RightParen)) {
-        ast::AstExpression* arg = parseExpression();
+        ast::Expression* arg = parseExpression();
         if (firstArg == nullptr) {
           firstArg = arg;
         }
@@ -369,7 +369,7 @@ ast::AstAttribute* Parser::parseAttributes() {
   return firstAttribute;
 }
 
-ast::AstExpression* Parser::parseAssignmentExpression(ast::AstType* type) {
+ast::Expression* Parser::parseAssignmentExpression(ast::Type* type) {
   if (check(TokenType::LeftBrace)) {
     // Array or struct initialization expression (e.g. a = {1, 2, 3})
     if (type->baseType == ast::BaseType::Struct) {
@@ -381,7 +381,7 @@ ast::AstExpression* Parser::parseAssignmentExpression(ast::AstType* type) {
     return parseArrayInitialization(type);
   }
 
-  ast::AstExpression* expression = parseLogicalOrExpression();
+  ast::Expression* expression = parseLogicalOrExpression();
   if (expression == nullptr) {
     return nullptr;
   }
@@ -393,29 +393,29 @@ ast::AstExpression* Parser::parseAssignmentExpression(ast::AstType* type) {
 
   ast::Operator op = tokenTypeToAssignmentOperatator(advance().type());
 
-  ast::AstExpression* value = parseAssignmentExpression(type);
+  ast::Expression* value = parseAssignmentExpression(type);
   if (value == nullptr) {
     throw ParseException(peekNext(), "expression expected for assignment");
   }
-  ast::AstAssignmentExpr* assignment = _ast->createNode<ast::AstAssignmentExpr>();
+  ast::AssignmentExpr* assignment = _ast->createNode<ast::AssignmentExpr>();
   assignment->op = op;
   assignment->variable = expression;
   assignment->value = value;
   return assignment;
 }
 
-ast::AstExpression* Parser::parseStructInitialization(ast::AstType* type) {
+ast::Expression* Parser::parseStructInitialization(ast::Type* type) {
   consume(TokenType::LeftBrace, "'{' expected for struct initialization");
 
-  ast::AstStructStmt* structType = _structs[type->name];
+  ast::StructStmt* structType = _structs[type->name];
   if (structType == nullptr) {
     throw ParseException(peekNext(), "unknown struct type");
   }
-  ast::AstField* field = structType->fields;
-  ast::AstExpression* firstExpression = nullptr;
-  ast::AstExpression* lastExpression = nullptr;
+  ast::Field* field = structType->fields;
+  ast::Expression* firstExpression = nullptr;
+  ast::Expression* lastExpression = nullptr;
   while (field != nullptr) {
-    ast::AstExpression* expression = parseAssignmentExpression(field->type);
+    ast::Expression* expression = parseAssignmentExpression(field->type);
     if (firstExpression == nullptr) {
       firstExpression = expression;
     }
@@ -435,17 +435,17 @@ ast::AstExpression* Parser::parseStructInitialization(ast::AstType* type) {
 
   consume(TokenType::RightBrace, "'}' expected for array initialization");
 
-  ast::AstStructInitializerExpr* init = _ast->createNode<ast::AstStructInitializerExpr>();
+  ast::StructInitializerExpr* init = _ast->createNode<ast::StructInitializerExpr>();
   init->structType = structType;
   init->fields = firstExpression;
   return init;
 }
 
-ast::AstExpression* Parser::parseArrayInitialization(ast::AstType* type) {
+ast::Expression* Parser::parseArrayInitialization(ast::Type* type) {
   if (match(TokenType::LeftBrace)) {
       // Nested array initialization (e.g. a = {{1, 2}, {3, 4}}
-      ast::AstExpression* firstExpression = parseArrayInitialization(type);
-      ast::AstExpression* lastExpression = firstExpression;
+      ast::Expression* firstExpression = parseArrayInitialization(type);
+      ast::Expression* lastExpression = firstExpression;
 
       while (!isAtEnd() && match(TokenType::Comma)) {
         if (check(TokenType::RightBrace)) {
@@ -453,7 +453,7 @@ ast::AstExpression* Parser::parseArrayInitialization(ast::AstType* type) {
           break;
         }
         
-        ast::AstExpression* expression = parseArrayInitialization(type);
+        ast::Expression* expression = parseArrayInitialization(type);
         if (expression == nullptr) {
           throw ParseException(peekNext(), "expression expected for assignment");
         }
@@ -463,7 +463,7 @@ ast::AstExpression* Parser::parseArrayInitialization(ast::AstType* type) {
 
       consume(TokenType::RightBrace, "'}' expected for array initialization");
 
-      ast::AstArrayInitializerExpr* init = _ast->createNode<ast::AstArrayInitializerExpr>();
+      ast::ArrayInitializerExpr* init = _ast->createNode<ast::ArrayInitializerExpr>();
       init->elements = firstExpression;
 
       return init;
@@ -472,22 +472,22 @@ ast::AstExpression* Parser::parseArrayInitialization(ast::AstType* type) {
   return parseExpression();
 }
 
-ast::AstExpression* Parser::parseExpression() {
+ast::Expression* Parser::parseExpression() {
   return parseLogicalOrExpression();
 }
 
-ast::AstExpression* Parser::parseExpressionList() {
-  ast::AstExpression* firstExpression = parseExpression();
+ast::Expression* Parser::parseExpressionList() {
+  ast::Expression* firstExpression = parseExpression();
   if (firstExpression == nullptr) {
     return nullptr;
   }
-  ast::AstExpression* lastExpression = firstExpression;
+  ast::Expression* lastExpression = firstExpression;
 
   while (!isAtEnd() && match(TokenType::Comma)) {
     if (check(TokenType::RightBrace) || check(TokenType::RightParen)) {
       break;
     }
-    ast::AstExpression* expression = parseExpression();
+    ast::Expression* expression = parseExpression();
     if (expression == nullptr) {
       throw ParseException(peekNext(), "expression expected for expression list");
       break;
@@ -499,14 +499,14 @@ ast::AstExpression* Parser::parseExpressionList() {
   return firstExpression;
 }
 
-ast::AstField* Parser::parseBufferField() {
-  ast::AstType* type = parseType(false, "buffer field type expected");
+ast::Field* Parser::parseBufferField() {
+  ast::Type* type = parseType(false, "buffer field type expected");
 
-  ast::AstField* lastDecl = nullptr;
-  ast::AstField* firstDecl = nullptr;
+  ast::Field* lastDecl = nullptr;
+  ast::Field* firstDecl = nullptr;
 
   do {
-    ast::AstField* decl = _ast->createNode<ast::AstField>();
+    ast::Field* decl = _ast->createNode<ast::Field>();
     if (firstDecl == nullptr) {
       firstDecl = decl;
     }
@@ -542,15 +542,15 @@ ast::AstField* Parser::parseBufferField() {
   return firstDecl;
 }
 
-ast::AstSamplerState* Parser::parseSamplerState() {
+ast::SamplerState* Parser::parseSamplerState() {
   consume(TokenType::SamplerState, "sampler state expected");
   consume(TokenType::LeftBrace, "'{' expected for sampler state");
 
-  ast::AstSamplerState* samplerState = _ast->createNode<ast::AstSamplerState>();
+  ast::SamplerState* samplerState = _ast->createNode<ast::SamplerState>();
 
-  ast::AstStateAssignment* lastStateAssignment = nullptr;
+  ast::StateAssignment* lastStateAssignment = nullptr;
   while (!match(TokenType::RightBrace) && !isAtEnd()) {
-    ast::AstStateAssignment* stateAssignment = parseStateAssignment(true, true);
+    ast::StateAssignment* stateAssignment = parseStateAssignment(true, true);
     if (samplerState->stateAssignments == nullptr) {
       samplerState->stateAssignments = stateAssignment;
     }
@@ -563,8 +563,8 @@ ast::AstSamplerState* Parser::parseSamplerState() {
   return samplerState;
 }
 
-ast::AstStateAssignment* Parser::parseStateAssignment(bool isSamplerState, bool isPipelineState) {
-  ast::AstStateAssignment* stateAssignment = _ast->createNode<ast::AstStateAssignment>();
+ast::StateAssignment* Parser::parseStateAssignment(bool isSamplerState, bool isPipelineState) {
+  ast::StateAssignment* stateAssignment = _ast->createNode<ast::StateAssignment>();
 
   stateAssignment->stateName = consume(TokenType::Identifier,
       "identifier expected for state assignment").lexeme();
@@ -651,8 +651,8 @@ ast::AstStateAssignment* Parser::parseStateAssignment(bool isSamplerState, bool 
   return stateAssignment;
 }
 
-ast::AstBufferStmt* Parser::parseBuffer() {
-  ast::AstBufferStmt* buffer = _ast->createNode<ast::AstBufferStmt>();
+ast::BufferStmt* Parser::parseBuffer() {
+  ast::BufferStmt* buffer = _ast->createNode<ast::BufferStmt>();
   buffer->name = consume(TokenType::Identifier, "buffer name expected").lexeme();
   if (match(TokenType::Colon)) {
     consume(TokenType::Register, "register expected");
@@ -662,9 +662,9 @@ ast::AstBufferStmt* Parser::parseBuffer() {
   }
   consume(TokenType::LeftBrace, "'{' expected for buffer");
   
-  ast::AstField* lastField = nullptr;
+  ast::Field* lastField = nullptr;
   while (!match(TokenType::RightBrace) && !isAtEnd()) {
-    ast::AstField* field = parseBufferField();
+    ast::Field* field = parseBufferField();
     if (field == nullptr) {
       throw ParseException(peekNext(), "field expected for buffer");
     }
@@ -682,7 +682,7 @@ ast::AstBufferStmt* Parser::parseBuffer() {
   return buffer;
 }
 
-ast::AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
+ast::Type* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   // We don't know if this is a type or a variable name yet, so start
   // recording the tokens in case we need to rewind.
   startRestorePoint();
@@ -695,8 +695,8 @@ ast::AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   if (token.type() == TokenType::Struct) {
     // We can discard the tokens we recorded because we know this is a type.
     discardRestorePoint();
-    ast::AstStructStmt* structType = parseStruct();
-    ast::AstType* type = _ast->createNode<ast::AstType>();
+    ast::StructStmt* structType = parseStruct();
+    ast::Type* type = _ast->createNode<ast::Type>();
     type->flags = flags;
     type->baseType = ast::BaseType::Struct;
     type->name = structType->name;
@@ -708,7 +708,7 @@ ast::AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
     if (_typedefs.find(token.lexeme()) != _typedefs.end()) {
       // We can discard the tokens we recorded because we know this is a type.
       discardRestorePoint();
-      ast::AstType* type = _ast->createNode<ast::AstType>();
+      ast::Type* type = _ast->createNode<ast::Type>();
       type->flags = flags;
       type->baseType = ast::BaseType::UserDefined;
       type->name = token.lexeme();
@@ -718,7 +718,7 @@ ast::AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
     if (_structs.find(token.lexeme()) != _structs.end()) {
       // We can discard the tokens we recorded because we know this is a type.
       discardRestorePoint();
-      ast::AstType* type = _ast->createNode<ast::AstType>();
+      ast::Type* type = _ast->createNode<ast::Type>();
       type->flags = flags;
       type->baseType = ast::BaseType::Struct;
       type->name = token.lexeme();
@@ -759,7 +759,7 @@ ast::AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
       // We can discard the tokens we recorded because we know this is an
       // accepted void type.
       discardRestorePoint();
-      ast::AstType* type = _ast->createNode<ast::AstType>();
+      ast::Type* type = _ast->createNode<ast::Type>();
       type->flags = flags;
       type->baseType = baseType;
       return type;
@@ -777,12 +777,12 @@ ast::AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   }
  
   // For template types like Samper<float> or RWStorageBuffer<float>, parse the template arguments.
-  ast::AstTemplateArg* templateArg = nullptr;
+  ast::TemplateArg* templateArg = nullptr;
   if (match(TokenType::Less)) {
-    templateArg = _ast->createNode<ast::AstTemplateArg>();
+    templateArg = _ast->createNode<ast::TemplateArg>();
     templateArg->value = parseType(false);
     if (match(TokenType::Comma)) {
-      ast::AstTemplateArg* next = _ast->createNode<ast::AstTemplateArg>();
+      ast::TemplateArg* next = _ast->createNode<ast::TemplateArg>();
       next->value = parseSingularExpression();
       templateArg->next = next;
     }
@@ -792,7 +792,7 @@ ast::AstType* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
   // We can discard the recorded tokens we recorded because we know this is a type.
   discardRestorePoint();
 
-  ast::AstType* type = _ast->createNode<ast::AstType>();
+  ast::Type* type = _ast->createNode<ast::Type>();
   type->flags = flags;
   type->baseType = baseType;
   type->templateArg = templateArg;
@@ -877,10 +877,10 @@ bool Parser::parseInterpolationModifier(uint32_t& flags) {
   return false;
 }
 
-ast::AstExpression* Parser::parseLogicalOrExpression() {
-  ast::AstExpression* expr = parseLogicalAndExpression();
+ast::Expression* Parser::parseLogicalOrExpression() {
+  ast::Expression* expr = parseLogicalAndExpression();
   while (match(TokenType::PipePipe)) {
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = ast::Operator::OrOr;
     op->left = expr;
     op->right = parseLogicalAndExpression();
@@ -889,10 +889,10 @@ ast::AstExpression* Parser::parseLogicalOrExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseLogicalAndExpression() {
-  ast::AstExpression* expr = parseInclusiveOrExpression();
+ast::Expression* Parser::parseLogicalAndExpression() {
+  ast::Expression* expr = parseInclusiveOrExpression();
   while (match(TokenType::AmpersandAmpersand)) {
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = ast::Operator::AndAnd;
     op->left = expr;
     op->right = parseInclusiveOrExpression();
@@ -901,10 +901,10 @@ ast::AstExpression* Parser::parseLogicalAndExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseInclusiveOrExpression() {
-  ast::AstExpression* expr = parseExclusiveOrExpression();
+ast::Expression* Parser::parseInclusiveOrExpression() {
+  ast::Expression* expr = parseExclusiveOrExpression();
   while (match(TokenType::Pipe)) {
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = ast::Operator::Or;
     op->left = expr;
     op->right = parseExclusiveOrExpression();
@@ -913,10 +913,10 @@ ast::AstExpression* Parser::parseInclusiveOrExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseExclusiveOrExpression() {
-  ast::AstExpression* expr = parseAndExpression();
+ast::Expression* Parser::parseExclusiveOrExpression() {
+  ast::Expression* expr = parseAndExpression();
   while (match(TokenType::Caret)) {
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = ast::Operator::Xor;
     op->left = expr;
     op->right = parseAndExpression();
@@ -925,10 +925,10 @@ ast::AstExpression* Parser::parseExclusiveOrExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseAndExpression() {
-  ast::AstExpression* expr = parseEqualityExpression();
+ast::Expression* Parser::parseAndExpression() {
+  ast::Expression* expr = parseEqualityExpression();
   while (match(TokenType::Ampersand)) {
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = ast::Operator::And;
     op->left = expr;
     op->right = parseEqualityExpression();
@@ -937,11 +937,11 @@ ast::AstExpression* Parser::parseAndExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseEqualityExpression() {
-  ast::AstExpression* expr = parseRelationalExpression();
+ast::Expression* Parser::parseEqualityExpression() {
+  ast::Expression* expr = parseRelationalExpression();
   while (check(TokenType::EqualEqual) || check(TokenType::BangEqual)) {
     Token tk = advance();
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = tk.type() == TokenType::EqualEqual
         ? ast::Operator::EqualEqual : ast::Operator::NotEqual;
     op->left = expr;
@@ -951,12 +951,12 @@ ast::AstExpression* Parser::parseEqualityExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseRelationalExpression() {
-  ast::AstExpression* expr = parseShiftExpression();
+ast::Expression* Parser::parseRelationalExpression() {
+  ast::Expression* expr = parseShiftExpression();
   while (check(TokenType::Greater) || check(TokenType::Less) ||
         check(TokenType::GreaterEqual) || check(TokenType::LessEqual)) {
     Token tk = advance();
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = tk.type() == TokenType::Greater ? ast::Operator::Greater :
              tk.type() == TokenType::Less ? ast::Operator::Less :
              tk.type() == TokenType::GreaterEqual ? ast::Operator::GreaterEqual :
@@ -968,11 +968,11 @@ ast::AstExpression* Parser::parseRelationalExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseShiftExpression() {
-  ast::AstExpression* expr = parseAdditiveExpression();
+ast::Expression* Parser::parseShiftExpression() {
+  ast::Expression* expr = parseAdditiveExpression();
   while (check(TokenType::GreaterGreater) || check(TokenType::LessLess)) {
     Token tk = advance();
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = tk.type() == TokenType::GreaterGreater ? ast::Operator::RightShift :
              ast::Operator::LeftShift;
     op->left = expr;
@@ -982,11 +982,11 @@ ast::AstExpression* Parser::parseShiftExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseAdditiveExpression() {
-  ast::AstExpression* expr = parseMultiplicativeExpression();
+ast::Expression* Parser::parseAdditiveExpression() {
+  ast::Expression* expr = parseMultiplicativeExpression();
   while (check(TokenType::Plus) || check(TokenType::Minus)) {
     Token tk = advance();
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = tk.type() == TokenType::Plus ? ast::Operator::Add : ast::Operator::Subtract;
     op->left = expr;
     op->right = parseMultiplicativeExpression();
@@ -995,12 +995,12 @@ ast::AstExpression* Parser::parseAdditiveExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parseMultiplicativeExpression() {
-  ast::AstExpression* expr = parsePrefixExpression();
+ast::Expression* Parser::parseMultiplicativeExpression() {
+  ast::Expression* expr = parsePrefixExpression();
   while (check(TokenType::Star) || check(TokenType::Slash) || check(TokenType::Percent) ||
       check(TokenType::PlusPlus) || check(TokenType::MinusMinus)) {
     Token tk = advance();
-    ast::AstBinaryExpr* op = _ast->createNode<ast::AstBinaryExpr>();
+    ast::BinaryExpr* op = _ast->createNode<ast::BinaryExpr>();
     op->op = tk.type() == TokenType::Star ? ast::Operator::Multiply :
              tk.type() == TokenType::Slash ? ast::Operator::Divide : ast::Operator::Modulo;
     op->left = expr;
@@ -1010,11 +1010,11 @@ ast::AstExpression* Parser::parseMultiplicativeExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parsePrefixExpression() {
+ast::Expression* Parser::parsePrefixExpression() {
   if (check(TokenType::Minus) || check(TokenType::Bang) || check(TokenType::Tilde) ||
       check(TokenType::PlusPlus) || check(TokenType::MinusMinus)) {
     Token tk = advance();
-    ast::AstPrefixExpr* op = _ast->createNode<ast::AstPrefixExpr>();
+    ast::PrefixExpr* op = _ast->createNode<ast::PrefixExpr>();
     op->op = tk.type() == TokenType::Minus ? ast::Operator::Subtract :
              tk.type() == TokenType::Bang ? ast::Operator::Not :
              tk.type() == TokenType::Tilde ? ast::Operator::BitNot :
@@ -1026,13 +1026,13 @@ ast::AstExpression* Parser::parsePrefixExpression() {
   return parseSingularExpression();
 }
 
-ast::AstExpression* Parser::parseSingularExpression() {
-  ast::AstExpression* expr = parsePrimaryExpression();
+ast::Expression* Parser::parseSingularExpression() {
+  ast::Expression* expr = parsePrimaryExpression();
   expr = parsePostfixExpression(expr);
 
   if (match(TokenType::Question)) {
     // Ternary conditional expression (a ? b : c)
-    ast::AstTernaryExpr* op = _ast->createNode<ast::AstTernaryExpr>();
+    ast::TernaryExpr* op = _ast->createNode<ast::TernaryExpr>();
     op->condition = expr;
     op->trueExpr = parseExpression();
     consume(TokenType::Colon, "Expected ':' after ternary expression");
@@ -1043,27 +1043,27 @@ ast::AstExpression* Parser::parseSingularExpression() {
   return expr;
 }
 
-ast::AstExpression* Parser::parsePostfixExpression(ast::AstExpression* expr) {
+ast::Expression* Parser::parsePostfixExpression(ast::Expression* expr) {
   // ++, --, [], .
   if (check(TokenType::PlusPlus) || check(TokenType::MinusMinus)) {
     Token tk = advance();
-    ast::AstIncrementExpr* op = _ast->createNode<ast::AstIncrementExpr>();
+    ast::IncrementExpr* op = _ast->createNode<ast::IncrementExpr>();
     op->op = tk.type() == TokenType::PlusPlus ? ast::Operator::PlusPlus : ast::Operator::MinusMinus;
     op->variable = expr;
     return parsePostfixExpression(op);
   }
 
   if (match(TokenType::LeftBracket)) {
-    ast::AstExpression* index = parseExpression();
+    ast::Expression* index = parseExpression();
     consume(TokenType::RightBracket, "Expected ']' after expression");
-    ast::AstArrayExpr* array = _ast->createNode<ast::AstArrayExpr>();
+    ast::ArrayExpr* array = _ast->createNode<ast::ArrayExpr>();
     array->array = expr;
     array->index = index;
     return parsePostfixExpression(array);
   }
 
   if (match(TokenType::Dot)) {
-    ast::AstMemberExpr* member = _ast->createNode<ast::AstMemberExpr>();
+    ast::MemberExpr* member = _ast->createNode<ast::MemberExpr>();
     member->object = expr;
     member->member = parseSingularExpression();   
     return parsePostfixExpression(member);
@@ -1072,18 +1072,18 @@ ast::AstExpression* Parser::parsePostfixExpression(ast::AstExpression* expr) {
   return expr;
 }
 
-ast::AstExpression* Parser::parsePrimaryExpression() {
+ast::Expression* Parser::parsePrimaryExpression() {
   if (check(TokenType::Identifier)) {
     // An identifier is either a variable or a function call
     Token name = advance();
     if (check(TokenType::LeftParen)) {
-      ast::AstCallExpr* expr = _ast->createNode<ast::AstCallExpr>();
+      ast::CallExpr* expr = _ast->createNode<ast::CallExpr>();
       expr->name = name.lexeme();
       expr->arguments = parseArgumentList();
       return expr;
     }
 
-    ast::AstVariableExpr* expr = _ast->createNode<ast::AstVariableExpr>();
+    ast::VariableExpr* expr = _ast->createNode<ast::VariableExpr>();
     expr->name = name.lexeme();
     return expr;
   }
@@ -1091,7 +1091,7 @@ ast::AstExpression* Parser::parsePrimaryExpression() {
   if (check(TokenType::IntLiteral) || check(TokenType::FloatLiteral) || check(TokenType::True) ||
       check(TokenType::False)) {
     Token tk = advance();
-    ast::AstLiteralExpr* expr = _ast->createNode<ast::AstLiteralExpr>();
+    ast::LiteralExpr* expr = _ast->createNode<ast::LiteralExpr>();
     expr->type = tokenTypeToBaseType(tk.type());
     expr->value = tk.lexeme();
     return expr;
@@ -1108,11 +1108,11 @@ ast::AstExpression* Parser::parsePrimaryExpression() {
         restorePoint();
 
         advance();  // consume '('
-        ast::AstType* type = parseType(false, "Invalid type");
+        ast::Type* type = parseType(false, "Invalid type");
         consume(TokenType::RightParen, "Expected ')' after type");
 
-        ast::AstExpression* valueExpr = parseSingularExpression();
-        ast::AstCastExpr* expr = _ast->createNode<ast::AstCastExpr>();
+        ast::Expression* valueExpr = parseSingularExpression();
+        ast::CastExpr* expr = _ast->createNode<ast::CastExpr>();
         expr->type = type;
         expr->value = valueExpr;
         return expr;
@@ -1126,7 +1126,7 @@ ast::AstExpression* Parser::parsePrimaryExpression() {
   Token tk = peekNext();
   // float(x) is a cast expression
   if (isType(tk)) {
-    ast::AstCastExpr* expr = _ast->createNode<ast::AstCastExpr>();
+    ast::CastExpr* expr = _ast->createNode<ast::CastExpr>();
     expr->type = parseType(false, "Invalid type");
     consume(TokenType::LeftParen, "Expected '(' after type");
     expr->value = parseExpressionList();
@@ -1137,10 +1137,10 @@ ast::AstExpression* Parser::parsePrimaryExpression() {
   // (float)x or (float)(x) are cast expressions
   if (tk.type() == TokenType::LeftParen) {
     advance();
-    ast::AstType* type = parseType(false, "Invalid type");
+    ast::Type* type = parseType(false, "Invalid type");
     consume(TokenType::RightParen, "Expected ')' after type");
 
-    ast::AstExpression* valueExpr = nullptr;
+    ast::Expression* valueExpr = nullptr;
     if (peekNext().type() == TokenType::LeftParen) {
       // (float)(x) is a cast expression
       valueExpr = parseParenthesizedExpression();
@@ -1149,7 +1149,7 @@ ast::AstExpression* Parser::parsePrimaryExpression() {
       valueExpr = parseSingularExpression();
     }
 
-    ast::AstCastExpr* expr = _ast->createNode<ast::AstCastExpr>();
+    ast::CastExpr* expr = _ast->createNode<ast::CastExpr>();
     expr->type = type;
     expr->value = valueExpr;
 
@@ -1159,23 +1159,23 @@ ast::AstExpression* Parser::parsePrimaryExpression() {
   return nullptr;
 }
 
-ast::AstExpression* Parser::parseParenthesizedExpression() {
+ast::Expression* Parser::parseParenthesizedExpression() {
   consume(TokenType::LeftParen, "Expected '(' after expression");
-  ast::AstExpression* expr = parseLogicalOrExpression();
+  ast::Expression* expr = parseLogicalOrExpression();
   consume(TokenType::RightParen, "Expected ')' after expression");
   return expr;
 }
 
-ast::AstExpression* Parser::parseArgumentList() {
+ast::Expression* Parser::parseArgumentList() {
   consume(TokenType::LeftParen, "Expected '(' after function name");
-  ast::AstExpression* firstExpr = parseLogicalOrExpression();
-  ast::AstExpression* lastExpr = firstExpr;
+  ast::Expression* firstExpr = parseLogicalOrExpression();
+  ast::Expression* lastExpr = firstExpr;
   while (match(TokenType::Comma)) {
     if (check(TokenType::RightParen)) {
       // trailing comma
       break;
     }
-    ast::AstExpression* expr = parseLogicalOrExpression();
+    ast::Expression* expr = parseLogicalOrExpression();
     lastExpr->next = expr;
     lastExpr = expr;
   }
@@ -1183,8 +1183,8 @@ ast::AstExpression* Parser::parseArgumentList() {
   return firstExpr;
 }
 
-ast::AstFunctionStmt* Parser::parseFunctionStmt(ast::AstType* returnType, const std::string_view& name) {
-  ast::AstFunctionStmt* func = _ast->createNode<ast::AstFunctionStmt>();
+ast::FunctionStmt* Parser::parseFunctionStmt(ast::Type* returnType, const std::string_view& name) {
+  ast::FunctionStmt* func = _ast->createNode<ast::FunctionStmt>();
   func->returnType = returnType;
   func->name = name;
   func->parameters = parseParameterList();
@@ -1197,20 +1197,20 @@ ast::AstFunctionStmt* Parser::parseFunctionStmt(ast::AstType* returnType, const 
   return func;
 }
 
-ast::AstParameter* Parser::parseParameterList() {
+ast::Parameter* Parser::parseParameterList() {
   consume(TokenType::LeftParen, "Expected '(' after function name");
   if (match(TokenType::RightParen)) {
     // Empty parameter list
     return nullptr;
   }
 
-  ast::AstParameter* firstParam = parseParameter();
-  ast::AstParameter* lastParam = firstParam;
+  ast::Parameter* firstParam = parseParameter();
+  ast::Parameter* lastParam = firstParam;
   while (match(TokenType::Comma)) {
     if (check(TokenType::RightParen)) {
       break;
     }
-    ast::AstParameter* param = parseParameter();
+    ast::Parameter* param = parseParameter();
     lastParam->next = param;
     lastParam = param;
   }
@@ -1219,8 +1219,8 @@ ast::AstParameter* Parser::parseParameterList() {
   return firstParam;
 }
 
-ast::AstParameter* Parser::parseParameter() {
-  ast::AstParameter* param = _ast->createNode<ast::AstParameter>();
+ast::Parameter* Parser::parseParameter() {
+  ast::Parameter* param = _ast->createNode<ast::Parameter>();
   param->type = parseType(false, "Expected parameter type");
   param->name = consume(TokenType::Identifier, "Expected parameter name").lexeme();
 
@@ -1240,14 +1240,14 @@ ast::AstParameter* Parser::parseParameter() {
   return param;
 }
 
-ast::AstVariableStmt* Parser::parseVariableStmt(ast::AstType* type, const std::string_view& name,
-                                           ast::AstAttribute* attributes) {
-  ast::AstVariableStmt* var = _ast->createNode<ast::AstVariableStmt>();
+ast::VariableStmt* Parser::parseVariableStmt(ast::Type* type, const std::string_view& name,
+                                           ast::Attribute* attributes) {
+  ast::VariableStmt* var = _ast->createNode<ast::VariableStmt>();
   var->type = type;
   var->name = name;
   var->attributes = attributes;
 
-  ast::AstExpression* lastArraySize = nullptr;
+  ast::Expression* lastArraySize = nullptr;
   // Parse array dimensions (int a[1][2])
   while (match(TokenType::LeftBracket)) {
     var->isArray = true;
@@ -1256,7 +1256,7 @@ ast::AstVariableStmt* Parser::parseVariableStmt(ast::AstType* type, const std::s
       lastArraySize = var->arraySize;
     } else {
       lastArraySize->next = parseArraySize();
-      lastArraySize = (ast::AstLiteralExpr*)lastArraySize->next;
+      lastArraySize = (ast::LiteralExpr*)lastArraySize->next;
     }
   }
 
@@ -1267,11 +1267,11 @@ ast::AstVariableStmt* Parser::parseVariableStmt(ast::AstType* type, const std::s
 
   _variables[var->name] = var;
 
-  ast::AstVariableStmt* firstVar = var;
+  ast::VariableStmt* firstVar = var;
   // Parse multiple variable declarations (a = b, c = d)
   while (match(TokenType::Comma) && !isAtEnd()) {
     std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
-    ast::AstVariableStmt* next = _ast->createNode<ast::AstVariableStmt>();
+    ast::VariableStmt* next = _ast->createNode<ast::VariableStmt>();
     next->type = type;
     next->name = name;
     next->attributes = attributes;
@@ -1295,8 +1295,8 @@ ast::AstVariableStmt* Parser::parseVariableStmt(ast::AstType* type, const std::s
   return firstVar;
 }
 
-ast::AstExpression* Parser::parseArraySize() {
-  ast::AstExpression* firstSize = nullptr;
+ast::Expression* Parser::parseArraySize() {
+  ast::Expression* firstSize = nullptr;
   // Array declaration (int a[10])
   Token next = peekNext();
   if (next.type() == TokenType::Identifier) {
@@ -1305,26 +1305,26 @@ ast::AstExpression* Parser::parseArraySize() {
     if (var == _variables.end()) {
       throw ParseException(next, "Unknown variable");
     }
-    ast::AstVariableStmt* varStmt = var->second;
+    ast::VariableStmt* varStmt = var->second;
     if (!varStmt->type->isConst() || varStmt->type->baseType != ast::BaseType::Int) {
       throw ParseException(next, "Expected const int");
     }
     if (varStmt->initializer == nullptr ||
-        varStmt->initializer->nodeType != ast::AstNodeType::LiteralExpr) {
+        varStmt->initializer->nodeType != ast::NodeType::LiteralExpr) {
       throw ParseException(next, "Expected const int");
     }
-    ast::AstLiteralExpr* size = (ast::AstLiteralExpr*)varStmt->initializer;
+    ast::LiteralExpr* size = (ast::LiteralExpr*)varStmt->initializer;
     /*if (size->type != ast::BaseType::Int) {
       throw ParseException(next, "Expected const int");
     }*/
 
     firstSize = size;
   } else if (next.type() == TokenType::IntLiteral) {
-    ast::AstExpression* size = parseExpression();
+    ast::Expression* size = parseExpression();
     firstSize = size;
 
     /*Token count = advance();
-    ast::AstLiteralExpr* size = _ast->createNode<ast::AstLiteralExpr>();
+    ast::LiteralExpr* size = _ast->createNode<ast::LiteralExpr>();
     size->type = ast::BaseType::Int;
     size->value = count.lexeme();
     firstSize = size;*/
@@ -1332,7 +1332,7 @@ ast::AstExpression* Parser::parseArraySize() {
     // This isn't needed if HLSL doesn't support multi-dimensional arrays declared as [10, 20].
     /*while (match(TokenType::Comma) && !isAtEnd()) {
       Token count = consume(TokenType::IntLiteral, "Expected array size");
-      ast::AstLiteralExpr* nextSize = _ast->createNode<ast::AstLiteralExpr>();
+      ast::LiteralExpr* nextSize = _ast->createNode<ast::LiteralExpr>();
       nextSize->value = count.lexeme();
       size->next = nextSize;
       size = nextSize;
@@ -1344,8 +1344,8 @@ ast::AstExpression* Parser::parseArraySize() {
 }
 
 // Parse a block of statements enclosed in braces
-ast::AstBlock* Parser::parseBlock() {
-  ast::AstBlock* block = _ast->createNode<ast::AstBlock>();
+ast::Block* Parser::parseBlock() {
+  ast::Block* block = _ast->createNode<ast::Block>();
 
   if (check(TokenType::Semicolon)) {
     // We have a function forward declaration.  Just eat the
@@ -1367,13 +1367,13 @@ ast::AstBlock* Parser::parseBlock() {
     return block;
   }
 
-  ast::AstStatement* lastStmt = block->statements;
+  ast::Statement* lastStmt = block->statements;
   while (!check(TokenType::RightBrace) && !isAtEnd()) {
-    ast::AstStatement* stmt = parseStatement();
+    ast::Statement* stmt = parseStatement();
     if (stmt == nullptr) {
       throw ParseException(peekNext(), "Expected statement");
     }
-    if (stmt->nodeType == ast::AstNodeType::EmptyStmt) {
+    if (stmt->nodeType == ast::NodeType::EmptyStmt) {
       continue;
     }
     lastStmt->next = stmt;
@@ -1384,40 +1384,40 @@ ast::AstBlock* Parser::parseBlock() {
   return block;
 }
 
-ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
+ast::Statement* Parser::parseStatement(bool expectSemicolon) {
   while (match(TokenType::Semicolon)) {
     // Ignore empty statements
   }
 
   if (check(TokenType::RightBrace)) {
-    return &ast::AstEmptyStatement::instance;
+    return &ast::EmptyStatement::instance;
   }
 
   // Attributes are really only for top-level statements, but checking for
   // them in all cases until we pass in something to let us know this is
   // a top-level statement.
-  ast::AstAttribute* attributes = parseAttributes();
+  ast::Attribute* attributes = parseAttributes();
 
   if (match(TokenType::If)) {
-    ast::AstIfStmt* stmt = parseIfStmt();
+    ast::IfStmt* stmt = parseIfStmt();
     stmt->attributes = attributes;
     return stmt;
   }
 
   if (match(TokenType::Switch)) {
-    ast::AstSwitchStmt* stmt = parseSwitchStmt();
+    ast::SwitchStmt* stmt = parseSwitchStmt();
     stmt->attributes = attributes;
     return stmt;
   }
 
   if (match(TokenType::For)) {
-    ast::AstForStmt* stmt = parseForStmt();
+    ast::ForStmt* stmt = parseForStmt();
     stmt->attributes = attributes;
     return stmt;
   }
 
   if (match(TokenType::Do)) {
-    ast::AstDoWhileStmt* stmt = parseDoWhileStmt();
+    ast::DoWhileStmt* stmt = parseDoWhileStmt();
     stmt->attributes = attributes;
     if (expectSemicolon) {
       consume(TokenType::Semicolon, "Expected ';' after return value");
@@ -1426,19 +1426,19 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
   }
 
   if (match(TokenType::While)) {
-    ast::AstWhileStmt* stmt = parseWhileStmt();
+    ast::WhileStmt* stmt = parseWhileStmt();
     stmt->attributes = attributes;
     return stmt;
   }
 
   if (check(TokenType::LeftBrace)) {
-    ast::AstStatement* stmt = parseBlock();
+    ast::Statement* stmt = parseBlock();
     stmt->attributes = attributes;
     return stmt;
   }
 
   if (match(TokenType::Return)) {
-    ast::AstReturnStmt* stmt = _ast->createNode<ast::AstReturnStmt>();
+    ast::ReturnStmt* stmt = _ast->createNode<ast::ReturnStmt>();
     stmt->attributes = attributes;
 
     if (check(TokenType::Semicolon)) {
@@ -1450,11 +1450,11 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
     Token assignmentOp = peekNext();
     if (isAssignmentOperator(assignmentOp.type())) {
       advance(); // consume the assignment operator
-      ast::AstExpression* value = parseExpression();
+      ast::Expression* value = parseExpression();
       if (value == nullptr) {
         throw ParseException(assignmentOp, "Expected expression after assignment operator");
       }
-      ast::AstAssignmentExpr* assign = _ast->createNode<ast::AstAssignmentExpr>();
+      ast::AssignmentExpr* assign = _ast->createNode<ast::AssignmentExpr>();
       assign->op = tokenTypeToAssignmentOperatator(assignmentOp.type());
       assign->variable = stmt->value;
       assign->value = value;
@@ -1469,7 +1469,7 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
   }
 
   if (match(TokenType::Break)) {
-    ast::AstBreakStmt* stmt = _ast->createNode<ast::AstBreakStmt>();
+    ast::BreakStmt* stmt = _ast->createNode<ast::BreakStmt>();
     stmt->attributes = attributes;
     if (expectSemicolon) {
       consume(TokenType::Semicolon, "Expected ';' after 'break'");
@@ -1478,7 +1478,7 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
   }
 
   if (match(TokenType::Continue)) {
-    ast::AstContinueStmt* stmt = _ast->createNode<ast::AstContinueStmt>();
+    ast::ContinueStmt* stmt = _ast->createNode<ast::ContinueStmt>();
     stmt->attributes = attributes;
     if (expectSemicolon) {
       consume(TokenType::Semicolon, "Expected ';' after 'continue'");
@@ -1487,7 +1487,7 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
   }
 
   if (match(TokenType::Discard)) {
-    ast::AstDiscardStmt* stmt = _ast->createNode<ast::AstDiscardStmt>();
+    ast::DiscardStmt* stmt = _ast->createNode<ast::DiscardStmt>();
     stmt->attributes = attributes;
     if (expectSemicolon) {
       consume(TokenType::Semicolon, "Expected ';' after 'discard'");
@@ -1495,12 +1495,12 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
     return stmt;
   }
 
-  ast::AstStatement* stmt = nullptr;
+  ast::Statement* stmt = nullptr;
 
   if (check(TokenType::Identifier)) {
     Token name = advance();
     if (check(TokenType::LeftParen)) {
-      ast::AstCallStmt* call = _ast->createNode<ast::AstCallStmt>();
+      ast::CallStmt* call = _ast->createNode<ast::CallStmt>();
       call->name = name.lexeme();
       call->arguments = parseArgumentList();
       call->attributes = attributes;
@@ -1513,13 +1513,13 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
     pushBack(name);
   }
 
-  ast::AstType* type = parseType(false);
+  ast::Type* type = parseType(false);
   if (type != nullptr) {
     const std::string_view name = consume(TokenType::Identifier, "Expected variable name").lexeme();
     stmt = parseVariableStmt(type, name, attributes);   
     if (match(TokenType::Comma)) {
-      ast::AstStatement* next = parseStatement(expectSemicolon);
-      if (next != nullptr && next->nodeType != ast::AstNodeType::EmptyStmt) {
+      ast::Statement* next = parseStatement(expectSemicolon);
+      if (next != nullptr && next->nodeType != ast::NodeType::EmptyStmt) {
         stmt->next = next;
       }
     } else if (expectSemicolon) {
@@ -1533,7 +1533,7 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
     // Assignment statement or method call (a.b())
     const bool isUnderscore = match(TokenType::Underscore);
 
-    ast::AstExpression* var = nullptr;
+    ast::Expression* var = nullptr;
 
     if (!isUnderscore) {
       var = parsePrefixExpression();
@@ -1547,7 +1547,7 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
 
     if (tk.type() == TokenType::Semicolon) {
       // We're done here, the "assignment" was actually a method call.
-      ast::AstExpressionStmt* stmt = _ast->createNode<ast::AstExpressionStmt>();
+      ast::ExpressionStmt* stmt = _ast->createNode<ast::ExpressionStmt>();
       stmt->expression = var;
       stmt->attributes = attributes;
       discardRestorePoint();
@@ -1556,14 +1556,14 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
 
     ast::Operator op = tokenTypeToAssignmentOperatator(tk.type());
     if (op != ast::Operator::Undefined) {
-      ast::AstAssignmentStmt* stmt = _ast->createNode<ast::AstAssignmentStmt>();
+      ast::AssignmentStmt* stmt = _ast->createNode<ast::AssignmentStmt>();
       stmt->variable = var;
       stmt->op = op;
       stmt->value = parseAssignmentExpression(type);
 
       if (match(TokenType::Comma)) {
-        ast::AstStatement* next = parseStatement(expectSemicolon);
-        if (next != nullptr && next->nodeType != ast::AstNodeType::EmptyStmt) {
+        ast::Statement* next = parseStatement(expectSemicolon);
+        if (next != nullptr && next->nodeType != ast::NodeType::EmptyStmt) {
           stmt->next = next;
         }
       } else if (expectSemicolon) {
@@ -1579,9 +1579,9 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
   }
 
   try {
-    ast::AstExpression* expr = parseExpression();
+    ast::Expression* expr = parseExpression();
     if (expr != nullptr) {
-      ast::AstExpressionStmt* exprStmt = _ast->createNode<ast::AstExpressionStmt>();
+      ast::ExpressionStmt* exprStmt = _ast->createNode<ast::ExpressionStmt>();
       exprStmt->expression = expr;
       stmt = exprStmt;
     }
@@ -1591,8 +1591,8 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
   if (stmt != nullptr) {
     
     if (match(TokenType::Comma)) {
-      ast::AstStatement* next = parseStatement(expectSemicolon);
-      if (next != nullptr && next->nodeType != ast::AstNodeType::EmptyStmt) {
+      ast::Statement* next = parseStatement(expectSemicolon);
+      if (next != nullptr && next->nodeType != ast::NodeType::EmptyStmt) {
         stmt->next = next;
       }
     } else if (expectSemicolon) {
@@ -1605,8 +1605,8 @@ ast::AstStatement* Parser::parseStatement(bool expectSemicolon) {
   return nullptr;
 }
 
-ast::AstIfStmt* Parser::parseIfStmt() {
-  ast::AstIfStmt* stmt = _ast->createNode<ast::AstIfStmt>();
+ast::IfStmt* Parser::parseIfStmt() {
+  ast::IfStmt* stmt = _ast->createNode<ast::IfStmt>();
 
   consume(TokenType::LeftParen, "Expected '(' after 'if'");
 
@@ -1623,8 +1623,8 @@ ast::AstIfStmt* Parser::parseIfStmt() {
   return stmt;
 }
 
-ast::AstSwitchStmt* Parser::parseSwitchStmt() {
-  ast::AstSwitchStmt* switchStmt = _ast->createNode<ast::AstSwitchStmt>();
+ast::SwitchStmt* Parser::parseSwitchStmt() {
+  ast::SwitchStmt* switchStmt = _ast->createNode<ast::SwitchStmt>();
   
   consume(TokenType::LeftParen, "Expected '(' after 'switch'");
   switchStmt->condition = parseExpression();
@@ -1632,9 +1632,9 @@ ast::AstSwitchStmt* Parser::parseSwitchStmt() {
   
   consume(TokenType::LeftBrace, "Expected '{' after 'switch' condition");
   
-  ast::AstSwitchCase* lastCase = nullptr;
+  ast::SwitchCase* lastCase = nullptr;
   while (!match(TokenType::RightBrace) && !isAtEnd()) {
-    ast::AstSwitchCase* caseStmt = _ast->createNode<ast::AstSwitchCase>();
+    ast::SwitchCase* caseStmt = _ast->createNode<ast::SwitchCase>();
 
     if (match(TokenType::Case)) {      
       caseStmt->isDefault = false;
@@ -1654,12 +1654,12 @@ ast::AstSwitchStmt* Parser::parseSwitchStmt() {
 
     consume(TokenType::Colon, "Expected ':' after 'case' or 'default'");
 
-    ast::AstStatement* firstStatement = nullptr;
-    ast::AstStatement* lastStatement = nullptr;
+    ast::Statement* firstStatement = nullptr;
+    ast::Statement* lastStatement = nullptr;
 
     Token next = peekNext();
     while (next.type() != TokenType::Case && next.type() != TokenType::Default && next.type() != TokenType::RightBrace) {
-      ast::AstStatement* caseBodyStmt = parseStatement();
+      ast::Statement* caseBodyStmt = parseStatement();
       if (caseBodyStmt != nullptr) {
         if (firstStatement == nullptr) {
           firstStatement = caseBodyStmt;
@@ -1668,7 +1668,7 @@ ast::AstSwitchStmt* Parser::parseSwitchStmt() {
         }
         lastStatement = caseBodyStmt;
       }
-      if (caseBodyStmt->nodeType == ast::AstNodeType::BreakStmt || caseBodyStmt->nodeType == ast::AstNodeType::ReturnStmt) {
+      if (caseBodyStmt->nodeType == ast::NodeType::BreakStmt || caseBodyStmt->nodeType == ast::NodeType::ReturnStmt) {
         break;
       }
       next = peekNext();
@@ -1679,8 +1679,8 @@ ast::AstSwitchStmt* Parser::parseSwitchStmt() {
   return switchStmt;
 }
 
-ast::AstForStmt* Parser::parseForStmt() {
-  ast::AstForStmt* stmt = _ast->createNode<ast::AstForStmt>();
+ast::ForStmt* Parser::parseForStmt() {
+  ast::ForStmt* stmt = _ast->createNode<ast::ForStmt>();
 
   consume(TokenType::LeftParen, "Expected '(' after 'for'");
   if (!check(TokenType::Semicolon)) {
@@ -1695,7 +1695,7 @@ ast::AstForStmt* Parser::parseForStmt() {
 
   if (!check(TokenType::RightParen)) {
     stmt->increment = parseStatement(false);
-    ast::AstStatement* next = stmt->increment;
+    ast::Statement* next = stmt->increment;
     while (match(TokenType::Comma)) {
       next->next = parseStatement(false);
       next = next->next;
@@ -1708,8 +1708,8 @@ ast::AstForStmt* Parser::parseForStmt() {
   return stmt;
 }
 
-ast::AstDoWhileStmt* Parser::parseDoWhileStmt() {
-  ast::AstDoWhileStmt* stmt = _ast->createNode<ast::AstDoWhileStmt>();
+ast::DoWhileStmt* Parser::parseDoWhileStmt() {
+  ast::DoWhileStmt* stmt = _ast->createNode<ast::DoWhileStmt>();
 
   stmt->body = parseBlock();
 
@@ -1721,8 +1721,8 @@ ast::AstDoWhileStmt* Parser::parseDoWhileStmt() {
   return stmt;
 }
 
-ast::AstWhileStmt* Parser::parseWhileStmt() {
-  ast::AstWhileStmt* stmt = _ast->createNode<ast::AstWhileStmt>();
+ast::WhileStmt* Parser::parseWhileStmt() {
+  ast::WhileStmt* stmt = _ast->createNode<ast::WhileStmt>();
   consume(TokenType::LeftParen, "Expected '(' after 'while'");
   stmt->condition = parseExpression();
   consume(TokenType::RightParen, "Expected ')' after 'while' condition");
