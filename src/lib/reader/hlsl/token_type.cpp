@@ -417,7 +417,7 @@ TokenType findTokenType(const std::string_view& lexeme) {
   size_t len = lexeme.length();
   size_t ci = 0;
   if (len == 1) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case '(':
         return TokenType::LeftParen;
       case ')':
@@ -473,10 +473,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 2) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case '+':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::PlusEqual;
           case '+':
@@ -484,8 +483,7 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case '-':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::MinusEqual;
           case '-':
@@ -493,36 +491,31 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case '*':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::StarEqual;
         }
       break;
       case '/':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::SlashEqual;
         }
       break;
       case '%':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::PercentEqual;
         }
       break;
       case '^':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::CaretEqual;
         }
       break;
       case '&':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::AmpersandEqual;
           case '&':
@@ -530,8 +523,7 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case '|':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::PipeEqual;
           case '|':
@@ -539,8 +531,7 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case '<':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '<':
             return TokenType::LessLess;
           case '=':
@@ -548,8 +539,7 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case '>':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '>':
             return TokenType::GreaterGreater;
           case '=':
@@ -557,36 +547,31 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case '=':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::EqualEqual;
         }
       break;
       case '!':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '=':
             return TokenType::BangEqual;
         }
       break;
       case '?':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '?':
             return TokenType::QuestionQuestion;
         }
       break;
       case 'd':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
             return TokenType::Do;
         }
       break;
       case 'i':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'f':
             return TokenType::If;
           case 'n':
@@ -596,13 +581,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 3) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case '<':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '<':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case '=':
                 return TokenType::LessLessEqual;
             }
@@ -610,11 +593,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case '>':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case '>':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case '=':
                 return TokenType::GreaterGreaterEqual;
             }
@@ -622,11 +603,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'a':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 's':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
                 return TokenType::Asm;
             }
@@ -634,11 +613,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'f':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'r':
                 return TokenType::For;
             }
@@ -646,11 +623,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'i':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 't':
                 return TokenType::Int;
             }
@@ -658,11 +633,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'o':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'u':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 't':
                 return TokenType::Out;
             }
@@ -672,16 +645,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 4) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'b':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'l':
                     return TokenType::Bool;
                 }
@@ -691,14 +661,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'c':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 's':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
                     return TokenType::Case;
                 }
@@ -708,14 +675,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'e':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'l':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 's':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
                     return TokenType::Else;
                 }
@@ -725,14 +689,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'h':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'l':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'f':
                     return TokenType::Half;
                 }
@@ -742,14 +703,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'l':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
                     return TokenType::Line;
                 }
@@ -759,14 +717,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'N':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'U':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'L':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'L':
                     return TokenType::Null;
                 }
@@ -776,14 +731,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'p':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 's':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 's':
                     return TokenType::Pass;
                 }
@@ -793,14 +745,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 't':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'r':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'u':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
                     return TokenType::True;
                 }
@@ -810,14 +759,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'u':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
                     return TokenType::Uint;
                 }
@@ -827,14 +773,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'v':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'd':
                     return TokenType::Void;
                 }
@@ -844,14 +787,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'i':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 't':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '1':
                     return TokenType::Int1;
                   case '2':
@@ -869,19 +809,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 5) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'b':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'r':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'e':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'k':
                         return TokenType::Break;
                     }
@@ -891,14 +827,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'l':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '1':
                         return TokenType::Bool1;
                       case '2':
@@ -916,17 +849,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'c':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'l':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'a':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 's':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 's':
                         return TokenType::Class;
                     }
@@ -936,14 +865,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 's':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
                         return TokenType::Const;
                     }
@@ -955,17 +881,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'd':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'w':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'r':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'd':
                         return TokenType::Dword;
                     }
@@ -977,17 +899,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'f':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'l':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 's':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
                         return TokenType::False;
                     }
@@ -997,14 +915,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'l':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
                         return TokenType::Float;
                     }
@@ -1016,17 +931,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'i':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'u':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
                         return TokenType::Inout;
                     }
@@ -1038,17 +949,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'p':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'n':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
                         return TokenType::Point;
                     }
@@ -1060,17 +967,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'r':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'm':
                         return TokenType::Snorm;
                     }
@@ -1082,17 +985,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'u':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'r':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'm':
                         return TokenType::Unorm;
                     }
@@ -1102,14 +1001,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '1':
                         return TokenType::Uint1;
                       case '2':
@@ -1127,17 +1023,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'w':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'h':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'l':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
                         return TokenType::While;
                     }
@@ -1149,17 +1041,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'h':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'l':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'f':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '1':
                         return TokenType::Half1;
                       case '2':
@@ -1179,22 +1067,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 6) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'B':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'u':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'f':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'f':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
                             return TokenType::Buffer;
                         }
@@ -1208,20 +1091,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'd':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'u':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'b':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
                             return TokenType::Double;
                         }
@@ -1235,20 +1113,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'e':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'x':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'p':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'o':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'r':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
                             return TokenType::Export;
                         }
@@ -1258,14 +1131,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
                 }
               break;
               case 't':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'r':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'n':
                             return TokenType::Extern;
                         }
@@ -1279,20 +1149,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'i':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'l':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'i':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'n':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
                             return TokenType::Inline;
                         }
@@ -1302,14 +1167,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
                 }
               break;
               case 't':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '1':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'x':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case '1':
                             return TokenType::Int1x1;
                           case '2':
@@ -1323,11 +1185,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                     }
                   break;
                   case '2':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'x':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case '1':
                             return TokenType::Int2x1;
                           case '2':
@@ -1341,11 +1201,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                     }
                   break;
                   case '3':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'x':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case '1':
                             return TokenType::Int3x1;
                           case '2':
@@ -1359,11 +1217,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                     }
                   break;
                   case '4':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'x':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case '1':
                             return TokenType::Int4x1;
                           case '2':
@@ -1383,20 +1239,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'l':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'a':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
                             return TokenType::Linear;
                         }
@@ -1410,20 +1261,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'm':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 't':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'r':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'i':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
                             return TokenType::Matrix;
                         }
@@ -1437,20 +1283,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'r':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 't':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'u':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'r':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'n':
                             return TokenType::Return;
                         }
@@ -1464,20 +1305,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
                             return TokenType::Sample;
                         }
@@ -1489,17 +1325,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'h':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'a':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'r':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'd':
                             return TokenType::Shared;
                         }
@@ -1511,17 +1343,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 't':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'a':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'i':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'c':
                             return TokenType::Static;
                         }
@@ -1531,14 +1359,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
                 }
               break;
               case 'r':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'i':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'n':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'g':
                             return TokenType::String;
                         }
@@ -1546,11 +1371,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                     }
                   break;
                   case 'u':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'c':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
                             return TokenType::Struct;
                         }
@@ -1562,17 +1385,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'w':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'c':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'h':
                             return TokenType::Switch;
                         }
@@ -1586,20 +1405,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'v':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'c':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'o':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
                             return TokenType::Vector;
                         }
@@ -1613,20 +1427,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'f':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'l':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case '1':
                             return TokenType::Float1;
                           case '2':
@@ -1648,25 +1457,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 7) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'c':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'b':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'u':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'f':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'f':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
                                 return TokenType::Cbuffer;
                             }
@@ -1680,20 +1483,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'i':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'l':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
                                 return TokenType::Compile;
                             }
@@ -1709,23 +1507,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'd':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'f':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'l':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 't':
                                 return TokenType::Default;
                             }
@@ -1739,20 +1531,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 's':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'c':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'a':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'd':
                                 return TokenType::Discard;
                             }
@@ -1768,23 +1555,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'f':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'x':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'g':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'r':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'o':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'u':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'p':
                                 return TokenType::Fxgroup;
                             }
@@ -1800,23 +1581,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'l':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'a':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'd':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'j':
                                 return TokenType::Lineadj;
                             }
@@ -1832,23 +1607,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'p':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'r':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'e':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'c':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'i':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 's':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
                                 return TokenType::Precise;
                             }
@@ -1864,23 +1633,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
                                 return TokenType::Sampler;
                             }
@@ -1896,23 +1659,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 't':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'b':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'u':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'f':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'f':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
                                 return TokenType::Tbuffer;
                             }
@@ -1926,20 +1683,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
                                 return TokenType::Texture;
                             }
@@ -1953,20 +1705,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'y':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'p':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'd':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'f':
                                 return TokenType::Typedef;
                             }
@@ -1982,23 +1729,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'u':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'f':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'o':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'm':
                                 return TokenType::Uniform;
                             }
@@ -2012,20 +1753,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '1':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Uint1x1;
                               case '2':
@@ -2039,11 +1775,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '2':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Uint2x1;
                               case '2':
@@ -2057,11 +1791,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '3':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Uint3x1;
                               case '2':
@@ -2075,11 +1807,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '4':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Uint4x1;
                               case '2':
@@ -2101,23 +1831,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'h':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'l':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'f':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '1':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Half1x1;
                               case '2':
@@ -2131,11 +1855,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '2':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Half2x1;
                               case '2':
@@ -2149,11 +1871,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '3':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Half3x1;
                               case '2':
@@ -2167,11 +1887,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '4':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Half4x1;
                               case '2':
@@ -2193,23 +1911,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'b':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'l':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '1':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Bool1x1;
                               case '2':
@@ -2223,11 +1935,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '2':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Bool2x1;
                               case '2':
@@ -2241,11 +1951,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '3':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Bool3x1;
                               case '2':
@@ -2259,11 +1967,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '4':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '1':
                                 return TokenType::Bool4x1;
                               case '2':
@@ -2287,28 +1993,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 8) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'c':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'r':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'o':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'i':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'd':
                                     return TokenType::Centroid;
                                 }
@@ -2324,23 +2023,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'i':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'n':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'u':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
                                     return TokenType::Continue;
                                 }
@@ -2358,26 +2051,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'm':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '1':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '6':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'n':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
                                     return TokenType::Min16int;
                                 }
@@ -2387,14 +2073,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '2':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'n':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
                                     return TokenType::Min12int;
                                 }
@@ -2412,26 +2095,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'r':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'g':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'i':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 's':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'r':
                                     return TokenType::Register;
                                 }
@@ -2449,26 +2125,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'R':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'W':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'B':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'u':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'f':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'r':
                                     return TokenType::RWBuffer;
                                 }
@@ -2486,26 +2155,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 't':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'r':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'n':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'g':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
                                     return TokenType::Triangle;
                                 }
@@ -2523,26 +2185,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'u':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 's':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'i':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'g':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'n':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'd':
                                     return TokenType::Unsigned;
                                 }
@@ -2560,26 +2215,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'v':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'l':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
                                     return TokenType::Volatile;
                                 }
@@ -2597,26 +2245,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'f':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'l':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case '1':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'x':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '1':
                                     return TokenType::Float1x1;
                                   case '2':
@@ -2630,11 +2271,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                             }
                           break;
                           case '2':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'x':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '1':
                                     return TokenType::Float2x1;
                                   case '2':
@@ -2648,11 +2287,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                             }
                           break;
                           case '3':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'x':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '1':
                                     return TokenType::Float3x1;
                                   case '2':
@@ -2666,11 +2303,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                             }
                           break;
                           case '4':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'x':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '1':
                                     return TokenType::Float4x1;
                                   case '2':
@@ -2696,31 +2331,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 9) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'i':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 't':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'r':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'a':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'c':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
                                         return TokenType::Interface;
                                     }
@@ -2740,29 +2367,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'm':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '1':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '6':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'u':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'i':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'n':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 't':
                                         return TokenType::Min16uint;
                                     }
@@ -2772,14 +2391,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
                             }
                           break;
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'n':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case '1':
                                         return TokenType::Min16int1;
                                       case '2':
@@ -2797,17 +2413,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '2':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'n':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case '1':
                                         return TokenType::Min12int1;
                                       case '2':
@@ -2833,29 +2445,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'n':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 's':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'p':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'a':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'c':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
                                         return TokenType::Namespace;
                                     }
@@ -2875,29 +2479,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'r':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'w':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '_':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'm':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'a':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'j':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'r':
                                         return TokenType::Row_major;
                                     }
@@ -2917,29 +2513,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '2':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
                                         return TokenType::Sampler2D;
                                     }
@@ -2959,29 +2547,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 't':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'c':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'h':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'n':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'q':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'u':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
                                         return TokenType::Technique;
                                     }
@@ -3001,43 +2581,33 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'T':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '1':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
                                         return TokenType::Texture1D;
                                     }
                                   break;
                                   case '2':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
                                         return TokenType::Texture2D;
                                     }
                                   break;
                                   case '3':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
                                         return TokenType::Texture3D;
                                     }
@@ -3059,34 +2629,25 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 10) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'B':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'l':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'e':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'n':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'd':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'S':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 't':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'a':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 't':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'e':
                                             return TokenType::BlendState;
                                         }
@@ -3108,32 +2669,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'H':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'u':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'l':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'l':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 's':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'h':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'a':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'd':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'r':
                                             return TokenType::Hullshader;
                                         }
@@ -3155,32 +2707,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'I':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'n':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'p':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'u':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'P':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'a':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'c':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'h':
                                             return TokenType::InputPatch;
                                         }
@@ -3202,32 +2745,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'L':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'S':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'm':
                                             return TokenType::LineStream;
                                         }
@@ -3249,32 +2783,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'm':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '1':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '6':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
                                             return TokenType::Min16float;
                                         }
@@ -3286,17 +2811,13 @@ TokenType findTokenType(const std::string_view& lexeme) {
                             }
                           break;
                           case 'u':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'i':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'n':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 't':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '1':
                                             return TokenType::Min16uint1;
                                           case '2':
@@ -3316,20 +2837,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '0':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
                                             return TokenType::Min10float;
                                         }
@@ -3351,32 +2867,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'p':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'c':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'k':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'o':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'f':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 's':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
                                             return TokenType::Packoffset;
                                         }
@@ -3398,32 +2905,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 't':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'a':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'b':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'c':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'k':
                                             return TokenType::Stateblock;
                                         }
@@ -3445,32 +2943,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'E':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'x':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'p':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'r':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 's':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 's':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'i':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'o':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'n':
                                             return TokenType::Expression;
                                         }
@@ -3494,37 +2983,27 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 11) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'g':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'r':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'u':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'p':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 's':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'h':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'a':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'r':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'e':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'd':
                                                 return TokenType::Groupshared;
                                             }
@@ -3548,35 +3027,25 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'O':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'u':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 't':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'P':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'a':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 't':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'c':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'h':
                                                 return TokenType::OutputPatch;
                                             }
@@ -3600,35 +3069,25 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'P':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'S':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'h':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'a':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'd':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'e':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'r':
                                                 return TokenType::PixelShader;
                                             }
@@ -3650,32 +3109,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'n':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'S':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 't':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'r':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'a':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'm':
                                                 return TokenType::PointStream;
                                             }
@@ -3699,49 +3149,37 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'R':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'W':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'T':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'x':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'u':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'r':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '1':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'D':
                                                 return TokenType::RWTexture1D;
                                             }
                                           break;
                                           case '2':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'D':
                                                 return TokenType::RWTexture2D;
                                             }
                                           break;
                                           case '3':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'D':
                                                 return TokenType::RWTexture3D;
                                             }
@@ -3765,35 +3203,25 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'C':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'U':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'B':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'E':
                                                 return TokenType::SamplerCUBE;
                                             }
@@ -3817,35 +3245,25 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 't':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'c':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'h':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'n':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'q':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'u':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '1':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '0':
                                                 return TokenType::Technique10;
                                               case '1':
@@ -3869,32 +3287,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'r':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'n':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'g':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'd':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'j':
                                                 return TokenType::Triangleadj;
                                             }
@@ -3918,35 +3327,25 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'T':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '2':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'M':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'S':
                                                 return TokenType::Texture2DMS;
                                             }
@@ -3956,14 +3355,11 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                     }
                                   break;
                                   case 'C':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'u':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'b':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
                                                 return TokenType::TextureCube;
                                             }
@@ -3987,35 +3383,25 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'U':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 's':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'e':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'r':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'D':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'f':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'i':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'n':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'e':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'd':
                                                 return TokenType::UserDefined;
                                             }
@@ -4039,35 +3425,25 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'm':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '1':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '0':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min10float1;
                                               case '2':
@@ -4089,23 +3465,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '6':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min16float1;
                                               case '2':
@@ -4125,20 +3495,15 @@ TokenType findTokenType(const std::string_view& lexeme) {
                             }
                           break;
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'n':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case '1':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'x':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min16int1x1;
                                               case '2':
@@ -4152,11 +3517,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                         }
                                       break;
                                       case '2':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'x':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min16int2x1;
                                               case '2':
@@ -4170,11 +3533,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                         }
                                       break;
                                       case '3':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'x':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min16int3x1;
                                               case '2':
@@ -4188,11 +3549,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                         }
                                       break;
                                       case '4':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'x':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min16int4x1;
                                               case '2':
@@ -4214,23 +3573,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '2':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'i':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'n':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case '1':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'x':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min12int1x1;
                                               case '2':
@@ -4244,11 +3597,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                         }
                                       break;
                                       case '2':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'x':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min12int2x1;
                                               case '2':
@@ -4262,11 +3613,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                         }
                                       break;
                                       case '3':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'x':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min12int3x1;
                                               case '2':
@@ -4280,11 +3629,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                         }
                                       break;
                                       case '4':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'x':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
                                                 return TokenType::Min12int4x1;
                                               case '2':
@@ -4316,40 +3663,29 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 12) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'a':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 's':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '_':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'f':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'a':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'g':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'm':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'e':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'n':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 't':
                                                     return TokenType::Asm_fragment;
                                                 }
@@ -4375,38 +3711,27 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'c':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'l':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'u':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'm':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'n':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case '_':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'm':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'j':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'o':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'r':
                                                     return TokenType::Column_major;
                                                 }
@@ -4432,38 +3757,27 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'D':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'i':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'n':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'S':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'h':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'd':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'r':
                                                     return TokenType::DomainShader;
                                                 }
@@ -4489,38 +3803,27 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'S':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'S':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 't':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'a':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 't':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'e':
                                                     return TokenType::SamplerState;
                                                 }
@@ -4546,38 +3849,27 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'V':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'r':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'S':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'h':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'd':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'r':
                                                     return TokenType::VertexShader;
                                                 }
@@ -4603,38 +3895,27 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'm':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '1':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '6':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'u':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'i':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'n':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 't':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '1':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'x':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case '1':
                                                     return TokenType::Min16uint1x1;
                                                   case '2':
@@ -4648,11 +3929,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                             }
                                           break;
                                           case '2':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'x':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case '1':
                                                     return TokenType::Min16uint2x1;
                                                   case '2':
@@ -4666,11 +3945,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                             }
                                           break;
                                           case '3':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'x':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case '1':
                                                     return TokenType::Min16uint3x1;
                                                   case '2':
@@ -4684,11 +3961,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                             }
                                           break;
                                           case '4':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'x':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case '1':
                                                     return TokenType::Min16uint4x1;
                                                   case '2':
@@ -4722,43 +3997,31 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 13) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'C':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'i':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'l':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'S':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'h':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'a':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'd':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'e':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'r':
                                                         return TokenType::CompileShader;
                                                     }
@@ -4778,29 +4041,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'S':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'h':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'a':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'd':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'e':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'r':
                                                         return TokenType::ComputeShader;
                                                     }
@@ -4828,41 +4083,29 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'n':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'p':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'r':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 's':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'p':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'c':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'i':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'v':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'e':
                                                         return TokenType::Noperspective;
                                                     }
@@ -4890,41 +4133,29 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'p':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'a':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'g':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'm':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'n':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 't':
                                                         return TokenType::Pixelfragment;
                                                     }
@@ -4952,41 +4183,29 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'm':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'i':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case '1':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case '0':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'x':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case '1':
                                                         return TokenType::Min10float1x1;
                                                       case '2':
@@ -5000,11 +4219,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                                 }
                                               break;
                                               case '2':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'x':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case '1':
                                                         return TokenType::Min10float2x1;
                                                       case '2':
@@ -5018,11 +4235,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                                 }
                                               break;
                                               case '3':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'x':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case '1':
                                                         return TokenType::Min10float3x1;
                                                       case '2':
@@ -5036,11 +4251,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                                 }
                                               break;
                                               case '4':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'x':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case '1':
                                                         return TokenType::Min10float4x1;
                                                       case '2':
@@ -5066,29 +4279,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
                         }
                       break;
                       case '6':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'f':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '1':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'x':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case '1':
                                                         return TokenType::Min16float1x1;
                                                       case '2':
@@ -5102,11 +4307,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                                 }
                                               break;
                                               case '2':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'x':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case '1':
                                                         return TokenType::Min16float2x1;
                                                       case '2':
@@ -5120,11 +4323,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                                 }
                                               break;
                                               case '3':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'x':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case '1':
                                                         return TokenType::Min16float3x1;
                                                       case '2':
@@ -5138,11 +4339,9 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                                 }
                                               break;
                                               case '4':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'x':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case '1':
                                                         return TokenType::Min16float4x1;
                                                       case '2':
@@ -5178,46 +4377,33 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 14) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'G':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'o':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'm':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'y':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'S':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'h':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'a':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'd':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'e':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'r':
                                                             return TokenType::GeometryShader;
                                                         }
@@ -5247,44 +4433,31 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'T':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '1':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'A':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'r':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'r':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'a':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'y':
                                                             return TokenType::Texture1DArray;
                                                         }
@@ -5300,23 +4473,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                     }
                                   break;
                                   case '2':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'A':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'r':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'r':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'a':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'y':
                                                             return TokenType::Texture2DArray;
                                                         }
@@ -5344,41 +4511,29 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'r':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'a':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'n':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'g':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'S':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 't':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'r':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'e':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'a':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'm':
                                                             return TokenType::TriangleStream;
                                                         }
@@ -5408,44 +4563,31 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'v':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'r':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'x':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'f':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'r':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'a':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'g':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'm':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'e':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'n':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 't':
                                                             return TokenType::Vertexfragment;
                                                         }
@@ -5477,49 +4619,35 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 15) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'n':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'i':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'n':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'p':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'o':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'l':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'a':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 't':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'i':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'o':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'n':
                                                                 return TokenType::Nointerpolation;
                                                             }
@@ -5551,47 +4679,33 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'R':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 's':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'i':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'z':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'r':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'S':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 't':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'a':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 't':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'e':
                                                                 return TokenType::RasterizerState;
                                                             }
@@ -5623,47 +4737,33 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '2':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '_':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'f':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'l':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'o':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'a':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 't':
                                                                 return TokenType::Sampler2D_float;
                                                             }
@@ -5695,47 +4795,33 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'T':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '1':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '_':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'f':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'l':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'o':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'a':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 't':
                                                                 return TokenType::Texture1D_float;
                                                             }
@@ -5753,26 +4839,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                     }
                                   break;
                                   case '2':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '_':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'f':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'l':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'o':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'a':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 't':
                                                                 return TokenType::Texture2D_float;
                                                             }
@@ -5790,26 +4869,19 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                     }
                                   break;
                                   case '3':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '_':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'f':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'l':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'o':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'a':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 't':
                                                                 return TokenType::Texture3D_float;
                                                             }
@@ -5843,52 +4915,37 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 16) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'c':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'i':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'l':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '_':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'f':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'r':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'a':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'g':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'm':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'e':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'n':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 't':
                                                                     return TokenType::Compile_fragment;
                                                                 }
@@ -5922,50 +4979,35 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'D':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'p':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'h':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'S':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 't':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'n':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'c':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'i':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'l':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'V':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'i':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'e':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'w':
                                                                     return TokenType::DepthStencilView;
                                                                 }
@@ -5999,50 +5041,35 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'R':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'd':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'T':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'a':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'r':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'g':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 't':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'V':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'i':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'e':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'w':
                                                                     return TokenType::RenderTargetView;
                                                                 }
@@ -6074,47 +5101,33 @@ TokenType findTokenType(const std::string_view& lexeme) {
             }
           break;
           case 'W':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'T':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'x':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'u':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'r':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case '1':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'D':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'A':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'r':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'r':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'a':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'y':
                                                                     return TokenType::RWTexture1DArray;
                                                                 }
@@ -6130,23 +5143,17 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                             }
                                           break;
                                           case '2':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'D':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'A':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'r':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'r':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'a':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'y':
                                                                     return TokenType::RWTexture2DArray;
                                                                 }
@@ -6180,50 +5187,35 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 't':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'a':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'e':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'b':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'l':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'o':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'c':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'k':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case '_':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 's':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 't':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'a':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 't':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'e':
                                                                     return TokenType::Stateblock_state;
                                                                 }
@@ -6257,50 +5249,35 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'S':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 't':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'r':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'u':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'c':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 't':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'u':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'r':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'd':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'B':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'u':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'f':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'f':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'e':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'r':
                                                                     return TokenType::StructuredBuffer;
                                                                 }
@@ -6334,50 +5311,35 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'T':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '2':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'M':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'S':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'A':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'r':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'r':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'a':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'y':
                                                                     return TokenType::Texture2DMSArray;
                                                                 }
@@ -6397,29 +5359,21 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                     }
                                   break;
                                   case 'C':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'u':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'b':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'A':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'r':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'r':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'a':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'y':
                                                                     return TokenType::TextureCubeArray;
                                                                 }
@@ -6455,55 +5409,39 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 17) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'B':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'y':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 't':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'A':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'd':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'd':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'r':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'e':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 's':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 's':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'B':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'u':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'f':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'f':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'e':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 'r':
                                                                         return TokenType::ByteAddressBuffer;
                                                                     }
@@ -6539,53 +5477,37 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'D':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'p':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'h':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'S':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 't':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'e':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'n':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'c':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'i':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'l':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'S':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 't':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'a':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 't':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 'e':
                                                                         return TokenType::DepthStencilState;
                                                                     }
@@ -6621,53 +5543,37 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 's':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'C':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'U':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'B':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'E':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case '_':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'f':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'l':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'o':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'a':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 't':
                                                                         return TokenType::SamplerCUBE_float;
                                                                     }
@@ -6703,53 +5609,37 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'T':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'e':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'x':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'r':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case '2':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'D':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'M':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'S':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case '_':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'f':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'l':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'o':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'a':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 't':
                                                                         return TokenType::Texture2DMS_float;
                                                                     }
@@ -6771,32 +5661,23 @@ TokenType findTokenType(const std::string_view& lexeme) {
                                     }
                                   break;
                                   case 'C':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'u':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'b':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case '_':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'f':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'l':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'o':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'a':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 't':
                                                                         return TokenType::TextureCube_float;
                                                                     }
@@ -6834,58 +5715,41 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 18) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'R':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'W':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'S':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 't':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'r':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'u':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'c':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'u':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'r':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'd':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'B':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'u':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'f':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'f':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 'e':
-                                                                        ++ci;
-                                                                        switch (lexeme[ci]) {
+                                                                        switch (lexeme[17]) {
                                                                           case 'r':
                                                                             return TokenType::RWStructuredBuffer;
                                                                         }
@@ -6925,61 +5789,43 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 19) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'R':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'W':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'B':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'y':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 't':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'A':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'd':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'd':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'r':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'e':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 's':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 's':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'B':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'u':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'f':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 'f':
-                                                                        ++ci;
-                                                                        switch (lexeme[ci]) {
+                                                                        switch (lexeme[17]) {
                                                                           case 'e':
-                                                                            ++ci;
-                                                                            switch (lexeme[ci]) {
+                                                                            switch (lexeme[18]) {
                                                                               case 'r':
                                                                                 return TokenType::RWByteAddressBuffer;
                                                                             }
@@ -7021,70 +5867,49 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 22) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'A':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'p':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'p':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'e':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'n':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'd':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'S':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 't':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'r':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'u':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'c':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 't':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'u':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'r':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'e':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'd':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 'B':
-                                                                        ++ci;
-                                                                        switch (lexeme[ci]) {
+                                                                        switch (lexeme[17]) {
                                                                           case 'u':
-                                                                            ++ci;
-                                                                            switch (lexeme[ci]) {
+                                                                            switch (lexeme[18]) {
                                                                               case 'f':
-                                                                                ++ci;
-                                                                                switch (lexeme[ci]) {
+                                                                                switch (lexeme[19]) {
                                                                                   case 'f':
-                                                                                    ++ci;
-                                                                                    switch (lexeme[ci]) {
+                                                                                    switch (lexeme[20]) {
                                                                                       case 'e':
-                                                                                        ++ci;
-                                                                                        switch (lexeme[ci]) {
+                                                                                        switch (lexeme[21]) {
                                                                                           case 'r':
                                                                                             return TokenType::AppendStructuredBuffer;
                                                                                         }
@@ -7130,68 +5955,47 @@ TokenType findTokenType(const std::string_view& lexeme) {
         }
       break;
       case 'S':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'a':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'm':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 'p':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'l':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'e':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'r':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'C':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 'o':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'm':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'p':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'a':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 'r':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'i':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 's':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'o':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 'n':
-                                                                        ++ci;
-                                                                        switch (lexeme[ci]) {
+                                                                        switch (lexeme[17]) {
                                                                           case 'S':
-                                                                            ++ci;
-                                                                            switch (lexeme[ci]) {
+                                                                            switch (lexeme[18]) {
                                                                               case 't':
-                                                                                ++ci;
-                                                                                switch (lexeme[ci]) {
+                                                                                switch (lexeme[19]) {
                                                                                   case 'a':
-                                                                                    ++ci;
-                                                                                    switch (lexeme[ci]) {
+                                                                                    switch (lexeme[20]) {
                                                                                       case 't':
-                                                                                        ++ci;
-                                                                                        switch (lexeme[ci]) {
+                                                                                        switch (lexeme[21]) {
                                                                                           case 'e':
                                                                                             return TokenType::SamplerComparisonState;
                                                                                         }
@@ -7239,73 +6043,51 @@ TokenType findTokenType(const std::string_view& lexeme) {
     }
   }
   if (len == 23) {
-    switch (lexeme[ci]) {
+    switch (lexeme[0]) {
       case 'C':
-        ++ci;
-        switch (lexeme[ci]) {
+        switch (lexeme[1]) {
           case 'o':
-            ++ci;
-            switch (lexeme[ci]) {
+            switch (lexeme[2]) {
               case 'n':
-                ++ci;
-                switch (lexeme[ci]) {
+                switch (lexeme[3]) {
                   case 's':
-                    ++ci;
-                    switch (lexeme[ci]) {
+                    switch (lexeme[4]) {
                       case 'u':
-                        ++ci;
-                        switch (lexeme[ci]) {
+                        switch (lexeme[5]) {
                           case 'm':
-                            ++ci;
-                            switch (lexeme[ci]) {
+                            switch (lexeme[6]) {
                               case 'e':
-                                ++ci;
-                                switch (lexeme[ci]) {
+                                switch (lexeme[7]) {
                                   case 'S':
-                                    ++ci;
-                                    switch (lexeme[ci]) {
+                                    switch (lexeme[8]) {
                                       case 't':
-                                        ++ci;
-                                        switch (lexeme[ci]) {
+                                        switch (lexeme[9]) {
                                           case 'r':
-                                            ++ci;
-                                            switch (lexeme[ci]) {
+                                            switch (lexeme[10]) {
                                               case 'u':
-                                                ++ci;
-                                                switch (lexeme[ci]) {
+                                                switch (lexeme[11]) {
                                                   case 'c':
-                                                    ++ci;
-                                                    switch (lexeme[ci]) {
+                                                    switch (lexeme[12]) {
                                                       case 't':
-                                                        ++ci;
-                                                        switch (lexeme[ci]) {
+                                                        switch (lexeme[13]) {
                                                           case 'u':
-                                                            ++ci;
-                                                            switch (lexeme[ci]) {
+                                                            switch (lexeme[14]) {
                                                               case 'r':
-                                                                ++ci;
-                                                                switch (lexeme[ci]) {
+                                                                switch (lexeme[15]) {
                                                                   case 'e':
-                                                                    ++ci;
-                                                                    switch (lexeme[ci]) {
+                                                                    switch (lexeme[16]) {
                                                                       case 'd':
-                                                                        ++ci;
-                                                                        switch (lexeme[ci]) {
+                                                                        switch (lexeme[17]) {
                                                                           case 'B':
-                                                                            ++ci;
-                                                                            switch (lexeme[ci]) {
+                                                                            switch (lexeme[18]) {
                                                                               case 'u':
-                                                                                ++ci;
-                                                                                switch (lexeme[ci]) {
+                                                                                switch (lexeme[19]) {
                                                                                   case 'f':
-                                                                                    ++ci;
-                                                                                    switch (lexeme[ci]) {
+                                                                                    switch (lexeme[20]) {
                                                                                       case 'f':
-                                                                                        ++ci;
-                                                                                        switch (lexeme[ci]) {
+                                                                                        switch (lexeme[21]) {
                                                                                           case 'e':
-                                                                                            ++ci;
-                                                                                            switch (lexeme[ci]) {
+                                                                                            switch (lexeme[22]) {
                                                                                               case 'r':
                                                                                                 return TokenType::ConsumeStructuredBuffer;
                                                                                             }

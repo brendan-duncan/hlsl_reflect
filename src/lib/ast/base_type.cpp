@@ -2,7 +2,6 @@
 #include "base_type.h"
 
 #include <map>
-#include <string_view>
 
 namespace ast {
 
