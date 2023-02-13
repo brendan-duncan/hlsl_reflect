@@ -1,6 +1,6 @@
 #include "operator.h"
 
-namespace hlsl {
+namespace ast {
 
 const std::string_view& operatorToString(Operator op) {
   static const std::string_view strings[] = {
@@ -44,4 +44,4 @@ const std::string_view& operatorToString(Operator op) {
   return strings[(int)op];
 }
 
-} // namespace hlsl
+} // namespace ast

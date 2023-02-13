@@ -3,7 +3,7 @@
 #include <charconv>
 #include <ctype.h>
 
-namespace hlsl {
+namespace util {
 
 bool stringEqualCaseInsensitive(const std::string_view& a, const std::string_view& b) {
   const size_t aSize = a.size();
@@ -34,4 +34,4 @@ float toFloat(const std::string_view& str) {
   return value;
 }
 
-} // namespace hlsl
+} // namespace util

@@ -1,7 +1,7 @@
 #include <string_view>
 #include <ctype.h>
 
-#include "../../util/string_util.h"
+#include "../../../util/string_util.h"
 #include "effect_state.h"
 
 namespace hlsl {
@@ -258,7 +258,7 @@ const EffectState* getEffectState(const std::string_view& name,
   const size_t count = sizeof(states) / sizeof(states[0]);
   for (size_t i = 0; i < count; ++i) {
     const std::string_view sname = states[i].name;
-    if (stringEqualCaseInsensitive(name, sname)) {
+    if (util::stringEqualCaseInsensitive(name, sname)) {
       return &states[i];
     }
   }
@@ -272,7 +272,7 @@ const EffectStateValue* getEffectStateValue(const std::string_view& name,
     if (value->name == "") {
       break;
     }
-    if (stringEqualCaseInsensitive(name, value->name)) {
+    if (util::stringEqualCaseInsensitive(name, value->name)) {
       return value;
     }
   }

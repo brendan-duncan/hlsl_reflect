@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace hlsl {
+namespace ast {
 
 namespace TypeFlags {
   static const uint32_t None = 0;
@@ -25,4 +25,4 @@ namespace TypeFlags {
   static const uint32_t Snorm = 0x80000;
 }
 
-} // namespace hlsl
+} // namespace ast

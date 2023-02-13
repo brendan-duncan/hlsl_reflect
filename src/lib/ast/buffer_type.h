@@ -1,10 +1,10 @@
 #pragma once
 
-namespace hlsl {
+namespace ast {
 
 enum class BufferType {
   Cbuffer,
   Tbuffer
 };
 
-} // namespace hlsl
+} // namespace ast

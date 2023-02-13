@@ -1,14 +1,15 @@
 #pragma once
 
-#include "../../lib/hlsl/parser.h"
-#include "../../lib/hlsl/print_visitor.h"
+#include "../../lib/reader/hlsl/parser.h"
+#include "../../lib/visitor/print_visitor.h"
 #include "../test.h"
 
 using namespace hlsl;
+using namespace visitor;
 
 namespace parser_tests {
 
-inline void printAst(const std::string_view& source, Ast* ast) {
+inline void printAst(const std::string_view& source, ast::Ast* ast) {
   if (ast != nullptr) {
     PrintVisitor visitor;
     visitor.visitRoot(ast->root());
@@ -18,14 +19,14 @@ inline void printAst(const std::string_view& source, Ast* ast) {
 
 static Test test_empty("Parser empty", []() {
   Parser parser("");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   delete ast;
 });
 
 static Test test_static_const_int("Parser const int", []() {
   Parser parser(R"(static const int _USE_RGBM = 0;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -33,7 +34,7 @@ static Test test_static_const_int("Parser const int", []() {
 
 static Test test_float3("Parser float3", []() {
   Parser parser(R"(const float3 magic = float3(0.0f, 0.0, 0);)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -41,7 +42,7 @@ static Test test_float3("Parser float3", []() {
 
 static Test test_array_init("Parser array init", []() {
   Parser parser(R"(const float3 magic = {0.0f, 0.0, 0};)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -49,7 +50,7 @@ static Test test_array_init("Parser array init", []() {
 
 static Test test_array_init_trailing_comma("Parser array init trailing comma", []() {
   Parser parser(R"(const float3 magic = {0.0f, 0.0, 0,};)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -57,7 +58,7 @@ static Test test_array_init_trailing_comma("Parser array init trailing comma", [
 
 static Test test_array_multi_array("Parser multi array", []() {
   Parser parser(R"(static const float foo[2][2] = {{1,2},{3,4}};)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -65,7 +66,7 @@ static Test test_array_multi_array("Parser multi array", []() {
 
 static Test test_const_init_expression("Parser const init expression", []() {
   Parser parser(R"(const float y = (x * 2654435769u);)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -73,7 +74,7 @@ static Test test_const_init_expression("Parser const init expression", []() {
 
 static Test test_cast_1("Parser cast 1", []() {
   Parser parser(R"(const float y = float(0);)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -81,7 +82,7 @@ static Test test_cast_1("Parser cast 1", []() {
 
 static Test test_cast_2("Parser cast 2", []() {
   Parser parser(R"(const float y = (float)0;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -89,7 +90,7 @@ static Test test_cast_2("Parser cast 2", []() {
 
 static Test test_struct_cast("Parser struct cast", []() {
   Parser parser(R"(struct foo { }; const foo y = (foo)0;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -97,7 +98,7 @@ static Test test_struct_cast("Parser struct cast", []() {
 
 static Test test_multi_variable("Parser multi variable", []() {
   Parser parser(R"(float x = 0, y = 1;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -110,7 +111,7 @@ static Test test_multi_variable_assignment("Parser multi variable assignment", [
       a = b = c = d = 0;
     }
   )");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -118,7 +119,7 @@ static Test test_multi_variable_assignment("Parser multi variable assignment", [
 
 static Test test_multi_variable_array("Parser multi variable array", []() {
   Parser parser(R"(float2 weights[2], offsets[2];)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -129,7 +130,7 @@ static Test test_empty_statement("Parser empty statement", []() {
     float foo = 1;;
     #line 55
   })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -140,7 +141,7 @@ static Test test_call_method("Parser call method", []() {
 void foo() {
   foo.bar(a, b);
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -148,7 +149,7 @@ void foo() {
 
 static Test test_multiply_assign("Parser call method 2", []() {
   Parser parser(R"(void foo() { n *= 1e-6; })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -156,7 +157,7 @@ static Test test_multiply_assign("Parser call method 2", []() {
 
 static Test test_postfix_increment("Parser postfix increment", []() {
   Parser parser(R"(float y = x++;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -164,7 +165,7 @@ static Test test_postfix_increment("Parser postfix increment", []() {
 
 static Test test_prefix_increment("Parser prefix increment", []() {
   Parser parser(R"(float y = ++x;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -172,7 +173,7 @@ static Test test_prefix_increment("Parser prefix increment", []() {
 
 static Test test_member_access("Parser member access", []() {
   Parser parser(R"(float y = x.y;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -180,7 +181,7 @@ static Test test_member_access("Parser member access", []() {
 
 static Test test_ternary_expr("Parser ternary expr", []() {
   Parser parser(R"(float y = x < 0.0 ? 1 + x : x;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -188,7 +189,7 @@ static Test test_ternary_expr("Parser ternary expr", []() {
 
 static Test test_ternary_expr_2("Parser ternary expr 2", []() {
   Parser parser(R"(float y = (x < 0.0) ? 1 + x : x;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -196,7 +197,7 @@ static Test test_ternary_expr_2("Parser ternary expr 2", []() {
 
 static Test test_ternary_expr_3("Parser ternary expr 3", []() {
   Parser parser(R"(float foo() { f = (x < 0.0) ? 1 + x : x; })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -204,7 +205,7 @@ static Test test_ternary_expr_3("Parser ternary expr 3", []() {
 
 static Test test_Parser_struct("Parser struct", []() {
   Parser parser("struct foo { };");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -212,7 +213,7 @@ static Test test_Parser_struct("Parser struct", []() {
 
 static Test test_Parser_struct_var("Parser struct var", []() {
   Parser parser("struct { } foo;");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -220,7 +221,7 @@ static Test test_Parser_struct_var("Parser struct var", []() {
 
 static Test test_Parser_cbuffer_struct_var("Parser cbuffer struct var", []() {
   Parser parser("cbuffer foo { struct { } bar; };");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -232,7 +233,7 @@ static Test test_Parser_struct_fields("Parser struct fields", []() {
     centroid float b;
     float c[10];
   };)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -240,7 +241,7 @@ static Test test_Parser_struct_fields("Parser struct fields", []() {
 
 static Test test_Parser_struct_field_semantic("Parser struct field semantic", []() {
   Parser parser(R"(struct foo { uint vertexID : SV_VertexID; };)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -248,7 +249,7 @@ static Test test_Parser_struct_field_semantic("Parser struct field semantic", []
 
 static Test test_Parser_struct_member_multi_decl("Parser struct field multi-declration", []() {
   Parser parser(R"(struct foo { int a, b, c; };)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -257,7 +258,7 @@ static Test test_Parser_struct_member_multi_decl("Parser struct field multi-decl
 static Test test_Parser_struct_init("Parser struct init", []() {
   Parser parser(R"(struct foo { float a[2]; float b; };
   foo x = { {1, 2}, 3 };)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -270,7 +271,7 @@ static Test test_Parser_attributes("Parser attributes", []() {
     int a;
     centroid float b;
   };)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -283,7 +284,7 @@ static Test test_Parser_attributes2("Parser attributes2", []() {
     int a;
     centroid float b;
   };)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -296,7 +297,7 @@ static Test test_Parser_attributes3("Parser attributes3", []() {
     int a;
     centroid float b;
   };)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -305,7 +306,7 @@ static Test test_Parser_attributes3("Parser attributes3", []() {
 static Test test_function("Parser function", []() {
   Parser parser(R"(
 float Hash(uint s) {})");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -322,7 +323,7 @@ s = s ^ (s >> 16);
 s = s * 2654435769u;
 return float(s) * rcp(4294967296.0);
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -350,7 +351,7 @@ x ^= (x >> 11u);
 x += (x << 15u);
 return x ;
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -368,7 +369,7 @@ m |= ieeeOne;
 float f = asfloat(m);
 return f - 1;
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -378,7 +379,7 @@ static Test test_user_type_return("Parser struct return", []() {
   Parser parser(R"(
 struct MyStruct { float3 f3; };
 MyStruct Foo() {})");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -386,7 +387,7 @@ MyStruct Foo() {})");
 
 static Test test_assignment_return("Parser assignment return", []() {
   Parser parser(R"(float foo() { float a; return a *= 1 + 2; })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -394,7 +395,7 @@ static Test test_assignment_return("Parser assignment return", []() {
 
 static Test test_function_semantic("Parser function semantic", []() {
   Parser parser(R"(float4 foo(): SV_Target {})");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -402,7 +403,7 @@ static Test test_function_semantic("Parser function semantic", []() {
 
 static Test test_function_5("Parser inout", []() {
   Parser parser(R"(uint XorShift(inout uint rngState) { })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -410,7 +411,7 @@ static Test test_function_5("Parser inout", []() {
 
 static Test test_const_array_size("Parser const array size", []() {
   Parser parser(R"(const int stepCount = 2; const int gWeights[stepCount] = {0, 1};)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -418,7 +419,7 @@ static Test test_const_array_size("Parser const array size", []() {
 
 static Test test_function_array_params("Parser function array parameters", []() {
   Parser parser(R"(void foo(out float2 bar[2]) { bar[0] = 42; })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -429,7 +430,7 @@ static Test test_shader("Parser Shader", []() {
 void LODDitheringTransition(uint3 fadeMaskSeed, float ditherFactor) {
   clip(ditherFactor - p);
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -438,7 +439,7 @@ void LODDitheringTransition(uint3 fadeMaskSeed, float ditherFactor) {
 static Test test_shader_2("Parser block statement", []() {
   Parser parser(R"(
 void foo() { {} })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -449,7 +450,7 @@ static Test test_member_in_expression("Parser member in expression", []() {
 float CubeMapFaceID(float3 dir) {
   if (abs(dir.z) >= abs(dir.x) && abs(dir.z) >= abs(dir.y)) {}
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -463,7 +464,7 @@ void foo() {
   }
   return faceID;
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -474,7 +475,7 @@ static Test test_return_ternary("Parser return ternary", []() {
 float SanitizeFinite(float x) {
   return IsFinite(x) ? x : 0;
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -484,7 +485,7 @@ static Test test_nested_calls("Parser nested calls", []() {
   Parser parser(R"(
   float f = pow(max(abs(base), half(4.8828125e-4)), power);
 )");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -495,7 +496,7 @@ static Test test_half("Parser half", []() {
 half SafePositivePow_half(half base, half power) {
   return pow(max(abs(base), half(4.8828125e-4)), power);
 })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -503,7 +504,7 @@ half SafePositivePow_half(half base, half power) {
 
 static Test test_bool("Parser bool", []() {
   Parser parser(R"(bool b = true;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -511,7 +512,7 @@ static Test test_bool("Parser bool", []() {
 
 static Test test_param_init("Parser param init", []() {
   Parser parser(R"(void foo(float a = 1.0) { })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -519,7 +520,7 @@ static Test test_param_init("Parser param init", []() {
 
 static Test test_array_index("Parser array index", []() {
   Parser parser(R"(float m12 = m[1][2];)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -527,7 +528,7 @@ static Test test_array_index("Parser array index", []() {
 
 static Test test_for_loop("Parser for loop", []() {
   Parser parser(R"(void foo() { for (uint b = 1U << firstbithigh(n - 1); b != 0; b >>= 1) {} })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -535,7 +536,7 @@ static Test test_for_loop("Parser for loop", []() {
 
 static Test test_for_loop_2("Parser for loop 2", []() {
   Parser parser(R"(void foo() { for (int i = 0, j = 0; i < 5; ++i, j++) {} })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -544,7 +545,7 @@ static Test test_for_loop_2("Parser for loop 2", []() {
 static Test test_rw_structure_buffer("Parser rw structure buffer", []() {
   Parser parser(R"(RWStructuredBuffer<float> g_fogDensityBuffer;
   sampler<float> g_fogDensitySampler;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -553,7 +554,7 @@ static Test test_rw_structure_buffer("Parser rw structure buffer", []() {
 static Test test_switch_case_block("Parser switch", []() {
   Parser parser(R"(
   void foo() { switch (bar) { case 1: sampleCount = 21; break; default: {} } })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -561,7 +562,7 @@ static Test test_switch_case_block("Parser switch", []() {
 
 static Test test_parameter_semantic("Parser parameter semantic", []() {
   Parser parser(R"(void SplatmapFragment(float IN, out half4 outColor : SV_Target0) { })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -569,7 +570,7 @@ static Test test_parameter_semantic("Parser parameter semantic", []() {
 
 static Test test_parameter_default_value("Parser parameter default value", []() {
   Parser parser(R"(void UnpackNormalAG(float4 packedNormal, float scale = 1.0) { })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -578,7 +579,7 @@ static Test test_parameter_default_value("Parser parameter default value", []() 
 static Test test_multi_statement("Parser multi statement", []() {
   Parser parser(R"(void foo() { surface.smoothness = saturate(surfaceDescription.Smoothness),
     surface.occlusion = surfaceDescription.Occlusion; })");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -586,7 +587,7 @@ static Test test_multi_statement("Parser multi statement", []() {
 
 static Test test_texture2dms("Parser Texture2DMS", []() {
   Parser parser(R"(Texture2DMS<float, 4> _CameraDepthAttachment;)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -594,7 +595,7 @@ static Test test_texture2dms("Parser Texture2DMS", []() {
 
 static Test test_array_const_expr_size("Parser Array const expr size", []() {
   Parser parser(R"(float4 _TextureInfo[8 * 2];)");
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   printAst(parser.source(), ast);
   delete ast;
@@ -611,7 +612,7 @@ static Test test_Parse_urp("Parse urp_bloom", []() {
   fclose(fp);
 
   Parser parser(hlsl);
-  Ast* ast = parser.parse();
+  ast::Ast* ast = parser.parse();
   TEST_NOT_NULL(ast);
   //printAst(parser.source(), ast);
   delete ast;

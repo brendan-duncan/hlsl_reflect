@@ -4,13 +4,15 @@
 #include <map>
 #include <string_view>
 
-#include "ast.h"
+#include "../../ast/ast.h"
+#include "../../ast/base_type.h"
 #include "scanner.h"
 #include "token.h"
+#include "token_to_ast.h"
 
 namespace hlsl {
 
-/// The parser is responsible for taking the tokens from the scanner and building an Ast.
+/// The parser is responsible for taking the tokens from the scanner and building an ast::Ast.
 /// This is a recursive descent parser, which means that each method is responsible for parsing
 /// a single grammar rule. HLSL does not have a formal specification defining its grammar,
 /// so the grammar rules are based on the HLSL documentation.
@@ -23,8 +25,8 @@ public:
   Parser(const std::string_view& source);
 
   /// Parse the source string and return the resulting Ast object.
-  /// @return Ast* The resulting Ast object.
-  Ast* parse();
+  /// @return ast::Ast* The resulting Ast object.
+  ast::Ast* parse();
 
   const std::string_view& source() { return _scanner.source(); }
 
@@ -60,100 +62,100 @@ private:
     _pending.push_front(token);
   }
 
-  AstStatement* parseTopLevelStatement();
+  ast::AstStatement* parseTopLevelStatement();
 
-  AstStructStmt* parseStruct();
+  ast::AstStructStmt* parseStruct();
 
-  AstField* parseStructField();
+  ast::AstField* parseStructField();
 
-  AstAttribute* parseAttributes();
+  ast::AstAttribute* parseAttributes();
 
-  AstField* parseBufferField();
+  ast::AstField* parseBufferField();
 
-  AstSamplerState* parseSamplerState();
+  ast::AstSamplerState* parseSamplerState();
   
-  AstTypedefStmt* parseTypedef();
+  ast::AstTypedefStmt* parseTypedef();
 
-  AstStateAssignment* parseStateAssignment(bool isSamplerState, bool isPipelineState);
+  ast::AstStateAssignment* parseStateAssignment(bool isSamplerState, bool isPipelineState);
 
-  AstBufferStmt* parseBuffer();
+  ast::AstBufferStmt* parseBuffer();
 
-  AstType* parseType(bool allowVoid, const char* exceptionMessage = nullptr);
+  ast::AstType* parseType(bool allowVoid, const char* exceptionMessage = nullptr);
 
   bool parseTypeModifier(uint32_t& flags);
 
   bool parseInterpolationModifier(uint32_t& flags);
 
-  AstExpression* parseAssignmentExpression(AstType* type);
+  ast::AstExpression* parseAssignmentExpression(ast::AstType* type);
 
-  AstExpression* parseStructInitialization(AstType* type);
+  ast::AstExpression* parseStructInitialization(ast::AstType* type);
 
-  AstExpression* parseArrayInitialization(AstType* type);
+  ast::AstExpression* parseArrayInitialization(ast::AstType* type);
 
-  AstExpression* parseExpression();
+  ast::AstExpression* parseExpression();
 
-  AstExpression* parseExpressionList();
+  ast::AstExpression* parseExpressionList();
 
-  AstExpression* parseLogicalOrExpression();
+  ast::AstExpression* parseLogicalOrExpression();
 
-  AstExpression* parseLogicalAndExpression();
+  ast::AstExpression* parseLogicalAndExpression();
 
-  AstExpression* parseInclusiveOrExpression();
+  ast::AstExpression* parseInclusiveOrExpression();
 
-  AstExpression* parseExclusiveOrExpression();
+  ast::AstExpression* parseExclusiveOrExpression();
 
-  AstExpression* parseAndExpression();
+  ast::AstExpression* parseAndExpression();
 
-  AstExpression* parseEqualityExpression();
+  ast::AstExpression* parseEqualityExpression();
 
-  AstExpression* parseRelationalExpression();
+  ast::AstExpression* parseRelationalExpression();
 
-  AstExpression* parseShiftExpression();
+  ast::AstExpression* parseShiftExpression();
 
-  AstExpression* parseAdditiveExpression();
+  ast::AstExpression* parseAdditiveExpression();
 
-  AstExpression* parseMultiplicativeExpression();
+  ast::AstExpression* parseMultiplicativeExpression();
 
-  AstExpression* parsePrefixExpression();
+  ast::AstExpression* parsePrefixExpression();
 
-  AstExpression* parseSingularExpression();
+  ast::AstExpression* parseSingularExpression();
 
-  AstExpression* parsePostfixExpression(AstExpression* expr);
+  ast::AstExpression* parsePostfixExpression(ast::AstExpression* expr);
 
-  AstExpression* parsePrimaryExpression();
+  ast::AstExpression* parsePrimaryExpression();
 
-  AstExpression* parseParenthesizedExpression();
+  ast::AstExpression* parseParenthesizedExpression();
 
-  AstExpression* parseArgumentList();
+  ast::AstExpression* parseArgumentList();
 
-  AstFunctionStmt* parseFunctionStmt(AstType* returnType, const std::string_view& name);
+  ast::AstFunctionStmt* parseFunctionStmt(ast::AstType* returnType, const std::string_view& name);
 
-  AstVariableStmt* parseVariableStmt(AstType* type, const std::string_view& name,
-    AstAttribute* attributes);
+  ast::AstVariableStmt* parseVariableStmt(ast::AstType* type, const std::string_view& name,
+    ast::AstAttribute* attributes);
 
-  AstParameter* parseParameterList();
+  ast::AstParameter* parseParameterList();
 
-  AstParameter* parseParameter();
+  ast::AstParameter* parseParameter();
 
-  AstBlock* parseBlock();
+  ast::AstBlock* parseBlock();
 
-  AstStatement* parseStatement(bool expectSemicolon = true);
+  ast::AstStatement* parseStatement(bool expectSemicolon = true);
 
-  AstIfStmt* parseIfStmt();
+  ast::AstIfStmt* parseIfStmt();
 
-  AstSwitchStmt* parseSwitchStmt();
+  ast::AstSwitchStmt* parseSwitchStmt();
 
-  AstForStmt* parseForStmt();
+  ast::AstForStmt* parseForStmt();
 
-  AstDoWhileStmt* parseDoWhileStmt();
+  ast::AstDoWhileStmt* parseDoWhileStmt();
 
-  AstWhileStmt* parseWhileStmt();
+  ast::AstWhileStmt* parseWhileStmt();
 
-  AstExpression* parseArraySize();
+  ast::AstExpression* parseArraySize();
 
   /// Returns true if the token is a type name, either built-in, user defined, or a struct
   bool isType(const Token& tk) {
-    return tokenTypeToBaseType(tk.type()) != BaseType::Undefined ||
+    return tokenTypeToBaseType(tk.type()) != ast::BaseType::Undefined ||
             _typedefs.find(tk.lexeme()) != _typedefs.end() ||
             _structs.find(tk.lexeme()) != _structs.end();
   }
@@ -182,7 +184,7 @@ private:
   }
 
   // The AST being constructed.
-  Ast* _ast = nullptr;
+  ast::Ast* _ast = nullptr;
   // The lexer that is used to scan the source string into Tokens.
   Scanner _scanner;
   // A list of tokens that have been scanned from the scanner but not yet parsed.
@@ -192,10 +194,10 @@ private:
   std::list<std::list<Token>> _restore;
 
   // Track typedefs to verify type names.
-  std::map<std::string_view, AstTypedefStmt*> _typedefs;
+  std::map<std::string_view, ast::AstTypedefStmt*> _typedefs;
   // Track structs to verify type names.
-  std::map<std::string_view, AstStructStmt*> _structs;
-  std::map<std::string_view, AstVariableStmt*> _variables;
+  std::map<std::string_view, ast::AstStructStmt*> _structs;
+  std::map<std::string_view, ast::AstVariableStmt*> _variables;
   std::list<std::string> _anonymousStructNames;
 };
 

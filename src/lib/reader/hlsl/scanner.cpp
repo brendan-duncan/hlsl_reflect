@@ -209,8 +209,6 @@ bool Scanner::scanToken() {
 
   // Skip whitespace
   if (isWhitespace(c)) {
-    //c = advance();
-    //_start++;
     return true;
   }
 

@@ -1,4 +1,4 @@
-#include "../../lib/hlsl/token_type.h"
+#include "../../lib/reader/hlsl/token_type.h"
 #include "../test.h"
 
 using namespace hlsl;

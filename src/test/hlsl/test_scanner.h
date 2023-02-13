@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <filesystem>
 
-#include "../../lib/hlsl/scanner.h"
+#include "../../lib/reader/hlsl/scanner.h"
 #include "../test.h"
 
 using namespace hlsl;

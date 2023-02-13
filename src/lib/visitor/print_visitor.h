@@ -2,7 +2,7 @@
 
 #include "visitor.h"
 
-namespace hlsl {
+namespace visitor {
 
 /// A visitor that prints the AST to stdout.
 /// This will print it out in a format that is similar to Swift, to demonstrate translating
@@ -14,7 +14,7 @@ public:
   PrintVisitor(std::ostream &out = std::cout)
     : _out(out) {}
 
-  void visitBlock(AstBlock* node) override {
+  void visitBlock(ast::AstBlock* node) override {
     _out << "{" << std::endl;
 
     _indent++;
@@ -25,7 +25,7 @@ public:
     _out << "}" << std::endl;
   }
 
-  void visitStatements(AstStatement* node) override {
+  void visitStatements(ast::AstStatement* node) override {
     while (node) {
       indent();
       visitStatement(node);
@@ -34,9 +34,9 @@ public:
     }
   }
 
-  void visitBufferStmt(AstBufferStmt* node) override {
+  void visitBufferStmt(ast::AstBufferStmt* node) override {
     indent();
-    if (node->bufferType == BufferType::Cbuffer) {
+    if (node->bufferType == ast::BufferType::Cbuffer) {
       _out << "cbuffer ";
     } else {
       _out << "tbuffer ";
@@ -49,14 +49,14 @@ public:
     _out << "}" << std::endl;
   }
 
-  void visitBufferField(AstField* node) {
+  void visitBufferField(ast::AstField* node) {
     indent();
     _out << " " << node->name << ": ";
     visitType(node->type);
     _out << ";" << std::endl;
   }
 
-  void visitStructStmt(AstStructStmt* node) override {
+  void visitStructStmt(ast::AstStructStmt* node) override {
     indent();
     _out << "struct " << node->name << " {" << std::endl;
     _indent++;
@@ -66,27 +66,27 @@ public:
     _out << "}" << std::endl;
   }
 
-  void visitStructField(AstField* node) override {
+  void visitStructField(ast::AstField* node) override {
     indent();
     _out << " " << node->name << ": ";
     visitType(node->type);
     _out << ";" << std::endl;
   }
 
-  void visitStatement(AstStatement* node) override {
+  void visitStatement(ast::AstStatement* node) override {
     Visitor::visitStatement(node);
-    if (node->nodeType != AstNodeType::Block &&
-        node->nodeType != AstNodeType::IfStmt &&
-        node->nodeType != AstNodeType::ForStmt &&
-        node->nodeType != AstNodeType::SwitchStmt &&
-        node->nodeType != AstNodeType::WhileStmt) {
+    if (node->nodeType != ast::AstNodeType::Block &&
+        node->nodeType != ast::AstNodeType::IfStmt &&
+        node->nodeType != ast::AstNodeType::ForStmt &&
+        node->nodeType != ast::AstNodeType::SwitchStmt &&
+        node->nodeType != ast::AstNodeType::WhileStmt) {
       _out << ";";
     }
   }
 
-  void visitForStmt(AstForStmt* node) override {
+  void visitForStmt(ast::AstForStmt* node) override {
     _out << "for (";
-    AstStatement* init = node->initializer;
+    ast::AstStatement* init = node->initializer;
     while (init != nullptr) {
       visitStatement(init);
       if (init->next != nullptr) {
@@ -103,7 +103,7 @@ public:
     visitExpression(node->condition);
     _out << "; ";
     
-    AstStatement* inc = node->increment;
+    ast::AstStatement* inc = node->increment;
     while (inc != nullptr) {
       visitStatement(inc);
       if (inc->next != nullptr) {
@@ -116,12 +116,12 @@ public:
     visitStatements(node->body);
   }
 
-  void visitSwitchStmt(AstSwitchStmt* node) override {
+  void visitSwitchStmt(ast::AstSwitchStmt* node) override {
     _out << "switch (";
     visitExpression(node->condition);
     _out << ") {" << std::endl;
     _indent++;
-    AstSwitchCase* switchCase = node->cases;
+    ast::AstSwitchCase* switchCase = node->cases;
     while (switchCase != nullptr) {
       visitSwitchCase(switchCase);
       switchCase = switchCase->next;
@@ -131,7 +131,7 @@ public:
     _out << "}" << std::endl;
   }
 
-  void visitSwitchCase(AstSwitchCase* node) override {
+  void visitSwitchCase(ast::AstSwitchCase* node) override {
     indent();
     if (node->isDefault) {
       _out << "default:" << std::endl;
@@ -145,11 +145,11 @@ public:
     _indent--;
   }
 
-  void visitBreakStmt(AstBreakStmt* node) override {
+  void visitBreakStmt(ast::AstBreakStmt* node) override {
     _out << "break";
   }
 
-  void visitFunctionStmt(AstFunctionStmt* node) override {
+  void visitFunctionStmt(ast::AstFunctionStmt* node) override {
     _out << "fn " << node->name << "(";
     visitParameters(node->parameters);
     _out << ") -> ";
@@ -159,8 +159,8 @@ public:
     _out << std::endl;
   }
 
-  void visitVariableStmt(AstVariableStmt* node) override {
-    if (node->type->flags & TypeFlags::Const) {
+  void visitVariableStmt(ast::AstVariableStmt* node) override {
+    if (node->type->flags & ast::TypeFlags::Const) {
       _out << "const ";
     } else {
       _out << "var ";
@@ -168,12 +168,12 @@ public:
     _out << node->name << ": ";
     visitType(node->type);
 
-    AstExpression* arraySize = node->arraySize;
+    ast::AstExpression* arraySize = node->arraySize;
     while (arraySize != nullptr) {
       _out << "[";
       visitExpression(arraySize);
        _out << "]";
-      arraySize = (AstLiteralExpr*)arraySize->next;
+      arraySize = (ast::AstLiteralExpr*)arraySize->next;
     }
 
     if (node->initializer != nullptr) {
@@ -183,7 +183,7 @@ public:
     _out << std::flush;
   }
 
-  void visitParameter(AstParameter* node) override {
+  void visitParameter(ast::AstParameter* node) override {
     _out << node->name << ": ";
     visitType(node->type);
     if (node->initializer != nullptr) {
@@ -192,21 +192,21 @@ public:
     }
   }
 
-  void visitParameters(AstParameter* node) override {
+  void visitParameters(ast::AstParameter* node) override {
     while (node != nullptr) {
       visitParameter(node);
       if (node->next != nullptr) {
         _out << ", ";
       }
-      node = (AstParameter*)node->next;
+      node = (ast::AstParameter*)node->next;
     }
   }
 
-  void visitType(AstType* node) override {
+  void visitType(ast::AstType* node) override {
     _out << baseTypeToString(node->baseType);
   }
 
-  void visitIfStmt(AstIfStmt* node) override {
+  void visitIfStmt(ast::AstIfStmt* node) override {
     _out << "if (";
     visitExpression(node->condition);
     _out << ")" << std::endl;
@@ -218,59 +218,59 @@ public:
     }
   }
 
-  void visitAssignmentStmt(AstAssignmentStmt* node) override {
+  void visitAssignmentStmt(ast::AstAssignmentStmt* node) override {
     visitExpression(node->variable);
     _out << " " << operatorToString(node->op) << " ";
     visitExpression(node->value);
   }
 
-  void visitAssignmentExpr(AstAssignmentExpr* node) override {
+  void visitAssignmentExpr(ast::AstAssignmentExpr* node) override {
     visitExpression(node->variable);
     _out << " " << operatorToString(node->op) << " ";
     visitExpression(node->value);
   }
 
-  void visitBinaryExpr(AstBinaryExpr *node) override {
+  void visitBinaryExpr(ast::AstBinaryExpr *node) override {
     visitExpression(node->left);
     _out << " " << operatorToString(node->op) << " ";
     visitExpression(node->right);
   }
 
-  void visitVariableExpr(AstVariableExpr* node) override {
+  void visitVariableExpr(ast::AstVariableExpr* node) override {
     _out << node->name;
   }
 
-  void visitLiteralExpr(AstLiteralExpr* node) override {
+  void visitLiteralExpr(ast::AstLiteralExpr* node) override {
     _out << node->value;
   }
 
-  void visitReturn(AstReturnStmt* node) override {
+  void visitReturn(ast::AstReturnStmt* node) override {
     _out << "return ";
     visitExpression(node->value);
   }
 
-  void visitCallStmt(AstCallStmt* node) override {
+  void visitCallStmt(ast::AstCallStmt* node) override {
     _out << node->name << "(";
     visitArguments(node->arguments);
     _out << ");";
   }
 
-  void visitCallExpr(AstCallExpr* node) override {
+  void visitCallExpr(ast::AstCallExpr* node) override {
     _out << node->name << "(";
     visitArguments(node->arguments);
     _out << ")";
   }
 
-  void visitCastExpr(AstCastExpr* node) override {
+  void visitCastExpr(ast::AstCastExpr* node) override {
     visitType(node->type);
     _out << "(";
     visitArguments(node->value);
     _out << ")";
   }
 
-  void visitArrayInitializerExpr(AstArrayInitializerExpr* node) {
+  void visitArrayInitializerExpr(ast::AstArrayInitializerExpr* node) {
     _out << "{";
-    for (AstExpression* expr = node->elements; expr != nullptr; expr = expr->next) {
+    for (ast::AstExpression* expr = node->elements; expr != nullptr; expr = expr->next) {
       visitExpression(expr);
       if (expr->next != nullptr) {
         _out << ", ";
@@ -279,9 +279,9 @@ public:
     _out << "}";
   }
 
-  void visitStructInitializerExpr(AstStructInitializerExpr* node) {
+  void visitStructInitializerExpr(ast::AstStructInitializerExpr* node) {
     _out << "{";
-    for (AstExpression* expr = node->fields; expr != nullptr; expr = expr->next) {
+    for (ast::AstExpression* expr = node->fields; expr != nullptr; expr = expr->next) {
       visitExpression(expr);
       if (expr->next != nullptr) {
         _out << ", ";
@@ -290,7 +290,7 @@ public:
     _out << "}";
   }
 
-  void visitArguments(AstExpression* args) override {
+  void visitArguments(ast::AstExpression* args) override {
     while (args != nullptr) {
       visitExpression(args);
       if (args->next != nullptr) {
@@ -300,23 +300,23 @@ public:
     }
   }
 
-  void visitIncrementExpr(AstIncrementExpr* node) override {
+  void visitIncrementExpr(ast::AstIncrementExpr* node) override {
     visitExpression(node->variable);
     _out << operatorToString(node->op);
   }
 
-  void visitPrefixExpr(AstPrefixExpr* node) override {
+  void visitPrefixExpr(ast::AstPrefixExpr* node) override {
     _out << operatorToString(node->op);
     visitExpression(node->expression);
   }
 
-  void visitMemberExpr(AstMemberExpr* node) override {
+  void visitMemberExpr(ast::AstMemberExpr* node) override {
     visitExpression(node->object);
     _out << ".";
     visitExpression(node->member);
   }
 
-  void visitTernaryExpr(AstTernaryExpr* node) override {
+  void visitTernaryExpr(ast::AstTernaryExpr* node) override {
     visitExpression(node->condition);
     _out << " ? ";
     visitExpression(node->trueExpr);
@@ -324,7 +324,7 @@ public:
     visitExpression(node->falseExpr);
   }
 
-  void visitArrayExpr(AstArrayExpr* node) {
+  void visitArrayExpr(ast::AstArrayExpr* node) {
     visitExpression(node->array);
     _out << "[";
     visitExpression(node->index);
@@ -341,4 +341,4 @@ private:
   }
 };
 
-} // namespace hlsl
+} // namespace visitor

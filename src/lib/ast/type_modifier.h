@@ -1,6 +1,6 @@
 #pragma once
 
-namespace hlsl {
+namespace ast {
 
 enum class TypeModifier {
   Const,
@@ -8,4 +8,4 @@ enum class TypeModifier {
   ColumnMajor
 };
 
-} // namespace hlsl
+} // namespace ast

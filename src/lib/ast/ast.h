@@ -3,16 +3,16 @@
 #include <string_view>
 
 #include "../util/allocator.h"
-#include "ast/ast_node.h"
+#include "ast_node.h"
 
-namespace hlsl {
+namespace ast {
 
 /// Abstract Syntax Tree for parsed HLSL code.
 /// All nodes are allocated from a memory pool, so the Ast owns the memory of all AstNodes it
 /// contains.
 class Ast {
 public:
-  Ast(Allocator* allocator = nullptr);
+  Ast(util::Allocator* allocator = nullptr);
 
   ~Ast();
 
@@ -43,7 +43,7 @@ private:
   };
 
   bool _ownsAllocator;
-  Allocator* _allocator;
+  util::Allocator* _allocator;
   NodePage* _firstPage;
   NodePage* _currentPage;
   size_t _currentPageOffset;
@@ -51,4 +51,4 @@ private:
   AstRoot* _root;
 };
 
-} // namespace hlsl
+} // namespace ast

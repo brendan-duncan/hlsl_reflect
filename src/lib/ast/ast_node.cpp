@@ -1,7 +1,7 @@
 #include "ast_node.h"
 
-namespace hlsl {
+namespace ast {
 
 AstEmptyStatement AstEmptyStatement::instance{AstNodeType::EmptyStmt};
 
-} // namespace hlsl
+} // namespace ast

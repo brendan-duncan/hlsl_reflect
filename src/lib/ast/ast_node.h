@@ -10,9 +10,8 @@
 #include "operator.h"
 #include "sampler_type.h"
 #include "type_flags.h"
-#include "../token_type.h"
 
-namespace hlsl {
+namespace ast {
 
 struct AstAssignmentStmt;
 struct AstAttribute;
@@ -405,4 +404,4 @@ struct AstRoot : AstNode {
   AstStatement* statements = nullptr;
 };
 
-} // namespace hlsl
+} // namespace ast

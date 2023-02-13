@@ -1,6 +1,6 @@
 #pragma once
 
-namespace hlsl {
+namespace util {
 
 class Allocator {
 public:
@@ -25,4 +25,4 @@ public:
   }
 };
 
-} // namespace hlsl
+} // namespace util

@@ -1,6 +1,6 @@
 #pragma once 
 
-namespace hlsl {
+namespace ast {
 
 enum class AstNodeType {
   Undefined,
@@ -52,5 +52,5 @@ enum class AstNodeType {
   ArrayInitializerExpr,
 };
 
-} // namespace hlsl
+} // namespace ast
 

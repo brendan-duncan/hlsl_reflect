@@ -1,10 +1,10 @@
 #include "ast.h"
 
-namespace hlsl {
+namespace ast {
 
-Ast::Ast(Allocator* allocator)
+Ast::Ast(util::Allocator* allocator)
   : _ownsAllocator(allocator == nullptr)
-  , _allocator(allocator ? allocator : new Allocator()) {
+  , _allocator(allocator ? allocator : new util::Allocator()) {
 
   _firstPage = _allocator->alloc<NodePage>();
   _firstPage->next = nullptr;
@@ -44,4 +44,4 @@ void Ast::allocatePage() {
   _currentPage = newPage;
 }
 
-} // namespace hlsl
+} // namespace ast
