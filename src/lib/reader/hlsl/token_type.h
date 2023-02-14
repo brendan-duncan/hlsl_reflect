@@ -5,6 +5,7 @@
 #include <string>
 #include <string_view>
 
+namespace reader {
 namespace hlsl {
 
 enum class TokenType : uint32_t {
@@ -408,3 +409,4 @@ const std::string& tokenTypeToString(TokenType t);
 TokenType findTokenType(const std::string_view& s);
 
 } // namespace hlsl
+} // namespace reader

@@ -10,6 +10,7 @@
 #include "token.h"
 #include "token_to_ast.h"
 
+namespace reader {
 namespace hlsl {
 
 /// The parser is responsible for taking the tokens from the scanner and building an ast::.
@@ -202,3 +203,4 @@ private:
 };
 
 } // namespace hlsl
+} // namespace reader

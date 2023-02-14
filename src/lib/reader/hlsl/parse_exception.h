@@ -5,6 +5,7 @@
 
 #include "token.h"
 
+namespace reader {
 namespace hlsl {
 
 class ParseException : public std::exception {
@@ -17,3 +18,4 @@ public:
 };
 
 } // namespace hlsl
+} // namespace reader

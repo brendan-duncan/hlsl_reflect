@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
   std::getline(fp, src, '\0');
   fp.close();
 
-  std::unique_ptr<ast::Ast> ast{ hlsl::Parser(src).parse() };
+  std::unique_ptr<ast::Ast> ast{ reader::hlsl::Parser(src).parse() };
 
   if (!ast) {
     std::cerr << "Unable to parse file: " << argv[1] << std::endl;

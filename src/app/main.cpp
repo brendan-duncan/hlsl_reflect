@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
   std::getline(fp, hlsl, '\0');
   fp.close();
 
-  hlsl::Parser parser(hlsl);
+  reader::hlsl::Parser parser(hlsl);
   ast::Ast* ast = parser.parse();
 
   if (ast == nullptr) {

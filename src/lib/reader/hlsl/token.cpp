@@ -1,6 +1,7 @@
 #include <sstream>
 #include "token.h"
 
+namespace reader {
 namespace hlsl {
 
 std::string Token::toString() const {
@@ -10,3 +11,4 @@ std::string Token::toString() const {
 }
 
 } // namespace hlsl
+} // namespace reader

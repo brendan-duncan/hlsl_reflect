@@ -3,6 +3,7 @@
 #include <string_view>
 #include "token_type.h"
 
+namespace reader {
 namespace hlsl {
 
 /// A token is a single lexeme with a type.
@@ -43,3 +44,4 @@ private:
 };
 
 } // namespace hlsl
+} // namespace reader

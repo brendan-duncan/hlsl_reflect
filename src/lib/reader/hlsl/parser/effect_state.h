@@ -1,5 +1,6 @@
 #pragma once
 
+namespace reader {
 namespace hlsl {
 
 struct EffectStateValue {
@@ -29,3 +30,4 @@ const EffectState* getEffectState(const std::string_view& name,
 const EffectStateValue* getEffectStateValue(const std::string_view& name, const EffectState* state);
 
 } // namespace hlsl
+} // namespace reader

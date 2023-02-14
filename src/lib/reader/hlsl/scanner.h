@@ -8,6 +8,7 @@
 
 #include "token.h"
 
+namespace reader {
 namespace hlsl {
 
 inline bool isWhitespace(char c) {
@@ -83,3 +84,4 @@ private:
 };
 
 } // namespace hlsl
+} // namespace reader

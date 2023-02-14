@@ -10,6 +10,7 @@
 #include "scanner/template_types.h"
 #include "token_type.h"
 
+namespace reader {
 namespace hlsl {
 
 // Used for diagnostics
@@ -6141,3 +6142,4 @@ TokenType findTokenType(const std::string_view& lexeme) {
 }
 
 } // namespace hlsl
+} // namespace reader

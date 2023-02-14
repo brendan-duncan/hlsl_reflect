@@ -4,7 +4,7 @@
 #include "../../lib/visitor/print_visitor.h"
 #include "../test.h"
 
-using namespace hlsl;
+using namespace reader::hlsl;
 using namespace visitor;
 
 namespace parser_tests {

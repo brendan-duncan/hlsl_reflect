@@ -4,7 +4,7 @@
 #include "../../lib/reader/hlsl/scanner.h"
 #include "../test.h"
 
-using namespace hlsl;
+using namespace reader::hlsl;
 
 namespace scanner_tests {
 

@@ -6,6 +6,7 @@
 
 #include "../token_type.h"
 
+namespace reader {
 namespace hlsl {
 
 /// Test the lexeme against one of the "literal" token type rules, either an int number,
@@ -16,3 +17,4 @@ namespace hlsl {
 TokenType matchLiteral(const std::string_view& lexeme);
 
 } // namespace hlsl
+} // namespace reader

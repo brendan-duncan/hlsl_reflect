@@ -8,6 +8,7 @@
 #include "../../ast/storage_class.h"
 #include "token.h"
 
+namespace reader {
 namespace hlsl {
 
 inline ast::AddressSpace tokenToAddressSpace(Token t) {
@@ -113,4 +114,4 @@ inline ast::StorageClass tokenTypeToStorageClass(TokenType type) {
 ast::BaseType tokenTypeToBaseType(TokenType t);
 
 } // namespace hlsl
-
+} // namespace reader

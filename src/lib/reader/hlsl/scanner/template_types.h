@@ -4,6 +4,7 @@
 
 #include "../token_type.h"
 
+namespace reader {
 namespace hlsl {
 
 inline bool isTemplateType(TokenType t) {
@@ -35,3 +36,4 @@ inline bool isTemplateType(TokenType t) {
 }
 
 } // namespace hlsl
+} // namespace reader

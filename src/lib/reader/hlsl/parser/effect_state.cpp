@@ -4,6 +4,7 @@
 #include "../../../util/string_util.h"
 #include "effect_state.h"
 
+namespace reader {
 namespace hlsl {
 
 const EffectStateValue textureFilteringValues[] = {
@@ -280,3 +281,4 @@ const EffectStateValue* getEffectStateValue(const std::string_view& name,
 }
 
 } // namespace hlsl
+} // namespace reader

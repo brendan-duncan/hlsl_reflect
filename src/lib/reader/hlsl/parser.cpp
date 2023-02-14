@@ -5,6 +5,7 @@
 #include "parser/effect_state.h"
 #include "parse_exception.h"
 
+namespace reader {
 namespace hlsl {
 
 Parser::Parser(const std::string_view& source)
@@ -1731,3 +1732,4 @@ ast::WhileStmt* Parser::parseWhileStmt() {
 }
 
 } // namespace hlsl
+} // namespace reader

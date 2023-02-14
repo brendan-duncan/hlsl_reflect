@@ -4,6 +4,7 @@
 
 #include <map>
 
+namespace reader {
 namespace hlsl {
 
 static const std::map<TokenType, ast::BaseType> _tokenTypeToBaseType{
@@ -266,3 +267,4 @@ ast::BaseType tokenTypeToBaseType(TokenType t) {
 }
 
 } // namespace hlsl
+} // namespace reader

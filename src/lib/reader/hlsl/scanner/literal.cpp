@@ -1,5 +1,6 @@
 #include "literal.h"
 
+namespace reader {
 namespace hlsl {
 
 static bool isNumeric(char c) {
@@ -164,3 +165,4 @@ TokenType matchLiteral(const std::string_view& lexeme) {
 }
 
 } // namespace hlsl
+} // namespace reader

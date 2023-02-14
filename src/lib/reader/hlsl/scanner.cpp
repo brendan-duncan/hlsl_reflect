@@ -6,6 +6,7 @@
 #include "scanner/template_types.h"
 #include "token_type.h"
 
+namespace reader {
 namespace hlsl {
 
 Scanner::Scanner(const std::string_view& source, const std::string filename)
@@ -387,3 +388,4 @@ bool Scanner::scanToken() {
 }
 
 }  // namespace hlsl
+} // namespace reader

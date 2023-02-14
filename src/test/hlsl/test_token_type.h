@@ -1,7 +1,7 @@
 #include "../../lib/reader/hlsl/token_type.h"
 #include "../test.h"
 
-using namespace hlsl;
+using namespace reader::hlsl;
 
 namespace token_type_tests {
 
