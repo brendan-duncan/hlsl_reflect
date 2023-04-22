@@ -67,6 +67,7 @@ void foreach(T* node, void (*callback)(T* node)) {
 /// Base class for all AST nodes
 struct Node {
   NodeType nodeType = NodeType::Undefined;
+  bool visible = true;
 };
 
 /// A template argument, either an Type or an Expression.

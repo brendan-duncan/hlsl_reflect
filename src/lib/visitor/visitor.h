@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../ast/ast_node.h"
 
 namespace visitor {

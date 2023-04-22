@@ -1,7 +1,8 @@
 #include "test.h"
-#include "hlsl/test_token_type.h"
-#include "hlsl/test_scanner.h"
-#include "hlsl/test_parser.h"
+//#include "hlsl/test_token_type.h"
+//#include "hlsl/test_scanner.h"
+//#include "hlsl/test_parser.h"
+#include "visitor/test_prune_tree.h"
 #include <iostream>
 #include <chrono>
 

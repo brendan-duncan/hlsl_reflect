@@ -28,6 +28,9 @@ void Visitor::visitRoot(ast::Root* node) {
 }
 
 void Visitor::visitTopLevelStatement(ast::Statement* node) {
+  if (node->visible == false) {
+    return;
+  }
   if (node->nodeType == ast::NodeType::StructStmt) {
     visitStructStmt((ast::StructStmt*)node);
   } else if (node->nodeType == ast::NodeType::BufferStmt) {
@@ -120,7 +123,7 @@ void Visitor::visitBufferStmt(ast::BufferStmt* node) {
 void Visitor::visitFunctionStmt(ast::FunctionStmt* node) {
   visitType(node->returnType);
   if (node->parameters != nullptr) {
-    visitParameters(node->parameters);
+    visitParameter(node->parameters);
   }
   visitBlock(node->body);
 }
@@ -133,9 +136,10 @@ void Visitor::visitParameter(ast::Parameter* node) {
 }
 
 void Visitor::visitParameters(ast::Parameter* node) {
-  visitType(node->type);
-  if (node->initializer != nullptr) {
-    visitExpression(node->initializer);
+  ast::Parameter* p = node;
+  while (p != nullptr) {
+    visitParameter(p);
+    p = p->next;
   }
 }
 

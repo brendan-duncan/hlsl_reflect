@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 
 #include "visitor.h"
@@ -180,7 +182,7 @@ public:
       _out << " = ";
       visitExpression(node->initializer);
     }
-    _out << std::flush;
+    _out << std::endl;
   }
 
   void visitParameter(ast::Parameter* node) override {

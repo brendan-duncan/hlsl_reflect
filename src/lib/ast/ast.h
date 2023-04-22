@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <string_view>
 
 #include "../util/allocator.h"
@@ -30,6 +31,39 @@ public:
     return static_cast<T*>(n);
   }
 
+  FunctionStmt* findFunction(const std::string_view& name) const {
+    auto it = _functions.find(name);
+    if (it == _functions.end())
+      return nullptr;
+    return it->second;
+  }
+
+  void addFunction(FunctionStmt* function) {
+    _functions[function->name] = function;
+  }
+
+  VariableStmt* findGlobalVariable(const std::string_view& name) const {
+    auto it = _variables.find(name);
+    if (it == _variables.end())
+      return nullptr;
+    return it->second;
+  }
+
+  void addGlobalVariable(VariableStmt* variable) {
+    _variables[variable->name] = variable;
+  }
+
+  StructStmt* findStruct(const std::string_view& name) const {
+    auto it = _structs.find(name);
+    if (it == _structs.end())
+      return nullptr;
+    return it->second;
+  }
+
+  void addStruct(StructStmt* structStmt) {
+    _structs[structStmt->name] = structStmt;
+  }
+
 private:
   void* allocateMemory(size_t size);
 
@@ -49,6 +83,10 @@ private:
   size_t _currentPageOffset;
 
   Root* _root;
+
+  std::map<std::string_view, FunctionStmt*> _functions;
+  std::map<std::string_view, VariableStmt*> _variables;
+  std::map<std::string_view, StructStmt*> _structs;
 };
 
 } // namespace ast

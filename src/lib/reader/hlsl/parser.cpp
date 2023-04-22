@@ -46,6 +46,10 @@ ast::Ast* Parser::parse() {
       lastStatement->next = statement;
     }
     lastStatement = statement;
+    // If it's a compound statement, we need to find the last statement in the list
+    while (lastStatement->next != nullptr) {
+      lastStatement = lastStatement->next;
+    }
   }
 
   return _ast;
@@ -172,6 +176,7 @@ ast::Statement* Parser::parseTopLevelStatement() {
     // function declaration
     if (check(TokenType::LeftParen)) {
       ast::FunctionStmt* func = parseFunctionStmt(type, identifier.lexeme());
+      _ast->addFunction(func);
       if (func != nullptr) {
         func->attributes = attributes;
       }
@@ -179,10 +184,21 @@ ast::Statement* Parser::parseTopLevelStatement() {
     }
 
     // variable declaration
-    ast::VariableStmt* var = parseVariableStmt(type, identifier.lexeme(), attributes);
+    ast::Statement* var = parseVariableStmt(type, identifier.lexeme(), attributes);
     consume(TokenType::Semicolon, "Expected ';' after variable declaration");
+    // variable declarations can be chained together with ','.
+    ast::Statement* firstStmt = var;
+    while (var != nullptr) {
+      if (var->nodeType == ast::NodeType::VariableStmt) {
+        _ast->addGlobalVariable(static_cast<ast::VariableStmt*>(var));
+      }
+      if (var->next == nullptr) {
+        break;
+      }
+      var = var->next;
+    }
 
-    return var;
+    return firstStmt;
   }
 
   return nullptr;
@@ -697,6 +713,7 @@ ast::Type* Parser::parseType(bool allowVoid, const char* exceptionMessage) {
     // We can discard the tokens we recorded because we know this is a type.
     discardRestorePoint();
     ast::StructStmt* structType = parseStruct();
+    _ast->addStruct(structType);
     ast::Type* type = _ast->createNode<ast::Type>();
     type->flags = flags;
     type->baseType = ast::BaseType::Struct;
