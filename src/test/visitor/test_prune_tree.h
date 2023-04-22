@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../lib/reader/hlsl/parser.h"
-#include "../../lib/visitor/print_visitor.h"
+#include "../../lib/visitor/glsl_generator.h"
 #include "../../lib/visitor/prune_tree.h"
 #include "../test.h"
 
@@ -12,8 +12,8 @@ namespace prune_tree_tests {
 
 inline void printAst(const std::string_view& source, ast::Ast* ast) {
   if (ast != nullptr) {
-    PrintVisitor visitor;
-    visitor.visitRoot(ast->root());
+    GlslGenerator generator;
+    generator.visitRoot(ast->root());
     std::cout << std::flush;
   }
 }
@@ -25,12 +25,12 @@ static Test test_prune_tree("Test Prune Tree", []() {
       x = y = z = 2;
     }
 
-    int bar() {
-      x = z = 1;
+    float add(float a, float b) {
+      return a + b;
     }
 
     void main() {
-      bar();
+      float res = add(x, z);
     }
   )");
 
@@ -40,14 +40,14 @@ static Test test_prune_tree("Test Prune Tree", []() {
   VisibilityVisitor reset(false);
   reset.visitRoot(ast->root());
   TEST_FALSE(ast->findFunction("foo")->visible);
-  TEST_FALSE(ast->findFunction("bar")->visible);
+  TEST_FALSE(ast->findFunction("add")->visible);
   TEST_FALSE(ast->findGlobalVariable("x")->visible);
   TEST_FALSE(ast->findGlobalVariable("y")->visible);
   TEST_FALSE(ast->findGlobalVariable("z")->visible);
 
   PruneTree prune(ast);
   prune.prune("main");
-  TEST_TRUE(ast->findFunction("bar")->visible);
+  TEST_TRUE(ast->findFunction("add")->visible);
   TEST_FALSE(ast->findFunction("foo")->visible);
   TEST_TRUE(ast->findGlobalVariable("x")->visible);
   TEST_FALSE(ast->findGlobalVariable("y")->visible);
